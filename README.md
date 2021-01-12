@@ -21,7 +21,7 @@ npm install
 npm start
 ```
 
-### Api endpoint
+### Api Endpoints
 
 * SignUp - POST
 
