@@ -23,19 +23,36 @@ npm start
 
 ### Api endpoint
 
-SignUp 
+SignUp - POST
 
 ```bash
 http://localhost:3000/user/signup
 ```
 
-SignIn 
+{
+    "name":"kasun",
+    "email":"kasun7153@gmail.com",
+    "birthday":"1997-11-17",
+    "contact_no":"0763250332",
+    "passport_no":"1234",
+    "country":"Sri Lanka",
+    "password":"password",
+    "user_photo":"my_photo"
+}
+
+
+SignIn - POST
 
 ```bash
 http://localhost:3000/user/signin
 ```
 
-User Profile 
+{
+    "email":"kasun7153@gmail.com",
+    "password":"password"
+}
+
+User Profile - GET
 
 ```bash
 http://localhost:3000/user/profile
