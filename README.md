@@ -23,7 +23,7 @@ npm start
 
 ### Api endpoint
 
-SignUp - POST
+* SignUp - POST
 
 ```bash
 http://localhost:3000/user/signup
@@ -41,7 +41,7 @@ http://localhost:3000/user/signup
 }
 
 
-SignIn - POST
+* SignIn - POST
 
 ```bash
 http://localhost:3000/user/signin
@@ -52,7 +52,7 @@ http://localhost:3000/user/signin
     "password":"password"
 }
 
-User Profile - GET
+* User Profile - GET
 
 ```bash
 http://localhost:3000/user/profile
