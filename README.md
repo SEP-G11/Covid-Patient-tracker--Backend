@@ -21,6 +21,25 @@ npm install
 npm start
 ```
 
+### Guide
+Api endpoint
 
+SignUp 
+
+```bash
+http://localhost:3000/user/signup
+```
+
+SignIn 
+
+```bash
+http://localhost:3000/user/signin
+```
+
+User Profile 
+
+```bash
+http://localhost:3000/user/profile
+```
 
 
