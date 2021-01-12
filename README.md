@@ -1,14 +1,12 @@
 # B-Airways-backend
 Database Mini project 
 
-# Agri-App
-
 ## Guide
 
 First clone this project directory.
 
 ```bash
-git clone https://github.com/Avishka-Shamendra/agri-app.git
+git clone https://github.com/kasun7153/B-Airways-backend.git
 ```
 
 Install Node Modules
