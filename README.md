@@ -12,7 +12,7 @@ git clone https://github.com/kasun7153/B-Airways-backend.git
 Install Node Modules
 
 ```bash
-npm insall
+npm install
 ```
 
  Then run the express server.
