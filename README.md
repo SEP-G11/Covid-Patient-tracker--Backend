@@ -21,8 +21,7 @@ npm install
 npm start
 ```
 
-### Guide
-Api endpoint
+### Api endpoint
 
 SignUp 
 
