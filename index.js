@@ -6,10 +6,6 @@ const app = express();
 app.use(express.json());
 app.use(cors())
 
-//const userRouter = require("./api/users/user.router");
-
-
-
 app.use("/",require("./routes"))
 
 app.listen(process.env.APP_PORT,()=>{
