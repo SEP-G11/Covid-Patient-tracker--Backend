@@ -1,3 +1,6 @@
+CREATE DATABASE `bairway`;
+USE `bairway` ;
+
 DROP TABLE IF EXISTS `booking`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `profile`;
@@ -50,8 +53,6 @@ CREATE TABLE `seat_info` (
   FOREIGN KEY (aircraft_id) REFERENCES aircraft_model(aircraft_id),
   FOREIGN KEY (travel_class_id) REFERENCES travel_class(travel_class_id)
 );
-
-
 
 
 

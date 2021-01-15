@@ -36,6 +36,7 @@ module.exports={
             }
         )
     },
+    
     getRegistedUserByEmail:(email)=>{
         return new Promise((resolve,reject)=>{
             pool.query(
