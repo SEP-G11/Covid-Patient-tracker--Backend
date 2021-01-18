@@ -1,9 +1,9 @@
+USE bairway;
 DROP TABLE IF EXISTS `booking`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `profile`;
 DROP TABLE IF EXISTS `admin`;
 DROP TABLE IF EXISTS `flight_schedule`;
-DROP TABLE IF EXISTS `ticket_price`;
 DROP TABLE IF EXISTS `route`;
 DROP TABLE IF EXISTS `seat_info`;
 DROP TABLE IF EXISTS `travel_class`;
@@ -26,12 +26,13 @@ CREATE TABLE `aircraft` (
   `aircraft_id` varchar(30),
   `model_id` varchar(30),
   PRIMARY KEY (`aircraft_id`),
-  FOREIGN KEY (model_id) REFERENCES aircraft_model(model_id),
+  FOREIGN KEY (model_id) REFERENCES aircraft_model(model_id)
 );
 
 CREATE TABLE `airport` (
   `airport_id` varchar(10),
   `country` varchar(10),
+  `state` varchar(10),
   `city` varchar(10),
   `lat` varchar(10),
   `long` varchar(10),
@@ -75,16 +76,7 @@ CREATE TABLE `route` (
   FOREIGN KEY (destination) REFERENCES airport(airport_id)
 );
 
-CREATE TABLE `ticket_price` (
-  `travel_class_id` varchar(10),
-  `route_id` varchar(30),
-  `aircraft_id` varchar(30),
-  `price` numeric(10,2),
-  PRIMARY KEY (`travel_class_id`, `route_id`, `aircraft_id`),
-  FOREIGN KEY (travel_class_id) REFERENCES travel_class(travel_class_id),
-  FOREIGN KEY (route_id) REFERENCES route(route_id),
-  FOREIGN KEY (aircraft_id) REFERENCES aircraft_model(aircraft_id)
-);
+
 
 CREATE TABLE `flight_schedule` (
   `flight_id` varchar(30),
