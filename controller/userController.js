@@ -7,28 +7,36 @@ module.exports={
         const body=req.body;
         const salt = genSaltSync(10);
         body.password=hashSync(body.password,salt)
-
-        createRegisteredUser(body,(err,result)=>{
-            if(err){
-                console.log(err)
-                if(err.code=="ER_DUP_ENTRY"){
+        if(body.name && body.email && body.birthday && body.contact_no && body.passport_no && body.country && body.password && body.user_photo){
+            createRegisteredUser(body,(err,result)=>{
+                if(err){
+                    console.log(err)
+                    if(err.code=="ER_DUP_ENTRY"){
+                        return res.json({
+                            sucess:0,
+                            message:"email already exist"
+                        })
+                    }
                     return res.json({
                         sucess:0,
-                        message:"email already exist"
+                        message:err
                     })
                 }
-                return res.json({
-                    sucess:0,
-                    message:err
-                })
-            }
-            else{
-                return res.json({
-                    sucess:1,
-                    data:result
-                })
-            }
-        })
+                else{
+                    return res.json({
+                        sucess:1,
+                        data:result,
+                        message:"SignUp successful"
+                    })
+                }
+            })
+        }else{
+            return res.json({
+                sucess:0,
+                message:"Missing Fields"
+            })
+        }
+        
     },
 
     loginUser: async (req,res)=>{
