@@ -1,6 +1,6 @@
 module.exports = {
   isBooked: (req, res, next) => {
-    if (req.params.seat_id) {
+    if (req.seat_data) {
       next();
     } else {
       res.json({

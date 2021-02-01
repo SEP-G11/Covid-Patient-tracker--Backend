@@ -46,7 +46,6 @@ module.exports = {
     const result = await getSeatPrice(req.params.flight_id, req.params.seat_id);
     const default_price =
       result.aircraft_charge + result.route_charge + result.travel_class_charge;
-    console.log(default_price);
     var discount_price = default_price;
 
     if (req.user) {
