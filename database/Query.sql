@@ -42,3 +42,7 @@ DELIMITER $$
         
     END$$
 DELIMITER ;
+
+-- indexing for booking table
+
+CREATE  INDEX booking_flight ON booking (flight_id); 
