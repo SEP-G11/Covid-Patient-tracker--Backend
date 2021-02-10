@@ -9,48 +9,6 @@ const {
 } = require("../service/adminService");
 
 module.exports = {
-  getGuestCount: async (req, res) => {
-    const body = req.body;
-    Details = await getNumberOfGuestPassengers(body.start_date, body.end_date);
-    console.log(Details);
-    return res.json({
-      success: 1,
-      data: { Details },
-    });
-  },
-
-  getRegCount: async (req, res) => {
-    const body = req.body;
-    Details = await getNumberOfRegisteredPassengers(
-      body.start_date,
-      body.end_date
-    );
-    console.log(Details);
-    return res.json({
-      success: 1,
-      data: { Details },
-    });
-  },
-
-  getFlights: async (req, res) => {
-    const body = req.body;
-    Details = await getAllPassFlights(body.origin, body.destination);
-    console.log(Details);
-    return res.json({
-      success: 1,
-      data: { Details },
-    });
-  },
-
-  getPassCount: async (req, res) => {
-    const body = req.body;
-    Details = await getPassengerCount(body.origin, body.destination);
-    console.log(Details);
-    return res.json({
-      success: 1,
-      data: { Details },
-    });
-  },
 
   // To find all passengers ( below age 18,above age 18 )for given flight id
   getPassBelowAgeDetails: (req, res) => {
