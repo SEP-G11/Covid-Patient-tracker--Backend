@@ -159,8 +159,8 @@ module.exports = {
   },
 
   submitNbooking: async (req, res) => {
-    const { user_id, flight_id, seat_id, discount_price } = req.body;
-    var body = { user_id, flight_id, seat_id, discount_price };
+    const {  flight_id, seat_id, discount_price } = req.body;
+    var body = { user_id:req.user.user_id, flight_id, seat_id, discount_price };
 
     if (req.isUser) {
       const { passport_no } = req.user;
@@ -185,14 +185,18 @@ module.exports = {
       try {
         await makeBooking(body);
         res.json({
-          success: "Bookes succesfully",
+          sucess:1,
+          message: "Booked succesfully",
         });
       } catch (err) {
-        res.json({ err: err.message });
+        res.json({ 
+          sucess:0,
+          message: err.message });
       }
     } else {
       res.json({
-        err: "User is already booked",
+        sucess:0,
+        err: "User has already booked in this flight",
       });
     }
   },
