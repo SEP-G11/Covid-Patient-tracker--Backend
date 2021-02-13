@@ -42,7 +42,6 @@ module.exports = {
           if (err) {
             reject(err);
           }
-          console.log(result);
           resolve(result[0]);
         }
       );
@@ -57,7 +56,6 @@ module.exports = {
           if (err) {
             reject(err);
           }
-          console.log(result[0]);
           resolve(result[0]);
         }
       );

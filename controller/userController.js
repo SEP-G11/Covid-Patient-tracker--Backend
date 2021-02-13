@@ -18,7 +18,7 @@ module.exports = {
     const salt = genSaltSync(10);
     body.password = hashSync(body.password, salt);
     userDetailsinDatabase = await getRegistedUserByEmail(body.email);
-    if(userDetailsinDatabase){
+    if (userDetailsinDatabase) {
       return res.json({
         sucess: 0,
         message: "email already exist",
@@ -171,16 +171,17 @@ module.exports = {
       seat_id,
       discount_price,
     };
+    var done = false;
 
     if (req.isUser) {
       const { passport_no, user_id } = req.user;
       body = { ...body, passport_no, user_id };
     } else if (!req.isUser) {
       const newData = req.body.guest_data;
-      const user_id = await createGuestUser(newData);
+
       const { passport_no } = newData;
 
-      body = { ...body, passport_no, user_id };
+      body = { ...body, passport_no };
     }
     const isAvailable = await checkSeatFlight(body);
     if (!isAvailable.seat_available) {
@@ -194,7 +195,12 @@ module.exports = {
         const isBooked = await checkIfAlreadyBooked(body);
         if (isBooked == 0) {
           try {
+            if (!req.isUser) {
+              const user_id = await createGuestUser(newData);
+              body = { ...body, passport_no, user_id };
+            }
             await makeBooking(body);
+            done = true;
             res.json({
               success: 1,
               message: "Booking is successfully created",
