@@ -59,6 +59,8 @@ module.exports = {
           package_name,
           default_price,
           discount_price,
+          flight_id: req.params.flight_id,
+          seat_id: req.params.seat_id,
         });
       } else {
         discount_price = default_price * ((100 - precentage) / 100);
@@ -67,6 +69,8 @@ module.exports = {
           package_name,
           default_price,
           discount_price,
+          flight_id: req.params.flight_id,
+          seat_id: req.params.seat_id,
         });
       }
     } else {

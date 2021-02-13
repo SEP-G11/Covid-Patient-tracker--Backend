@@ -3,7 +3,13 @@ const { sign } = require("jsonwebtoken");
 const {
   createRegisteredUser,
   getRegistedUserByEmail,
-  getRegistedUserById,editUserProfile,updatePassword
+  getRegistedUserById,
+  editUserProfile,
+  updatePassword,
+  makeBooking,
+  checkIfAlreadyBooked,
+  checkSeatFlight,
+  createGuestUser,
 } = require("../service/userService");
 
 module.exports = {
@@ -84,74 +90,110 @@ module.exports = {
     });
   },
 
-  editUserProfile:async (req, res) => {
-    if(!req.body.name){
-      res.json({success:0,message:"Invalid Name"})
-      return
+  editUserProfile: async (req, res) => {
+    if (!req.body.name) {
+      res.json({ success: 0, message: "Invalid Name" });
+      return;
     }
-    if(!req.body.email){
-      res.json({success:0,message:"Invalid Email"})
-      return
+    if (!req.body.email) {
+      res.json({ success: 0, message: "Invalid Email" });
+      return;
     }
-    if(!req.body.contact_no){
-      res.json({success:0,message:"Invalid Contact No"})
-      return
+    if (!req.body.contact_no) {
+      res.json({ success: 0, message: "Invalid Contact No" });
+      return;
     }
-    if(!req.body.country){
-      res.json({success:0,message:"Invalid Country"})
-      return
+    if (!req.body.country) {
+      res.json({ success: 0, message: "Invalid Country" });
+      return;
     }
-    if(!req.body.birthday){
-      res.json({success:0,message:"Invalid Birthday"})
-      return
+    if (!req.body.birthday) {
+      res.json({ success: 0, message: "Invalid Birthday" });
+      return;
     }
-    if(!req.body.passport_no){
-      res.json({success:0,message:"Invalid Passport No"})
-      return
+    if (!req.body.passport_no) {
+      res.json({ success: 0, message: "Invalid Passport No" });
+      return;
     }
-    editUserProfile(req.body,req.user.user_id,(err)=>{
-        if(err){
-          console.log(err)
-          res.json({success:0,message:err.message})
-        }
-        res.json({success:1,message:"Profile Updated Sucessfully"})
-    })
+    editUserProfile(req.body, req.user.user_id, (err) => {
+      if (err) {
+        console.log(err);
+        res.json({ success: 0, message: err.message });
+      }
+      res.json({ success: 1, message: "Profile Updated Sucessfully" });
+    });
   },
-  changePassword:async (req,res)=>{
+  changePassword: async (req, res) => {
     const body = req.body;
     const salt = genSaltSync(10);
     body.new_password = hashSync(body.new_password, salt);
-    
-      let userDetailsinDatabase = await getRegistedUserById(req.user.user_id);
-      console.log(userDetailsinDatabase);
-      if (userDetailsinDatabase) {
-        const result = compareSync(
-          body.old_password,
-          userDetailsinDatabase.password
-        );
-        if (result) {
-          updatePassword(req.user.user_id,body.new_password,(err)=>{
-            if(err){
-              res.json({success:0,message:err.message})
-              console.log(err)
-            }
-            else{
-              res.json({success:1,message:"Password Changed Sucessfully"})
-            }
-          })
-        } else {
-          return res.json({
-            sucess: 0,
-            message: "Current password is invalid",
-          });
-        }
+
+    let userDetailsinDatabase = await getRegistedUserById(req.user.user_id);
+    console.log(userDetailsinDatabase);
+    if (userDetailsinDatabase) {
+      const result = compareSync(
+        body.old_password,
+        userDetailsinDatabase.password
+      );
+      if (result) {
+        updatePassword(req.user.user_id, body.new_password, (err) => {
+          if (err) {
+            res.json({ success: 0, message: err.message });
+            console.log(err);
+          } else {
+            res.json({ success: 1, message: "Password Changed Sucessfully" });
+          }
+        });
       } else {
         return res.json({
           sucess: 0,
-          message: "Invalid ID",
+          message: "Current password is invalid",
         });
       }
-   
+    } else {
+      return res.json({
+        sucess: 0,
+        message: "Invalid ID",
+      });
+    }
+  },
 
-  }
+  submitNbooking: async (req, res) => {
+    const { user_id, flight_id, seat_id, discount_price } = req.body;
+    var body = { user_id, flight_id, seat_id, discount_price };
+
+    if (req.isUser) {
+      const { passport_no } = req.user;
+      body = { ...body, passport_no };
+    } else if (!req.isUser) {
+      const newData = req.body.guest_data;
+      const salt = genSaltSync(10);
+      newData.password = await hashSync(newData.password, salt);
+      await createGuestUser(newData);
+      const { passport_no } = newData.passport_no;
+      body = { ...body, passport_no };
+    }
+    const isAvailable = await checkSeatFlight(body);
+    if (!isAvailable) {
+      res.json({
+        err: "There is no such a seat or flight",
+      });
+      return;
+    }
+    const isBooked = await checkIfAlreadyBooked(body);
+    if (isBooked == 0) {
+      try {
+        await makeBooking(body);
+        res.json({
+          success: "Bookes succesfully",
+        });
+      } catch (err) {
+        res.json({ err: err.message });
+      }
+    } else {
+      res.json({
+        err: "User is already booked",
+      });
+    }
+  },
 };

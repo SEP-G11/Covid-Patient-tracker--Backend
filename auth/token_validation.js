@@ -36,10 +36,12 @@ module.exports = {
           });
         } else {
           req.user = decoded.result;
+          req.isUser = true;
           next();
         }
       });
     } else {
+      req.isUser = false;
       next();
     }
   },
