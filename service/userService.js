@@ -132,26 +132,28 @@ module.exports = {
   },
 
   createGuestUser: (data, callBack) => {
-    pool.query(
-      `insert into user (name,email,birthday,contact_no,passport_no,country,is_registered)
+    return new Promise((resolve, reject) => {
+      pool.query(
+        `insert into user (name,email,birthday,contact_no,passport_no,country,is_registered)
             values (?,?,?,?,?,?,?);`,
-      [
-        data.name,
-        data.email,
-        data.birthday,
-        data.contact_no,
-        data.passport_no,
-        data.country,
-        false,
-      ],
-      (err, result) => {
-        if (err) {
-          return callBack(err);
-        } else {
-          return callBack(null, result);
+        [
+          data.name,
+          data.email,
+          data.birthday,
+          data.contact_no,
+          data.passport_no,
+          data.country,
+          false,
+        ],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result.insertId);
+          }
         }
-      }
-    );
+      );
+    });
   },
 
   checkSeatFlight: (data) => {
@@ -163,7 +165,33 @@ module.exports = {
           if (err) {
             reject(err);
           } else {
-            resolve(result[0]);
+            if (result[0]) {
+              pool.query(
+                `select * from booking where flight_id=? and seat_id=?;`,
+                [data.flight_id, data.seat_id],
+                (err, result_1) => {
+                  if (err) {
+                    reject(err);
+                  } else {
+                    if (result_1[0]) {
+                      resolve({
+                        seat_booked: true,
+                        seat_available: true,
+                      });
+                    } else {
+                      resolve({
+                        seat_booked: false,
+                        seat_available: true,
+                      });
+                    }
+                  }
+                }
+              );
+            } else {
+              resolve({
+                seat_available: false,
+              });
+            }
           }
         }
       );

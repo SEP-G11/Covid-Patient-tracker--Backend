@@ -77,6 +77,7 @@ module.exports = {
       res.json({
         user_id: false,
         default_price,
+        discount_price,
       });
     }
   },

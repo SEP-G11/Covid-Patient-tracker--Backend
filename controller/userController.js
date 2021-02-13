@@ -159,45 +159,55 @@ module.exports = {
   },
 
   submitNbooking: async (req, res) => {
-    const {  flight_id, seat_id, discount_price } = req.body;
-    var body = { user_id:req.user.user_id, flight_id, seat_id, discount_price };
+    const { flight_id, seat_id, discount_price } = req.body;
+    var body = {
+      flight_id,
+      seat_id,
+      discount_price,
+    };
 
     if (req.isUser) {
-      const { passport_no } = req.user;
-      body = { ...body, passport_no };
+      const { passport_no, user_id } = req.user;
+      body = { ...body, passport_no, user_id };
     } else if (!req.isUser) {
       const newData = req.body.guest_data;
-      const salt = genSaltSync(10);
-      newData.password = await hashSync(newData.password, salt);
-      await createGuestUser(newData);
-      const { passport_no } = newData.passport_no;
-      body = { ...body, passport_no };
+      const user_id = await createGuestUser(newData);
+      const { passport_no } = newData;
+
+      body = { ...body, passport_no, user_id };
     }
     const isAvailable = await checkSeatFlight(body);
-    if (!isAvailable) {
+    if (!isAvailable.seat_available) {
       res.json({
-        err: "There is no such a seat or flight",
+        success: 0,
+        message: "There is no such a seat or flight",
       });
       return;
-    }
-    const isBooked = await checkIfAlreadyBooked(body);
-    if (isBooked == 0) {
-      try {
-        await makeBooking(body);
-        res.json({
-          sucess:1,
-          message: "Booked succesfully",
-        });
-      } catch (err) {
-        res.json({ 
-          sucess:0,
-          message: err.message });
-      }
     } else {
-      res.json({
-        sucess:0,
-        err: "User has already booked in this flight",
-      });
+      if (!isAvailable.seat_booked) {
+        const isBooked = await checkIfAlreadyBooked(body);
+        if (isBooked == 0) {
+          try {
+            await makeBooking(body);
+            res.json({
+              success: 1,
+              message: "Booking is successfully created",
+            });
+          } catch (err) {
+            res.json({ err: err.message });
+          }
+        } else {
+          res.json({
+            success: 0,
+            message: "User is already booked a seat",
+          });
+        }
+      } else {
+        res.json({
+          success: 0,
+          message: "Seat is already booked",
+        });
+      }
     }
   },
 };
