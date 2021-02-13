@@ -13,11 +13,17 @@ const {
 } = require("../service/userService");
 
 module.exports = {
-  createUser: (req, res) => {
+  createUser: async (req, res) => {
     const body = req.body;
     const salt = genSaltSync(10);
     body.password = hashSync(body.password, salt);
-
+    userDetailsinDatabase = await getRegistedUserByEmail(body.email);
+    if(userDetailsinDatabase){
+      return res.json({
+        sucess: 0,
+        message: "email already exist",
+      });
+    }
     createRegisteredUser(body, (err, result) => {
       if (err) {
         console.log(err);
