@@ -7,6 +7,7 @@ const {
   getPassBelowAgeDetails,
   getTotalRevenueOfAircraft,
   getPassDesCount,
+  updateDelays,
 } = require("../service/adminService");
 
 module.exports = {
@@ -152,6 +153,29 @@ module.exports = {
           res.json({
             sucess: 0,
             message: "Invalid Aircraft ID",
+          });
+        } else {
+          res.json({
+            sucess: 1,
+            data: result,
+          });
+        }
+      }
+    );
+  },
+
+  updateDelayDetails: (req, res) => {
+    const body = req.body;
+    updateDelays(
+      body.date,
+      body.start_time,
+      body.end_time,
+      body.flight_id,
+      (err, result) => {
+        if (err) {
+          res.json({
+            sucess: 0,
+            message: "Invalid flight id",
           });
         } else {
           res.json({
