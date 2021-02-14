@@ -101,4 +101,21 @@ module.exports = {
       }
     );
   },
+
+  getTotalRevenueOfAircraft(aircraft_id, callback) {
+    pool.query(
+      `CALL get_total_revenue_of_aircraft(?)`,
+      [aircraft_id],
+      (err, result) => {
+        if (err) {
+          return callback(err);
+        } else {
+          console.log("Done");
+          return callback(null, result[0]);
+        }
+      }
+    );
+  },
+
+
 };

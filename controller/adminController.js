@@ -5,7 +5,7 @@ const {
   getPassengerCount,
   getPassAboveAgeDetails,
   getPassBelowAgeDetails,
-
+  getTotalRevenueOfAircraft,
   getPassDesCount,
 } = require("../service/adminService");
 
@@ -147,6 +147,26 @@ module.exports = {
           res.json({
             sucess: 0,
             message: "Invalid Destination or Date Range",
+          });
+        } else {
+          res.json({
+            sucess: 1,
+            data: result,
+          });
+        }
+      }
+    );
+  },
+
+  // To get the total revenue of  a given aircraft
+  getTotalRevenueOfAircraft: (req, res) => {
+    const aircraft_id = req.params.aircraft_id;
+    getTotalRevenueOfAircraft(aircraft_id,(err, result) => {
+        if (err) {
+          console.log(err);
+          res.json({
+            sucess: 0,
+            message: "Invalid Aircraft ID",
           });
         } else {
           res.json({
