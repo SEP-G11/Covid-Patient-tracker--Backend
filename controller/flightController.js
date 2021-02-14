@@ -9,12 +9,9 @@ const { getRegistedUserByEmail } = require("../service/userService");
 
 module.exports = {
   getSchedule: (req, res) => {
-    console.log(req.user);
     getFlightSchedule((err, result) => {
       if (err) {
-        console.log(err);
       } else {
-        //console.log(result)
         res.json({
           sucess: 1,
           data: result,
@@ -27,7 +24,6 @@ module.exports = {
     try {
       const result = await getFlightInfo(req.params.flight_id);
       if (result) {
-        console.log("done");
         res.json({
           sucess: 1,
           data: result,
@@ -39,7 +35,6 @@ module.exports = {
         });
       }
     } catch (err) {
-      console.log(err);
     }
   },
   getSeatPrice: async (req, res) => {

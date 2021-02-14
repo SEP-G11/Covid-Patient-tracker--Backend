@@ -38,7 +38,6 @@ module.exports = {
       body.end_date,
       (err, result) => {
         if (err) {
-          console.log(err);
           res.json({
             sucess: 0,
             message: "Invalid Date Range",
@@ -57,7 +56,6 @@ module.exports = {
     const body = req.body;
     getAllPassFlights(body.origin, body.destination, (err, result) => {
       if (err) {
-        console.log(err);
         res.json({
           sucess: 0,
           message: "Invalid Origine or Destination",
@@ -75,7 +73,6 @@ module.exports = {
     const body = req.body;
     getPassengerCount(body.origin, body.destination, (err, result) => {
       if (err) {
-        console.log(err);
         res.json({
           sucess: 0,
           message: "Invalid Origine or Destination",
@@ -94,7 +91,6 @@ module.exports = {
     const flight_id = req.params.flight_id;
     getPassBelowAgeDetails(flight_id, (err, result) => {
       if (err) {
-        console.log(err);
         res.json({
           sucess: 0,
           message: "Invalid Flight ID",
@@ -112,7 +108,6 @@ module.exports = {
     const flight_id = req.params.flight_id;
     getPassAboveAgeDetails(flight_id, (err, result) => {
       if (err) {
-        console.log(err);
         res.json({
           sucess: 0,
           message: "Invalid Flight ID",
@@ -134,7 +129,6 @@ module.exports = {
       body.destination,
       (err, result) => {
         if (err) {
-          console.log(err);
           res.json({
             sucess: 0,
             message: "Invalid Destination or Date Range",

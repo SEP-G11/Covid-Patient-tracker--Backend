@@ -26,7 +26,6 @@ module.exports = {
     }
     createRegisteredUser(body, (err, result) => {
       if (err) {
-        console.log(err);
         if (err.code == "ER_DUP_ENTRY") {
           return res.json({
             sucess: 0,
@@ -51,7 +50,6 @@ module.exports = {
     let userDetailsinDatabase;
     try {
       userDetailsinDatabase = await getRegistedUserByEmail(body.email);
-      console.log(userDetailsinDatabase);
       if (userDetailsinDatabase) {
         const result = compareSync(
           body.password,
@@ -80,7 +78,6 @@ module.exports = {
         });
       }
     } catch (err) {
-      console.log(err);
       return res.json({
         sucess: 0,
         message: err,
@@ -89,7 +86,6 @@ module.exports = {
   },
   getUserProfile: async (req, res) => {
     userDetails = await getRegistedUserById(req.user.user_id);
-    console.log(userDetails);
     return res.json({
       success: 1,
       data: { ...userDetails, password: undefined },
@@ -123,7 +119,6 @@ module.exports = {
     }
     editUserProfile(req.body, req.user.user_id, (err) => {
       if (err) {
-        console.log(err);
         res.json({ success: 0, message: err.message });
       }
       res.json({ success: 1, message: "Profile Updated Sucessfully" });
@@ -135,7 +130,6 @@ module.exports = {
     body.new_password = hashSync(body.new_password, salt);
 
     let userDetailsinDatabase = await getRegistedUserById(req.user.user_id);
-    console.log(userDetailsinDatabase);
     if (userDetailsinDatabase) {
       const result = compareSync(
         body.old_password,
@@ -145,7 +139,6 @@ module.exports = {
         updatePassword(req.user.user_id, body.new_password, (err) => {
           if (err) {
             res.json({ success: 0, message: err.message });
-            console.log(err);
           } else {
             res.json({ success: 1, message: "Password Changed Sucessfully" });
           }
@@ -178,10 +171,7 @@ module.exports = {
       body = { ...body, passport_no, user_id };
     } else if (!req.isUser) {
       const newData = req.body.guest_data;
-
-      const { passport_no } = newData;
-
-      body = { ...body, passport_no };
+      body = { ...body, ...newData };
     }
     const isAvailable = await checkSeatFlight(body);
     if (!isAvailable.seat_available) {
@@ -196,8 +186,8 @@ module.exports = {
         if (isBooked == 0) {
           try {
             if (!req.isUser) {
-              const user_id = await createGuestUser(newData);
-              body = { ...body, passport_no, user_id };
+              const user_id = await createGuestUser(body);
+              body = { ...body, user_id };
             }
             await makeBooking(body);
             done = true;
@@ -206,6 +196,7 @@ module.exports = {
               message: "Booking is successfully created",
             });
           } catch (err) {
+            console.log(err);
             res.json({ err: err.message });
           }
         } else {
