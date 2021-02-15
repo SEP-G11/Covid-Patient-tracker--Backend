@@ -79,7 +79,7 @@ CREATE TABLE `route` (
 
 
 CREATE TABLE `flight_schedule` (
-  `flight_id` varchar(30),
+  `flight_id` int(255) AUTO_INCREMENT,
   `aircraft_id` varchar(30),
   `date` date,
   `start_time` time,
@@ -127,7 +127,7 @@ CREATE TABLE `booking` (
   `user_id` int(255),
   `booking_id` int(255) AUTO_INCREMENT,
   `seat_id` varchar(30),
-  `flight_id` varchar(30),
+  `flight_id` int(255),
   `price` numeric(10, 2),
   PRIMARY KEY (`booking_id`),
   FOREIGN KEY (user_id) REFERENCES user(user_id),

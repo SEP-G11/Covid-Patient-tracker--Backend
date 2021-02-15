@@ -101,4 +101,50 @@ module.exports = {
       }
     );
   },
+
+  getTotalRevenueOfAircraft(aircraft_id, callback) {
+    pool.query(
+      `CALL get_total_revenue_of_aircraft(?)`,
+      [aircraft_id],
+      (err, result) => {
+        if (err) {
+          return callback(err);
+        } else {
+          console.log("Done");
+          return callback(null, result[0]);
+        }
+      }
+    );
+  },
+
+
+  updateDelays(date,start_time,end_time,flight_id, callback) {
+    pool.query(
+      `update flight_schedule set date=?, start_time=?,end_time=? where flight_id=?`,
+      [date,start_time,end_time,flight_id],
+      (err, result) => {
+        if (err) {
+          return callback(err);
+        } else {
+          console.log("Done");
+          return callback(null);
+        }
+      }
+    );
+  },
+     // To create flight
+     createFlight(aircraft_id ,date ,  start_time , end_time , route_id ,callback) {
+       pool.query(
+        `select create_flight(?,?,?,?,?) as Status`,
+        [aircraft_id ,date ,  start_time , end_time , route_id ],
+        (err, result) => {
+          if (err) {
+            return callback(err);
+          } else {
+            return callback(null, result[0]);
+          }
+        }
+      );
+    },
+
 };
