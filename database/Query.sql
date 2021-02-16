@@ -50,7 +50,7 @@ CREATE  INDEX booking_flight ON booking (flight_id);
 
 -- create flight
 
-DELIMITER $$
+ DELIMITER $$
   CREATE FUNCTION create_flight(aircraft_id varchar(30),date date,  start_time time, end_time time, route_id varchar(10))
   RETURNS boolean
  DETERMINISTIC
@@ -75,3 +75,4 @@ DELIMITER $$
     
     END$$
 DELIMITER ;
+

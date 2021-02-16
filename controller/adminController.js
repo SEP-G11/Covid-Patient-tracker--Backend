@@ -1,3 +1,6 @@
+const { genSaltSync, hashSync, compareSync } = require("bcrypt");
+const { sign } = require("jsonwebtoken");
+
 const {
   getNumberOfGuestPassengers,
   getNumberOfRegisteredPassengers,
@@ -8,7 +11,8 @@ const {
   getTotalRevenueOfAircraft,
   getPassDesCount,
   updateDelays,
-  createFlight
+  createFlight,
+  getRegistedAdminByEmail
 } = require("../service/adminService");
 
 module.exports = {
@@ -213,4 +217,46 @@ module.exports = {
       }
     );
   },
+
+  loginAdmin: async (req, res) => {
+    const body = req.body;
+    let userDetailsinDatabase;
+    try {
+      userDetailsinDatabase = await getRegistedAdminByEmail(body.email);
+      if (userDetailsinDatabase) {
+        const result = compareSync(
+          body.password,
+          userDetailsinDatabase.password
+        );
+        if (result) {
+          userDetailsinDatabase.password = undefined;
+          userDetailsinDatabase.userType= "Admin"
+          
+          const jsontoken = sign({ result: userDetailsinDatabase }, "qwe1234", {
+            expiresIn: "1day",
+          });
+          return res.json({
+            sucess: 1,
+            message: "Admin login Sucess",
+            token: jsontoken,
+          });
+        } else {
+          return res.json({
+            sucess: 0,
+            message: "Admin Password is invalid",
+          });
+        }
+      } else {
+        return res.json({
+          sucess: 0,
+          message: "Invalid Admin Email",
+        });
+      }
+    } catch (err) {
+      return res.json({
+        sucess: 0,
+        message: err,
+      });
+    }
+  }
 };
