@@ -2,7 +2,9 @@
 
 module.exports = {
     isAdmin: async (req, res, next) => {
-      if(req.user.type==="Admin"){
+        console.log(req.user)
+      if(req.user.userType==="Admin"){
+          
           next()
       }
       else{
