@@ -147,4 +147,19 @@ module.exports = {
       );
     },
 
+    getRegistedAdminByEmail: (email) => {
+      return new Promise((resolve, reject) => {
+        pool.query(
+          `select * from admin where email=?`,
+          [email],
+          (err, result) => {
+            if (err) {
+              reject(err);
+            }
+            resolve(result[0]);
+          }
+        );
+      });
+    },
+
 };

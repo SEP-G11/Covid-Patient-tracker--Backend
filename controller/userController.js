@@ -17,8 +17,8 @@ module.exports = {
     const body = req.body;
     const salt = genSaltSync(10);
     body.password = hashSync(body.password, salt);
-
     
+    //console.log(body.password)
       userDetailsinDatabase = await getRegistedUserByEmail(body.email);
       if (userDetailsinDatabase) {
         return res.json({
@@ -61,6 +61,7 @@ module.exports = {
         );
         if (result) {
           userDetailsinDatabase.password = undefined;
+          userDetailsinDatabase.userType= "Admin"
           const jsontoken = sign({ result: userDetailsinDatabase }, "qwe1234", {
             expiresIn: "1day",
           });
@@ -90,9 +91,17 @@ module.exports = {
   },
   getUserProfile: async (req, res) => {
     userDetails = await getRegistedUserById(req.user.user_id);
+    console.log(userDetails)
+    if(userDetails){
+      return res.json({
+        success: 1,
+        data: { ...userDetails, password: undefined },
+      });
+    }
     return res.json({
       success: 1,
-      data: { ...userDetails, password: undefined },
+      data: { },
+      message: "No User Found",
     });
   },
 
