@@ -122,7 +122,7 @@ module.exports = {
       }
     });
   },
-  // To number of passengers travelling to a given destination and date range
+    // To number of passengers travelling to a given destination and date range
   getPassDesCount: (req, res) => {
     const body = req.body;
     getPassDesCount(
@@ -188,10 +188,6 @@ module.exports = {
     );
   },
 
-
-
-
-  
 
  // To create flight
  createFlight  : (req, res) => {

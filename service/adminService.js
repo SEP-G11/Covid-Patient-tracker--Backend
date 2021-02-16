@@ -132,8 +132,9 @@ module.exports = {
       }
     );
   },
-     // To create flight
-     createFlight(aircraft_id ,date ,  start_time , end_time , route_id ,callback) {
+
+  // To create flight
+  createFlight(aircraft_id ,date ,  start_time , end_time , route_id ,callback) {
        pool.query(
         `select create_flight(?,?,?,?,?) as Status`,
         [aircraft_id ,date ,  start_time , end_time , route_id ],

@@ -55,10 +55,12 @@ DELIMITER $$
   RETURNS boolean
  DETERMINISTIC
     BEGIN 
+
  	
-    DECLARE f_count integer;    
+    DECLARE f_count integer;
+    
     select count(f.flight_id) into f_count
-	  from flight_schedule f where f.aircraft_id=aircraft_id AND  f.date=date AND (( f.start_time BETWEEN start_time AND end_time) OR (f.end_time BETWEEN start_time AND end_time))  ;
+	from flight_schedule f where (f.aircraft_id=aircraft_id OR f.route_id=route_id) AND  f.date=date AND (( f.start_time BETWEEN start_time AND end_time) OR (f.end_time BETWEEN start_time AND end_time))  ;
     
     
     IF(f_count=0) THEN
