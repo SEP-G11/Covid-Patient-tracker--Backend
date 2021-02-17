@@ -76,3 +76,14 @@ CREATE  INDEX booking_flight ON booking (flight_id);
     END$$
 DELIMITER ;
 
+-- to get the total revenue of a given aircraft
+DELIMITER $$
+
+CREATE DEFINER=`mahela`@`%` PROCEDURE `get_total_revenue_of_aircraft`(aircraft_id varchar(30))
+BEGIN
+  select sum(price) as total_revenue from booking where flight_id in (select flight_id from flight_schedule where flight_schedule.aircraft_id = aircraft_id );     
+
+END$$
+
+DELIMITER ;
+
