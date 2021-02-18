@@ -1,4 +1,25 @@
 
+-- create trigger package_trigger after insert on booking
+
+delimiter //
+create trigger package_trigger after insert on booking
+for each row
+begin
+	if ((select count(user_id) as count from booking where user_id = new.user_id))>=9 then
+		update profile 
+			set package_name='Gold' where user_id=new.user_id;
+	elseif ((select count(user_id) as count from booking where user_id = new.user_id))>=5 then
+		update profile 
+			set package_name='Frequent' where user_id=new.user_id;
+	elseif ((select count(user_id) as count from booking where user_id = new.user_id))>=0 then
+		update profile 
+			set package_name='Basic' where user_id=new.user_id;
+
+	end if;
+end;
+//
+
+delimiter ;
 -- To number of passengers travelling to a given destination
 
 DELIMITER $$
