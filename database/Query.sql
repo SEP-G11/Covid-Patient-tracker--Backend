@@ -102,8 +102,7 @@ DELIMITER $$
 
 CREATE DEFINER=`mahela`@`%` PROCEDURE `get_total_revenue_of_aircraft`(aircraft_id varchar(30))
 BEGIN
-  select sum(price) as total_revenue from booking where flight_id in (select flight_id from flight_schedule where flight_schedule.aircraft_id = aircraft_id );     
-
+ select sum(total_revenue) as total_revenue from total_reveune_of_aircraft where  total_reveune_of_aircraft.aircraft_id = aircraft_id ;  
 END$$
 
 DELIMITER ;
