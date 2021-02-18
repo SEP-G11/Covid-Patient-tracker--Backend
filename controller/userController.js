@@ -106,6 +106,7 @@ module.exports = {
   },
 
   editUserProfile: async (req, res) => {
+    console.log("Editing")
     if (!req.body.name) {
       res.json({ success: 0, message: "Invalid Name" });
       return;
@@ -130,13 +131,16 @@ module.exports = {
       res.json({ success: 0, message: "Invalid Passport No" });
       return;
     }
-    editUserProfile(req.body, req.user.user_id, (err) => {
+    console.log(req.file)
+    editUserProfile(req.body, req.user.user_id, req.file.buffer,(err) => {
       if (err) {
+        console.log(err)
         res.json({ success: 0, message: err.message });
       }
       res.json({ success: 1, message: "Profile Updated Sucessfully" });
     });
   },
+
   changePassword: async (req, res) => {
     const body = req.body;
     const salt = genSaltSync(10);

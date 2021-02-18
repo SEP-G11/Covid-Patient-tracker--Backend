@@ -62,9 +62,9 @@ module.exports = {
     });
   },
 
-  editUserProfile: (data, id, callback) => {
+  editUserProfile: (data, id,photo, callback) => {
     pool.query(
-      `update user set name=?,email=?,birthday=?,contact_no=?,passport_no=?,country=? where user_id=?`,
+      `update user set name=?,email=?,birthday=?,contact_no=?,passport_no=?,country=? where user_id=?;`,
       [
         data.name,
         data.email,
@@ -72,13 +72,26 @@ module.exports = {
         data.contact_no,
         data.passport_no,
         data.country,
-        id,
+        id
       ],
       (err, result) => {
         if (err) {
           return callback(err);
         } else {
-          return callback(null);
+          console.log("Done editing user Table")
+          pool.query(`update profile set user_photo=? where user_id=?;`,
+          [photo,id],
+          (err,result)=>{
+            if(err){
+              console.log("Error editing profile Table")
+              return callback(err);
+            }
+            console.log("Done editing profilr Table")
+            return callback(null);
+          }
+          
+          )
+          
         }
       }
     );
