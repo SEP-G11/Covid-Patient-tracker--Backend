@@ -1,4 +1,25 @@
 
+-- create trigger package_trigger after insert on booking
+
+delimiter //
+create trigger package_trigger after insert on booking
+for each row
+begin
+	if ((select count(user_id) as count from booking where user_id = new.user_id))>=9 then
+		update profile 
+			set package_name='Gold' where user_id=new.user_id;
+	elseif ((select count(user_id) as count from booking where user_id = new.user_id))>=5 then
+		update profile 
+			set package_name='Frequent' where user_id=new.user_id;
+	elseif ((select count(user_id) as count from booking where user_id = new.user_id))>=0 then
+		update profile 
+			set package_name='Basic' where user_id=new.user_id;
+
+	end if;
+end;
+//
+
+delimiter ;
 -- To number of passengers travelling to a given destination
 
 DELIMITER $$
@@ -76,3 +97,69 @@ CREATE  INDEX booking_flight ON booking (flight_id);
     END$$
 DELIMITER ;
 
+-- to get the total revenue of a given aircraft
+DELIMITER $$
+
+CREATE DEFINER=`mahela`@`%` PROCEDURE `get_total_revenue_of_aircraft`(aircraft_id varchar(30))
+BEGIN
+ select sum(total_revenue) as total_revenue from total_reveune_of_aircraft where  total_reveune_of_aircraft.aircraft_id = aircraft_id ;  
+END$$
+
+DELIMITER ;
+											  
+--get number of guest passengers
+
+DELIMITER $$
+ CREATE FUNCTION get_Number_Of_Guest_Passengers  (start_date date ,end_date date) 
+ RETURNS INT
+ DETERMINISTIC
+    BEGIN 
+
+ 	declare p_count integer;    
+	select count(*) into p_count
+	from flight_schedule natural join booking natural join user where date BETWEEN start_date AND end_date AND is_registered=0 ;
+    
+	return p_count;
+
+    END$$
+DELIMITER ;
+
+--get number of registerd passengers group by their packages
+DELIMITER $$
+  CREATE PROCEDURE get_Number_Of_Registered_Passengers(start_date date ,end_date date)
+  
+    BEGIN
+    
+        SELECT package_name,count(*) as num_of_passengers FROM flight_schedule natural join booking natural join profile where date BETWEEN start_date AND end_date group by package_name;
+        
+    END$$
+DELIMITER ;
+
+--get all past flights details
+
+DELIMITER $$
+  CREATE PROCEDURE get_All_Pass_Flights(in_origin varchar(20), in_destination varchar(20))
+  
+    BEGIN
+    
+        SELECT * FROM flight_schedule natural join route where date<CURDATE() and origin=in_origin and destination=in_destination;
+        
+    END$$
+DELIMITER ;
+
+--get passenger count of the past flights
+
+DELIMITER $$
+ CREATE FUNCTION get_Passenger_Count_O_D  (in_origin varchar(20), in_destination varchar(20)) 
+ RETURNS INT
+ DETERMINISTIC
+    BEGIN 
+
+ 	declare p_count integer;    
+	select count(*) into p_count
+	from booking natural join flight_schedule natural join route where date<CURDATE() and origin=in_origin and destination=in_destination ;
+    
+	return p_count;
+
+    END$$
+DELIMITER ;
