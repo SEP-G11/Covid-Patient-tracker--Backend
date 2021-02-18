@@ -20,7 +20,7 @@ module.exports = {
         } else {
           pool.query(
             "insert into profile (user_id ,user_photo,password,package_name) values (?,?,?,?)",
-            [result.insertId, data.user_photo, data.password, "Basic"],
+            [result.insertId, null, data.password, "Basic"],
             (err, result) => {
               if (err) {
                 return callBack(err);
