@@ -79,18 +79,23 @@ module.exports = {
           return callback(err);
         } else {
           console.log("Done editing user Table")
-          pool.query(`update profile set user_photo=? where user_id=?;`,
-          [photo,id],
-          (err,result)=>{
-            if(err){
-              console.log("Error editing profile Table")
-              return callback(err);
+          if(photo){
+            pool.query(`update profile set user_photo=? where user_id=?;`,
+            [photo.buffer,id],
+            (err,result)=>{
+              if(err){
+                console.log("Error editing profile Table")
+                return callback(err);
+              }
+              console.log("Done editing profilr Table")
+              return callback(null);
             }
-            console.log("Done editing profilr Table")
+            
+            )
+          }else{
             return callback(null);
           }
           
-          )
           
         }
       }

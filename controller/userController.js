@@ -14,6 +14,7 @@ const {
 
 module.exports = {
   createUser: async (req, res) => {
+    
     const body = req.body;
     const salt = genSaltSync(10);
     body.password = hashSync(body.password, salt);
@@ -133,7 +134,7 @@ module.exports = {
       return;
     }
     console.log(req.file)
-    editUserProfile(req.body, req.user.user_id, req.file.buffer,(err) => {
+    editUserProfile(req.body, req.user.user_id, req.file,(err) => {
       if (err) {
         console.log(err)
         res.json({ success: 0, message: err.message });
