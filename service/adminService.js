@@ -45,7 +45,7 @@ module.exports = {
 
         getPassengerCount(origin,destination, callback) {
             pool.query(
-              `select get_Passenger_Count_O_D(?,?) as pass_count`,
+              `CALL get_Passenger_Count_O_D(?,?)`,
               [origin,destination],
               (err, result) => {
                 if (err) {
@@ -161,5 +161,17 @@ module.exports = {
         );
       });
     },
-
+    getAirportDeatils(origin, destination, callback) {
+      pool.query(
+       `select airport_id,country,state,city from airport where airport_id=? or airport_id=?`,
+        [origin, destination],
+        (err, result) => {
+          if (err) {
+            return callback(err);
+          } else {
+            return callback(null, result);
+          }
+        }
+      );
+    },
 };

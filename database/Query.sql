@@ -147,19 +147,21 @@ DELIMITER $$
     END$$
 DELIMITER ;
 
+
+
 --get passenger count of the past flights
-
 DELIMITER $$
- CREATE FUNCTION get_Passenger_Count_O_D  (in_origin varchar(20), in_destination varchar(20)) 
- RETURNS INT
- DETERMINISTIC
-    BEGIN 
-
- 	declare p_count integer;    
-	select count(*) into p_count
-	from booking natural join flight_schedule natural join route where date<CURDATE() and origin=in_origin and destination=in_destination ;
+  CREATE PROCEDURE get_Passenger_Count_O_D(in_origin varchar(20), in_destination varchar(20))
+  
+    BEGIN
     
-	return p_count;
-
+        select flight_id,pass_count from pass_count_O_D where date<CURDATE() and origin=in_origin and destination=in_destination;
+        
     END$$
 DELIMITER ;
+
+--create view to get passenger counts of each flights
+create view pass_count as select flight_id,count(*) as pass_count from booking group by flight_id;
+
+--create view to get passenger counts of each flights with origin and destination
+create view pass_count_O_D as select origin,destination,flight_id,pass_count,date from pass_count natural join flight_schedule natural join route;
