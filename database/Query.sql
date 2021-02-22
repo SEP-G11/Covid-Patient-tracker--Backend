@@ -71,7 +71,7 @@ CREATE  INDEX booking_flight ON booking (flight_id);
 
 -- create flight
 
- DELIMITER $$
+DELIMITER $$
   CREATE FUNCTION create_flight(aircraft_id varchar(30),date date,  start_time time, end_time time, route_id varchar(10))
   RETURNS boolean
  DETERMINISTIC
@@ -84,7 +84,7 @@ CREATE  INDEX booking_flight ON booking (flight_id);
 	from flight_schedule f where (f.aircraft_id=aircraft_id OR f.route_id=route_id) AND  f.date=date AND (( f.start_time BETWEEN start_time AND end_time) OR (f.end_time BETWEEN start_time AND end_time))  ;
     
     
-    IF(f_count=0) THEN
+    IF(f_count=0 and date>=CURDATE()  and start_time < end_time  and start_time >=CURTIME() and end_time >CURTIME()) THEN
     
     INSERT INTO `bairway`.`flight_schedule` (`aircraft_id`, `date`, `start_time`, `end_time`, `route_id`) VALUES (aircraft_id, date, start_time, end_time, route_id);
     return true;
