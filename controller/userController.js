@@ -10,25 +10,51 @@ const {
   checkIfAlreadyBooked,
   checkSeatFlight,
   createGuestUser,
+  removeUser,
+  getUserByPassport,
+  activateAccount,
 } = require("../service/userService");
 
 module.exports = {
   createUser: async (req, res) => {
-    
     const body = req.body;
     const salt = genSaltSync(10);
     body.password = hashSync(body.password, salt);
-    
+
     //console.log(body.password)
-      userDetailsinDatabase = await getRegistedUserByEmail(body.email);
-      if (userDetailsinDatabase) {
-        return res.json({
-          sucess: 0,
-          message: "email already exist",
-        });
+    userDetailsinDatabase = await getRegistedUserByEmail(body.email);
+    if (userDetailsinDatabase) {
+      return res.json({
+        sucess: 0,
+        message: "email already exist",
+      });
+    }
+    passportAccount = await getUserByPassport(body.passport_no);
+    if (passportAccount) {
+      if (passportAccount.isDelete) {
+        try {
+          const result = compareSync(body.password, passportAccount.password);
+          if (result) {
+            await activateAccount(passportAccount.user_id);
+            res.json({
+              succes: 1,
+              message: `Account activated with previous password. Email=${passportAccount.email}`,
+            });
+          } else {
+            res.json({
+              succes: 1,
+              message: "Enter correct password to activate the account",
+            });
+          }
+        } catch (err) {
+          res.json({
+            success: 0,
+            message: err.message,
+          });
+        }
       }
-   
-    
+    }
+
     createRegisteredUser(body, (err, result) => {
       if (err) {
         if (err.code == "ER_DUP_ENTRY") {
@@ -55,7 +81,7 @@ module.exports = {
     let userDetailsinDatabase;
     try {
       userDetailsinDatabase = await getRegistedUserByEmail(body.email);
-      if (userDetailsinDatabase) {
+      if (userDetailsinDatabase && !userDetailsinDatabase.isDelete) {
         const result = compareSync(
           body.password,
           userDetailsinDatabase.password
@@ -63,7 +89,7 @@ module.exports = {
         if (result) {
           userDetailsinDatabase.password = undefined;
           userDetailsinDatabase.user_photo = undefined;
-          userDetailsinDatabase.userType= "Admin"
+          userDetailsinDatabase.userType = "User";
           const jsontoken = sign({ result: userDetailsinDatabase }, "qwe1234", {
             expiresIn: "1day",
           });
@@ -93,8 +119,8 @@ module.exports = {
   },
   getUserProfile: async (req, res) => {
     userDetails = await getRegistedUserById(req.user.user_id);
-    console.log(userDetails)
-    if(userDetails){
+    console.log(userDetails);
+    if (userDetails) {
       return res.json({
         success: 1,
         data: { ...userDetails, password: undefined },
@@ -102,13 +128,13 @@ module.exports = {
     }
     return res.json({
       success: 1,
-      data: { },
+      data: {},
       message: "No User Found",
     });
   },
 
   editUserProfile: async (req, res) => {
-    console.log("Editing")
+    console.log("Editing");
     if (!req.body.name) {
       res.json({ success: 0, message: "Invalid Name" });
       return;
@@ -133,10 +159,10 @@ module.exports = {
       res.json({ success: 0, message: "Invalid Passport No" });
       return;
     }
-    console.log(req.file)
-    editUserProfile(req.body, req.user.user_id, req.file,(err) => {
+    console.log(req.file);
+    editUserProfile(req.body, req.user.user_id, req.file, (err) => {
       if (err) {
-        console.log(err)
+        console.log(err);
         res.json({ success: 0, message: err.message });
       }
       res.json({ success: 1, message: "Profile Updated Sucessfully" });
@@ -228,6 +254,32 @@ module.exports = {
         res.json({
           success: 0,
           message: "Seat is already booked",
+        });
+      }
+    }
+  },
+
+  deleteUser: async (req, res) => {
+    const body = req.body;
+    const { password } = await getRegistedUserById(req.user.user_id);
+    const result = compareSync(body.password, password);
+    if (!result) {
+      res.json({
+        success: 0,
+        message: "Incorrect Password",
+      });
+    } else {
+      try {
+        const removeRes = await removeUser(req.user);
+
+        res.json({
+          success: 1,
+          message: "Account deleted successfully.",
+        });
+      } catch (err) {
+        res.json({
+          succes: 0,
+          message: err.message,
         });
       }
     }
