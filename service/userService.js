@@ -190,8 +190,10 @@ module.exports = {
   activateAccount: (data) => {
     return new Promise((resolve, reject) => {
       pool.query(
-        `update profile set isdelete=? where user_id=?`,
-        ["0", data.user_id],
+        `update profile set isdelete=? where user_id=?;
+        update user set is_registered=? where user_id=?;
+        `,
+        ["0", data, "1", data],
         (err, result) => {
           if (err) {
             reject(err);
