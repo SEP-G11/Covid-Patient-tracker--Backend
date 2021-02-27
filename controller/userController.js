@@ -18,41 +18,42 @@ const {
 module.exports = {
   createUser: async (req, res) => {
     const body = req.body;
-    const salt = genSaltSync(10);
-    body.password = hashSync(body.password, salt);
 
-    //console.log(body.password)
-    userDetailsinDatabase = await getRegistedUserByEmail(body.email);
-    if (userDetailsinDatabase) {
-      return res.json({
-        sucess: 0,
-        message: "email already exist",
-      });
-    }
     passportAccount = await getUserByPassport(body.passport_no);
+
     if (passportAccount) {
       if (passportAccount.isDelete) {
         try {
           const result = compareSync(body.password, passportAccount.password);
           if (result) {
             await activateAccount(passportAccount.user_id);
-            res.json({
+            return res.json({
               succes: 1,
               message: `Account activated with previous password. Email=${passportAccount.email}`,
             });
           } else {
-            res.json({
-              succes: 1,
+            return res.json({
+              succes: 0,
               message: "Enter correct password to activate the account",
             });
           }
         } catch (err) {
-          res.json({
+          return res.json({
             success: 0,
             message: err.message,
           });
         }
       }
+    }
+    //console.log(body.password)
+    const salt = genSaltSync(10);
+    body.password = hashSync(body.password, salt);
+    userDetailsinDatabase = await getRegistedUserByEmail(body.email);
+    if (userDetailsinDatabase) {
+      return res.json({
+        sucess: 0,
+        message: "email already exist",
+      });
     }
 
     createRegisteredUser(body, (err, result) => {
