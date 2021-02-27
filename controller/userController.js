@@ -22,13 +22,6 @@ module.exports = {
     body.password = hashSync(body.password, salt);
 
     //console.log(body.password)
-    userDetailsinDatabase = await getRegistedUserByEmail(body.email);
-    if (userDetailsinDatabase) {
-      return res.json({
-        sucess: 0,
-        message: "email already exist",
-      });
-    }
     passportAccount = await getUserByPassport(body.passport_no);
     if (passportAccount) {
       if (passportAccount.isDelete) {
@@ -54,6 +47,15 @@ module.exports = {
         }
       }
     }
+    userDetailsinDatabase = await getRegistedUserByEmail(body.email);
+    if (userDetailsinDatabase) {
+      return res.json({
+        sucess: 0,
+        message: "email already exist",
+      });
+    }
+    
+    
 
     createRegisteredUser(body, (err, result) => {
       if (err) {
