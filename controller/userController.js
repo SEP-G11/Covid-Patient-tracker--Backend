@@ -63,7 +63,7 @@ module.exports = {
         if (result) {
           userDetailsinDatabase.password = undefined;
           userDetailsinDatabase.user_photo = undefined;
-          userDetailsinDatabase.userType= "Admin"
+          userDetailsinDatabase.userType= "User"
           const jsontoken = sign({ result: userDetailsinDatabase }, "qwe1234", {
             expiresIn: "1day",
           });
