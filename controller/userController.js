@@ -21,7 +21,8 @@ module.exports = {
 
     passportAccount = await getUserByPassport(body.passport_no);
 
-    if (passportAccount) {
+    if (passportAccount && !passportAccount.is_registered) {
+      console.log(passportAccount.isDelete);
       if (passportAccount.isDelete) {
         try {
           const result = compareSync(body.password, passportAccount.password);
@@ -44,6 +45,11 @@ module.exports = {
           });
         }
       }
+    } else {
+      return res.json({
+        succes: 0,
+        message: "Account already exist with passport number",
+      });
     }
     //console.log(body.password)
     const salt = genSaltSync(10);
@@ -265,7 +271,7 @@ module.exports = {
     const { password } = await getRegistedUserById(req.user.user_id);
     const result = compareSync(body.password, password);
     if (!result) {
-      res.json({
+      return res.json({
         success: 0,
         message: "Incorrect Password",
       });
@@ -273,12 +279,12 @@ module.exports = {
       try {
         const removeRes = await removeUser(req.user);
 
-        res.json({
+        return res.json({
           success: 1,
           message: "Account deleted successfully.",
         });
       } catch (err) {
-        res.json({
+        return res.json({
           succes: 0,
           message: err.message,
         });
