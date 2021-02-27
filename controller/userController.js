@@ -13,6 +13,7 @@ const {
   removeUser,
   getUserByPassport,
   activateAccount,
+  clearData,
 } = require("../service/userService");
 
 module.exports = {
@@ -20,6 +21,8 @@ module.exports = {
     const body = req.body;
 
     passportAccount = await getUserByPassport(body.passport_no);
+    userDetailsinDatabase = await getRegistedUserByEmail(body.email);
+    console.log(userDetailsinDatabase);
 
     if (passportAccount && !passportAccount.is_registered) {
       console.log(passportAccount.isDelete);
@@ -45,42 +48,52 @@ module.exports = {
           });
         }
       }
+    } else if (userDetailsinDatabase) {
+      //console.log(body.password)
+
+      if (userDetailsinDatabase && !userDetailsinDatabase.is_registered) {
+        await clearData(userDetailsinDatabase);
+        const salt = genSaltSync(10);
+        body.password = hashSync(body.password, salt);
+        await activateAccountEmail(body, (err) => console.log(err));
+        return res.json({
+          sucess: 1,
+          message: "Done",
+        });
+      } else {
+        return res.json({
+          sucess: 0,
+          message: "email already exist",
+        });
+      }
+    } else if (!userDetailsinDatabase && !passportAccount) {
+      const salt = genSaltSync(10);
+      body.password = hashSync(body.password, salt);
+      createRegisteredUser(body, (err, result) => {
+        if (err) {
+          if (err.code == "ER_DUP_ENTRY") {
+            return res.json({
+              sucess: 0,
+              message: "email already exist",
+            });
+          }
+          return res.json({
+            sucess: 0,
+            message: err,
+          });
+        } else {
+          return res.json({
+            sucess: 1,
+            data: result,
+          });
+        }
+      });
     } else {
       return res.json({
         succes: 0,
         message: "Account already exist with passport number",
       });
     }
-    //console.log(body.password)
-    const salt = genSaltSync(10);
-    body.password = hashSync(body.password, salt);
-    userDetailsinDatabase = await getRegistedUserByEmail(body.email);
-    if (userDetailsinDatabase) {
-      return res.json({
-        sucess: 0,
-        message: "email already exist",
-      });
-    }
-
-    createRegisteredUser(body, (err, result) => {
-      if (err) {
-        if (err.code == "ER_DUP_ENTRY") {
-          return res.json({
-            sucess: 0,
-            message: "email already exist",
-          });
-        }
-        return res.json({
-          sucess: 0,
-          message: err,
-        });
-      } else {
-        return res.json({
-          sucess: 1,
-          data: result,
-        });
-      }
-    });
   },
 
   loginUser: async (req, res) => {
