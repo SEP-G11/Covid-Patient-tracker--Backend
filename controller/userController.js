@@ -13,7 +13,9 @@ const {
   removeUser,
   getUserByPassport,
   activateAccount,
+  activateAccountEmail,
   clearData,
+  getMyBookings,
 } = require("../service/userService");
 
 module.exports = {
@@ -22,7 +24,6 @@ module.exports = {
 
     passportAccount = await getUserByPassport(body.passport_no);
     userDetailsinDatabase = await getRegistedUserByEmail(body.email);
-    console.log(userDetailsinDatabase);
 
     if (passportAccount && !passportAccount.is_registered) {
       console.log(passportAccount.isDelete);
@@ -55,7 +56,9 @@ module.exports = {
         await clearData(userDetailsinDatabase);
         const salt = genSaltSync(10);
         body.password = hashSync(body.password, salt);
-        await activateAccountEmail(body, (err) => console.log(err));
+        body.user_id = userDetailsinDatabase.user_id;
+        const gg = await activateAccountEmail(body);
+        console.log(body, gg);
         return res.json({
           sucess: 1,
           message: "Done",
@@ -91,7 +94,7 @@ module.exports = {
     } else {
       return res.json({
         succes: 0,
-        message: "Account already exist with passport number",
+        message: "Account already exist with this passport number",
       });
     }
   },
@@ -182,7 +185,6 @@ module.exports = {
     console.log(req.file);
     editUserProfile(req.body, req.user.user_id, req.file, (err) => {
       if (err) {
-        console.log(err);
         res.json({ success: 0, message: err.message });
       }
       res.json({ success: 1, message: "Profile Updated Sucessfully" });
@@ -221,7 +223,16 @@ module.exports = {
       });
     }
   },
-
+  getBookings: async (req, res) => {
+    const result = await getMyBookings(req.user.user_id);
+    var bookings = [];
+    result.forEach((id) => {
+      bookings.push(id["flight_id"]);
+    });
+    return res.json({
+      bookings: bookings,
+    });
+  },
   submitNbooking: async (req, res) => {
     const { flight_id, seat_id, discount_price } = req.body;
     var body = {
