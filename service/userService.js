@@ -205,25 +205,33 @@ module.exports = {
     });
   },
   activateAccountEmail: (data) => {
-    pool.query(
-      `update user set name=?,birthday=?,contact_no=?,passport_no=?,country=?,is_registered=? where user_id=?;
+    return new Promise((resolve, reject) => {
+      pool.query(
+        `update user set name=?,birthday=?,contact_no=?,passport_no=?,country=?,is_registered=? where user_id=?;
       update profile set password=?,package_name=?,isdelete=? where user_id=?;
       `,
-      [
-        data.name,
-        data.birthday,
-        data.contact_no,
-        data.passport_no,
-        data.country,
-        "1",
-        data.user_id,
-        data.password,
-        "Basic",
-        "0",
-        data.user_id,
-      ],
-      (err, result) => {}
-    );
+        [
+          data.name,
+          data.birthday,
+          data.contact_no,
+          data.passport_no,
+          data.country,
+          "1",
+          data.user_id,
+          data.password,
+          "Basic",
+          "0",
+          data.user_id,
+        ],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    });
   },
   getUserByPassport: (passport_no) => {
     return new Promise((resolve, reject) => {
@@ -259,6 +267,21 @@ module.exports = {
           null,
           data.user_id,
         ],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    });
+  },
+  getMyBookings: (data) => {
+    return new Promise((resolve, reject) => {
+      pool.query(
+        `select flight_id from user natural join booking where user_id=?;`,
+        [data],
         (err, result) => {
           if (err) {
             reject(err);
