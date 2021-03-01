@@ -14,6 +14,7 @@ const {
   getUserByPassport,
   activateAccount,
   clearData,
+  activateAccountEmail,
 } = require("../service/userService");
 
 module.exports = {
