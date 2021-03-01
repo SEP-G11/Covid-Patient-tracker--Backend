@@ -44,7 +44,6 @@ module.exports = {
                       result[0].seat_info[seats[i].SEAT_ID].isAvailable = true;
                     }
                   }
-
                   resolve(result);
                 }
               }
