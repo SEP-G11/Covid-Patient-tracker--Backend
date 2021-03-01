@@ -12,6 +12,7 @@ const {
   getPassDesCount,
   updateDelays,
   createFlight,
+  getAirportDeatils,
   getRegistedAdminByEmail
 } = require("../service/adminService");
 
@@ -192,6 +193,30 @@ module.exports = {
     );
   },
 
+
+  getAirport: (req, res) => {
+    const body = req.body;
+    getAirportDeatils(
+      body.origin,
+      body.destination,
+      (err, result) => {
+        if (err) {
+          console.log(err);
+          res.json({
+            sucess: 0,
+            message: "Invalid airport_id",
+          });
+        } else {
+          res.json({
+            sucess: 1,
+            data: result,
+          });
+        }
+      }
+    );
+  },
+
+  
 
  // To create flight
  createFlight  : (req, res) => {

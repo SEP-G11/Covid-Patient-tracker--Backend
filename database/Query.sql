@@ -69,9 +69,12 @@ DELIMITER ;
 CREATE  INDEX booking_flight ON booking (flight_id); 
 
 
+
+
 -- create flight
 
- DELIMITER $$
+
+DELIMITER $$
   CREATE FUNCTION create_flight(aircraft_id varchar(30),date date,  start_time time, end_time time, route_id varchar(10))
   RETURNS boolean
  DETERMINISTIC
@@ -84,7 +87,7 @@ CREATE  INDEX booking_flight ON booking (flight_id);
 	from flight_schedule f where (f.aircraft_id=aircraft_id OR f.route_id=route_id) AND  f.date=date AND (( f.start_time BETWEEN start_time AND end_time) OR (f.end_time BETWEEN start_time AND end_time))  ;
     
     
-    IF(f_count=0) THEN
+    IF(f_count=0 and date>=CURDATE()  and start_time < end_time  and start_time >=CURTIME() and end_time >CURTIME()) THEN
     
     INSERT INTO `bairway`.`flight_schedule` (`aircraft_id`, `date`, `start_time`, `end_time`, `route_id`) VALUES (aircraft_id, date, start_time, end_time, route_id);
     return true;
@@ -147,19 +150,21 @@ DELIMITER $$
     END$$
 DELIMITER ;
 
+
+
 --get passenger count of the past flights
-
 DELIMITER $$
- CREATE FUNCTION get_Passenger_Count_O_D  (in_origin varchar(20), in_destination varchar(20)) 
- RETURNS INT
- DETERMINISTIC
-    BEGIN 
-
- 	declare p_count integer;    
-	select count(*) into p_count
-	from booking natural join flight_schedule natural join route where date<CURDATE() and origin=in_origin and destination=in_destination ;
+  CREATE PROCEDURE get_Passenger_Count_O_D(in_origin varchar(20), in_destination varchar(20))
+  
+    BEGIN
     
-	return p_count;
-
+        select flight_id,pass_count from pass_count_O_D where date<CURDATE() and origin=in_origin and destination=in_destination;
+        
     END$$
 DELIMITER ;
+
+--create view to get passenger counts of each flights
+create view pass_count as select flight_id,count(*) as pass_count from booking group by flight_id;
+
+--create view to get passenger counts of each flights with origin and destination
+create view pass_count_O_D as select origin,destination,flight_id,pass_count,date from pass_count natural join flight_schedule natural join route;
