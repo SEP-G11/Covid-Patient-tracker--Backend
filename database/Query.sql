@@ -178,7 +178,7 @@ DELIMITER $$
     DECLARE f_count integer;
     
     select count(*) into f_count
-	from flight_schedule  where  flight_id=in_flight_id;
+	from flight_schedule  where  flight_id=in_flight_id and date>=CURDATE();
     
     
     IF(f_count=0) THEN
