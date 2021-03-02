@@ -62,7 +62,7 @@ module.exports = {
     });
   },
 
-  editUserProfile: (data, id,photo, callback) => {
+  editUserProfile: (data, id, photo, callback) => {
     pool.query(
       `update user set name=?,email=?,birthday=?,contact_no=?,passport_no=?,country=? where user_id=?;`,
       [
@@ -72,31 +72,29 @@ module.exports = {
         data.contact_no,
         data.passport_no,
         data.country,
-        id
+        id,
       ],
       (err, result) => {
         if (err) {
           return callback(err);
         } else {
-          console.log("Done editing user Table")
-          if(photo){
-            pool.query(`update profile set user_photo=? where user_id=?;`,
-            [photo.buffer,id],
-            (err,result)=>{
-              if(err){
-                console.log("Error editing profile Table")
-                return callback(err);
+          console.log("Done editing user Table");
+          if (photo) {
+            pool.query(
+              `update profile set user_photo=? where user_id=?;`,
+              [photo.buffer, id],
+              (err, result) => {
+                if (err) {
+                  console.log("Error editing profile Table");
+                  return callback(err);
+                }
+                console.log("Done editing profilr Table");
+                return callback(null);
               }
-              console.log("Done editing profilr Table")
-              return callback(null);
-            }
-            
-            )
-          }else{
+            );
+          } else {
             return callback(null);
           }
-          
-          
         }
       }
     );
@@ -171,7 +169,55 @@ module.exports = {
       );
     });
   },
+  removeUser: (data) => {
+    return new Promise((resolve, reject) => {
+      pool.query(
+        `update profile set isdelete=? where user_id=?;
+        update user set is_registered=? where user_id=?;
+        `,
+        ["1", data.user_id, "0", data.user_id],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    });
+  },
 
+  activateAccount: (data) => {
+    return new Promise((resolve, reject) => {
+      pool.query(
+        `update profile set isdelete=? where user_id=?;
+        update user set is_registered=? where user_id=?;
+        `,
+        ["0", data, "1", data],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(result);
+          }
+        }
+      );
+    });
+  },
+  getUserByPassport: (passport_no) => {
+    return new Promise((resolve, reject) => {
+      pool.query(
+        `select * from user natural join profile natural join packages where passport_no=?`,
+        [passport_no],
+        (err, result) => {
+          if (err) {
+            reject(err);
+          }
+          resolve(result[0]);
+        }
+      );
+    });
+  },
   checkSeatFlight: (data) => {
     return new Promise((resolve, reject) => {
       pool.query(

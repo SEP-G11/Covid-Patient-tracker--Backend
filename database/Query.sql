@@ -83,8 +83,7 @@ DELIMITER $$
  	
     DECLARE f_count integer;
     
-    select count(f.flight_id) into f_count
-	from flight_schedule f where (f.aircraft_id=aircraft_id OR f.route_id=route_id) AND  f.date=date AND (( f.start_time BETWEEN start_time AND end_time) OR (f.end_time BETWEEN start_time AND end_time))  ;
+    select count(f.flight_id) into f_count 	from flight_schedule f where (f.aircraft_id=aircraft_id OR f.route_id=route_id) AND  f.date=date AND (( f.start_time BETWEEN start_time AND end_time) OR (f.end_time BETWEEN start_time AND end_time))  ;
     
     
     IF(f_count=0 and date>=CURDATE()  and start_time < end_time  and start_time >=CURTIME() and end_time >CURTIME()) THEN
