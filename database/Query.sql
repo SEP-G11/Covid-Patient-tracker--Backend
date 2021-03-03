@@ -165,3 +165,31 @@ create view pass_count as select flight_id,count(*) as pass_count from booking g
 
 --create view to get passenger counts of each flights with origin and destination
 create view pass_count_O_D as select origin,destination,flight_id,pass_count,date from pass_count natural join flight_schedule natural join route;
+
+--update delays
+
+DELIMITER $$
+  CREATE FUNCTION update_delays(in_date date,  in_start_time time, in_end_time time, in_flight_id int(255))
+  RETURNS boolean
+ DETERMINISTIC
+    BEGIN 
+
+ 	
+    DECLARE f_count integer;
+    
+    select count(*) into f_count
+	from flight_schedule  where  flight_id=in_flight_id and date>=CURDATE();
+    
+    
+    IF(f_count=0) THEN
+    
+    return false;
+    
+	ELSE 
+    update flight_schedule set date=in_date, start_time=in_start_time,end_time=in_end_time where flight_id=in_flight_id;
+	return true;
+    
+	END IF;
+    
+    END$$
+DELIMITER ;											 

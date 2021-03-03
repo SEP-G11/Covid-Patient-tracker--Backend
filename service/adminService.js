@@ -120,14 +120,14 @@ module.exports = {
 
   updateDelays(date,start_time,end_time,flight_id, callback) {
     pool.query(
-      `update flight_schedule set date=?, start_time=?,end_time=? where flight_id=?`,
+      `select update_delays(?,?,?,?) as Status`,
       [date,start_time,end_time,flight_id],
       (err, result) => {
         if (err) {
           return callback(err);
         } else {
           console.log("Done");
-          return callback(null);
+          return callback(null,result[0]);
         }
       }
     );
