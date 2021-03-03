@@ -13,7 +13,6 @@ const {
   removeUser,
   getUserByPassport,
   activateAccount,
-  activateAccountEmail,
   clearData,
   activateAccountEmail,
   getMyBookings,
