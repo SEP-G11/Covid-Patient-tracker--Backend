@@ -79,12 +79,14 @@ DELIMITER $$
 
  	
     DECLARE f_count integer;
+    DECLARE aircraft_count integer;
+    DECLARE route_count integer;
     
-    select count(f.flight_id) into f_count
-	from flight_schedule f where (f.aircraft_id=aircraft_id OR f.route_id=route_id) AND  f.date=date AND (( f.start_time BETWEEN start_time AND end_time) OR (f.end_time BETWEEN start_time AND end_time))  ;
+    select count(f.flight_id) into f_count 	from flight_schedule f where (f.aircraft_id=aircraft_id OR f.route_id=route_id) AND  f.date=date AND (( f.start_time BETWEEN start_time AND end_time) OR (f.end_time BETWEEN start_time AND end_time))  ;
+    select count(r.route_id) into route_count from route r where r.route_id=route_id ;
+    select count(a.aircraft_id) into aircraft_count from aircraft a where a.aircraft_id=aircraft_id ;
     
-    
-    IF(f_count=0 and date>=CURDATE()  and start_time < end_time ) THEN
+    IF(f_count=0 and aircraft_count=1 and route_count=1 and  date>=CURDATE()  and start_time < end_time ) THEN
     
     INSERT INTO `bairway`.`flight_schedule` (`aircraft_id`, `date`, `start_time`, `end_time`, `route_id`) VALUES (aircraft_id, date, start_time, end_time, route_id);
     return true;
@@ -192,4 +194,4 @@ DELIMITER $$
 	END IF;
     
     END$$
-DELIMITER ;											 
+DELIMITER ;	
