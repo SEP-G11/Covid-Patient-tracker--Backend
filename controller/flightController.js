@@ -34,8 +34,7 @@ module.exports = {
           message: "Invalid Flight ID",
         });
       }
-    } catch (err) {
-    }
+    } catch (err) {}
   },
   getSeatPrice: async (req, res) => {
     const result = await getSeatPrice(req.params.flight_id, req.params.seat_id);

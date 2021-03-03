@@ -196,4 +196,4 @@ DELIMITER $$
 	END IF;
     
     END$$
-DELIMITER ;											 
+DELIMITER ;	

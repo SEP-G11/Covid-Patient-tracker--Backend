@@ -7,6 +7,7 @@ const {
   changePassword,
   submitNbooking,
   deleteUser,
+  getBookings,
 } = require("../controller/userController");
 const { checkToken, setUserIfLoggedIn } = require("../auth/token_validation");
 const uploadFileMiddleware = require("../middlewares/uploadImage");
@@ -28,5 +29,7 @@ router.post("/changepassword", checkToken, setUserIfLoggedIn, changePassword);
 router.post("/bookseat", setUserIfLoggedIn, submitNbooking);
 
 router.post("/deleteAccount", setUserIfLoggedIn, deleteUser);
+
+router.get("/getbookings", setUserIfLoggedIn, getBookings);
 
 module.exports = router;
