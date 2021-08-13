@@ -6,7 +6,7 @@ SE Project
 First clone this project directory.
 
 ```bash
-git clone "past repo link here"
+git clone https://github.com/SEP-G11/Covid-Patient-tracker--Backend.git
 ```
 
 Install Node Modules

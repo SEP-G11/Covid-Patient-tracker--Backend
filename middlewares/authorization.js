@@ -5,7 +5,7 @@ exports.tokenAuthorize = (req, res, next) => {
   const token = req.cookies["ets-auth-token"];
   if (!token)
     return res.status(401).json({
-      sucess: 0,
+      success: 0,
       message: "Access Denied. No token provided",
     });
   
@@ -16,7 +16,7 @@ exports.tokenAuthorize = (req, res, next) => {
     next();
   } catch (ex) {
     res.status(400).json({
-      sucess: 0,
+      success: 0,
       message: "Invalid token",
     });
   }
@@ -28,7 +28,7 @@ exports.isMohRole = (req, res, next) => {
     next();
   } else {
     res.status(403).json({
-      sucess: 0,
+      success: 0,
       message: "Forbidden",
     });
   }
@@ -39,7 +39,7 @@ exports.isDoctorRole = (req, res, next) => {
     next();
   } else {
     res.status(403).json({
-      sucess: 0,
+      success: 0,
       message: "Forbidden",
     });
   }
@@ -50,7 +50,7 @@ exports.isHospitalAdminRole = (req, res, next) => {
     next();
   } else {
     res.status(403).json({
-      sucess: 0,
+      success: 0,
       message: "Forbidden",
     });
   }
@@ -64,7 +64,7 @@ exports.isAlreadyLogin = (req, res, next) => {
     next();
   } else {
     res.status(400).json({
-      sucess: 0,
+      success: 0,
       message: "You have already logged in",
     });
   }

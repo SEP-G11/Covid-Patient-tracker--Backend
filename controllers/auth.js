@@ -9,19 +9,19 @@ exports.login = async (req, res) => {
 
   if (result.validationError)
     return res.status(400).json({
-      sucess: 0,
+      success: 0,
       message: "Email is invalid. Enter a valid email address!",
     });
 
   if (result.connectionError)
     return res.status(500).json({
-      sucess: 0,
+      success: 0,
       message: "Internal Server Error",
     });
 
   if (!result.allowAccess)
     return res.status(401).json({
-      sucess: 0,
+      success: 0,
       message: "Access Denied! Unauthorized Client ",
     });
 
@@ -37,8 +37,8 @@ exports.login = async (req, res) => {
     .cookie("ets-auth-token", token, cookieOption)
     .status(200)
     .json({
-      sucess: 1,
-      user_type: `${result.tokenData["user_type"]}`,
+      success: 1,     
+      token: result.tokenData,
     });
 };
 
@@ -48,6 +48,6 @@ exports.logout = (req, res) => {
     httpOnly: true,
   };
   res.cookie("ets-auth-token", "", cookieOption).status(200).json({
-    sucess: 1,
+    success: 1,
   });
 };

@@ -4,7 +4,7 @@ INSERT INTO `doctor` (`user_id`, `name`, `email`, `password`, `contact_no`, `is_
 
 
 -- Insert to hospital admin table
-INSERT INTO `hospital_admin` (`user_id`, `name`, `email`, `password`, `contact_no`, `is_deleted`) VALUES ('002', 'Anura Lakshan', 'aruna@gmail.com', '$2a$05$AmdXWZUxFu8aIvjT5vm/0OphtN2MxPKDkfpZ4IyVrWqX/4l0IpQ6G', '0710152534', '0');
+INSERT INTO `hospital_admin` (`user_id`, `name`, `email`, `password`, `contact_no`, `is_deleted`) VALUES ('002', 'Anura Lakshan', 'anura@gmail.com', '$2a$05$AmdXWZUxFu8aIvjT5vm/0OphtN2MxPKDkfpZ4IyVrWqX/4l0IpQ6G', '0710152534', '0');
 
 
 -- Insert to Moh table
