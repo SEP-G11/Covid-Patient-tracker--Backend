@@ -1,22 +1,42 @@
-require("dotenv").config();
 const express = require("express");
-const pool = require("./config/database");
+const jwt = require("jsonwebtoken");
+const app = express();
+const config = require("config");
+const cookieParser = require("cookie-parser");
 
 var cors = require("cors");
 
-const app = express();
+
 app.use(express.json());
 app.use(cors());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
-app.use("/", require("./routes"));
+//Routers
+const authRouter = require("./routes/auth");
+// const mohRouter = require("./routes/moh");
+// const doctorRouter = require("./routes/doctor");
+// const hospitalAdminRouter = require("./routes/hospitalAdmin");
 
-pool.getConnection(function (err, connection) {
-  if (err) {
-    console.log("Connecting to Database Failed");
-  } else {
-    app.listen(process.env.APP_PORT, () => {
-      console.log("Server is running on", process.env.APP_PORT);
-    });
-    console.log("Connected to Database");
-  }
+
+
+app.use("/auth", authRouter);
+// app.use("/cashier", mohRouter);
+// app.use("/doctor", doctorRouter);
+// app.use("/hospitalAdmin", hospitalAdminRouter);
+
+const port = process.env.PORT || 8000;
+const server = app.listen(port, () => console.log(`Listening on port ${port}`));
+
+app.get("/", (req, res) => {
+  res.redirect("/home");
 });
+
+app.get("/*", (req, res) => {
+  res.status(404).json({
+    sucess: 0,
+    message: "Page Not Found",    
+  });    
+});
+
+module.exports = server;

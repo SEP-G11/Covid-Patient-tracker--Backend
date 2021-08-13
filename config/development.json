@@ -1,0 +1,12 @@
+{
+  "database_credentials": {
+    "host": "localhost",
+    "user": "root",
+    "database": "covidtracker_db_local",
+    "password":"Lahiru7*"
+  },
+  
+  "site_name": "http://localhost:8000"
+  
+}
+
