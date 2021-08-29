@@ -14,14 +14,14 @@ app.use(cookieParser());
 
 //Routers
 const authRouter = require("./routes/auth");
-// const mohRouter = require("./routes/moh");
+const mohRouter = require("./routes/moh");
 // const doctorRouter = require("./routes/doctor");
 // const hospitalAdminRouter = require("./routes/hospitalAdmin");
 
 
 
 app.use("/auth", authRouter);
-// app.use("/cashier", mohRouter);
+app.use("/moh", mohRouter);
 // app.use("/doctor", doctorRouter);
 // app.use("/hospitalAdmin", hospitalAdminRouter);
 
