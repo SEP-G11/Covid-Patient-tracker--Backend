@@ -17,7 +17,7 @@ function validateRegister(id, name, email, contact, password) {
 }
 
 const register = async (req, res, next) => {
-    const {id,email,name,contact,password,role} = req.body;
+    const {id,email,name,contact,password,accountType} = req.body;
     const { error, value } = validateRegister(id, name, email, contact, password);
     if (error) {
         return errorMessage(res, error.details[0].message, 422)
@@ -36,7 +36,7 @@ const register = async (req, res, next) => {
             email: value.email,
             contact_no: value.contact,
             password: hashedPw,
-            user_type: role
+            user_type: accountType
         });
         return successMessage(res, {}, 'User created successfully', 201);
     }
