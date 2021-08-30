@@ -1,11 +1,13 @@
 const sequelize = require('../database/db');
-var initModels = require("../service/init-models");
-var models = initModels(sequelize);
+var models = require("../service/init-models").initModels(sequelize);
+//var models = initModels(sequelize);
 const jwt = require("jsonwebtoken");
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const config = require("config");
 const { successMessage, errorMessage } = require("../utils/message-template");
+
+var User = models.User;
 
 function validateLogin(email,password) {
   const schema = Joi.object({
@@ -24,7 +26,7 @@ const login = async (req, res, next) => {
   }
   let loadedUser;
   try {
-    const result = await models.User.findOne({
+    const result = await User.findOne({
       where: {
         email: value.email
       }

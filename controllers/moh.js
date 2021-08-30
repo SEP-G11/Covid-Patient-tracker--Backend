@@ -1,9 +1,11 @@
 const sequelize = require('../database/db');
-var initModels = require("../service/init-models");
-var models = initModels(sequelize);
+var models = require("../service/init-models").initModels(sequelize);
+//var models = initModels(sequelize);
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
+
+var User = models.User;
 
 function validateRegister(id, name, email, contact, password) {
     const schema = Joi.object({
@@ -22,15 +24,15 @@ const register = async (req, res, next) => {
     if (error) {
         return errorMessage(res, error.details[0].message, 422)
     }
-    if (await models.User.findByPk(value.id)){
+    if (await User.findByPk(value.id)){
         return errorMessage(res, "ID already registered", 422)
     }
-    if (await models.User.findOne({where: {email: value.email}})){
+    if (await User.findOne({where: {email: value.email}})){
         return errorMessage(res, "Email already registered", 422)
     }
     try {
         const hashedPw = await bcrypt.hash(value.password, 12);
-        const queryResult = await models.User.create({
+        const queryResult = await User.create({
             user_id: value.id,
             name: value.name,
             email: value.email,
