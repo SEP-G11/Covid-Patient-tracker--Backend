@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('ward', {
+  return sequelize.define('Ward', {
     ward_no: {
       type: DataTypes.STRING(10),
       allowNull: false,

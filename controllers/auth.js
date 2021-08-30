@@ -24,7 +24,7 @@ const login = async (req, res, next) => {
   }
   let loadedUser;
   try {
-    const result = await models.user.findOne({
+    const result = await models.User.findOne({
       where: {
         email: value.email
       }

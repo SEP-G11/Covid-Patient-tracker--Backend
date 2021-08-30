@@ -22,15 +22,15 @@ const register = async (req, res, next) => {
     if (error) {
         return errorMessage(res, error.details[0].message, 422)
     }
-    if (await models.user.findByPk(value.id)){
+    if (await models.User.findByPk(value.id)){
         return errorMessage(res, "ID already registered", 422)
     }
-    if (await models.user.findOne({where: {email: value.email}})){
+    if (await models.User.findOne({where: {email: value.email}})){
         return errorMessage(res, "Email already registered", 422)
     }
     try {
         const hashedPw = await bcrypt.hash(value.password, 12);
-        const queryResult = await models.user.create({
+        const queryResult = await models.User.create({
             user_id: value.id,
             name: value.name,
             email: value.email,
