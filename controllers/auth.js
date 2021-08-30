@@ -28,7 +28,8 @@ const login = async (req, res, next) => {
   try {
     const result = await User.findOne({
       where: {
-        email: value.email
+        email: value.email,
+        is_deleted: 0
       }
     });
     if (!result) {
