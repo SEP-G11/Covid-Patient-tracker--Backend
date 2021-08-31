@@ -7,20 +7,21 @@ const { successMessage, errorMessage } = require("../utils/message-template");
 
 var User = models.User;
 
-function validateRegister(id, name, email, contact, password) {
+function validateRegister(id, name, email, contact, password,accountType) {
     const schema = Joi.object({
         id: Joi.string().required().label('ID'),
         email: Joi.string().email().trim().lowercase().max(100).required().label('Email'),
         name: Joi.string().trim().max(255).required().label('Name'),
         contact: Joi.string().max(12).required().label('Contact'),
-        password: Joi.string().trim().min(5).required().label('Password')
+        password: Joi.string().trim().min(5).required().label('Password'),
+        accountType: Joi.string().required().label('Account Type')
     });
-    return schema.validate({ id: id, email: email, name: name, contact: contact, password: password })
+    return schema.validate({ id: id, email: email, name: name, contact: contact, password: password, accountType: accountType })
 }
 
 const register = async (req, res, next) => {
     const {id,email,name,contact,password,accountType} = req.body;
-    const { error, value } = validateRegister(id, name, email, contact, password);
+    const { error, value } = validateRegister(id, name, email, contact, password, accountType);
     if (error) {
         return errorMessage(res, error.details[0].message, 422)
     }
@@ -38,7 +39,7 @@ const register = async (req, res, next) => {
             email: value.email,
             contact_no: value.contact,
             password: hashedPw,
-            user_type: accountType
+            user_type: value.accountType
         });
         return successMessage(res, {}, 'User created successfully', 201);
     }
