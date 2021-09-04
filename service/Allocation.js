@@ -21,6 +21,11 @@ module.exports = function(sequelize, DataTypes) {
         model: 'bed',
         key: 'id'
       }
+    },
+    is_occupied: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 1
     }
   }, {
     sequelize,

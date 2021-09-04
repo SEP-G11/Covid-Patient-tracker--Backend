@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 04, 2021 at 01:54 PM
+-- Generation Time: Sep 04, 2021 at 02:14 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -31,7 +31,8 @@ SET time_zone = "+00:00";
 CREATE TABLE `allocation` (
   `id` int(11) NOT NULL,
   `patient_id` varchar(12) NOT NULL,
-  `bed_no` int(11) NOT NULL
+  `bed_no` int(11) NOT NULL,
+  `is_occupied` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
