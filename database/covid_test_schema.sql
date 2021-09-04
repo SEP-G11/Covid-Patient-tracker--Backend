@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 04, 2021 at 02:14 PM
+-- Generation Time: Sep 04, 2021 at 05:39 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -46,6 +46,18 @@ CREATE TABLE `bed` (
   `bed_no` int(11) NOT NULL,
   `ward` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `district_status`
+-- (See below for the actual view)
+--
+CREATE TABLE `district_status` (
+`district` varchar(50)
+,`districtCount` bigint(21)
+,`status` enum('Active','Dead','Recovered')
+);
 
 -- --------------------------------------------------------
 
@@ -148,6 +160,15 @@ CREATE TABLE `ward` (
   `facility_id` int(11) NOT NULL,
   `ward_type` enum('Covid','Normal') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `district_status`
+--
+DROP TABLE IF EXISTS `district_status`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `district_status`  AS  select `patient`.`district` AS `district`,count('district') AS `districtCount`,`medicalreport`.`status` AS `status` from (`medical_report` `medicalreport` left join `patient` on(`medicalreport`.`patient_id` = `patient`.`patient_id`)) group by `patient`.`district`,`medicalreport`.`status` ;
 
 --
 -- Indexes for dumped tables

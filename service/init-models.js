@@ -1,6 +1,7 @@
 var DataTypes = require("sequelize").DataTypes;
 var _Allocation = require("./Allocation");
 var _Bed = require("./Bed");
+var _DistrictStatus = require("./DistrictStatus");
 var _Facility = require("./Facility");
 var _MedicalReport = require("./MedicalReport");
 var _Patient = require("./Patient");
@@ -12,6 +13,7 @@ var _Ward = require("./Ward");
 function initModels(sequelize) {
   var Allocation = _Allocation(sequelize, DataTypes);
   var Bed = _Bed(sequelize, DataTypes);
+  var DistrictStatus = _DistrictStatus(sequelize, DataTypes);
   var Facility = _Facility(sequelize, DataTypes);
   var MedicalReport = _MedicalReport(sequelize, DataTypes);
   var Patient = _Patient(sequelize, DataTypes);
@@ -38,10 +40,11 @@ function initModels(sequelize) {
   Patient.hasMany(Transfer, { as: "transfers", foreignKey: "patient_id"});
   Bed.belongsTo(Ward, { as: "ward_ward", foreignKey: "ward"});
   Ward.hasMany(Bed, { as: "beds", foreignKey: "ward"});
-
+  DistrictStatus.removeAttribute('id');
   return {
     Allocation,
     Bed,
+    DistrictStatus,
     Facility,
     MedicalReport,
     Patient,
