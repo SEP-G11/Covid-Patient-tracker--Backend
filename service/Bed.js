@@ -1,17 +1,22 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('Bed', {
-    bed_no: {
+    id: {
+      autoIncrement: true,
       type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
     },
-    ward_no: {
-      type: DataTypes.STRING(10),
+    bed_no: {
+      type: DataTypes.INTEGER,
+      allowNull: false
+    },
+    ward: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       references: {
         model: 'ward',
-        key: 'ward_no'
+        key: 'id'
       }
     }
   }, {
@@ -24,14 +29,23 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
+          { name: "id" },
+        ]
+      },
+      {
+        name: "U_BedWard",
+        unique: true,
+        using: "BTREE",
+        fields: [
           { name: "bed_no" },
+          { name: "ward" },
         ]
       },
       {
         name: "FK_BedWard",
         using: "BTREE",
         fields: [
-          { name: "ward_no" },
+          { name: "ward" },
         ]
       },
     ]

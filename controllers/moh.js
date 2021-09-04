@@ -1,6 +1,5 @@
 const sequelize = require('../database/db');
 var models = require("../service/init-models").initModels(sequelize);
-//var models = initModels(sequelize);
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");

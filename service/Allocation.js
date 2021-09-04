@@ -1,6 +1,11 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('Allocation', {
+    id: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: true
+    },
     patient_id: {
       type: DataTypes.STRING(12),
       allowNull: false,
@@ -14,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       references: {
         model: 'bed',
-        key: 'bed_no'
+        key: 'id'
       }
     }
   }, {
@@ -22,6 +27,14 @@ module.exports = function(sequelize, DataTypes) {
     tableName: 'allocation',
     timestamps: false,
     indexes: [
+      {
+        name: "PRIMARY",
+        unique: true,
+        using: "BTREE",
+        fields: [
+          { name: "id" },
+        ]
+      },
       {
         name: "FK_AllocPatient",
         using: "BTREE",

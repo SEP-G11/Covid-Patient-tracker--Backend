@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 29, 2021 at 04:42 PM
+-- Generation Time: Sep 04, 2021 at 01:54 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -29,6 +29,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `allocation` (
+  `id` int(11) NOT NULL,
   `patient_id` varchar(12) NOT NULL,
   `bed_no` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -40,8 +41,9 @@ CREATE TABLE `allocation` (
 --
 
 CREATE TABLE `bed` (
+  `id` int(11) NOT NULL,
   `bed_no` int(11) NOT NULL,
-  `ward_no` varchar(10) NOT NULL
+  `ward` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -68,8 +70,9 @@ CREATE TABLE `medical_report` (
   `patient_id` varchar(12) NOT NULL,
   `symptoms` varchar(255) NOT NULL,
   `admitted_at` datetime NOT NULL,
-  `discharged_at` datetime NOT NULL,
-  `status` varchar(255) NOT NULL
+  `discharged_at` datetime DEFAULT NULL,
+  `description` text NOT NULL,
+  `status` enum('Active','Dead','Recovered') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -82,6 +85,7 @@ CREATE TABLE `patient` (
   `patient_id` varchar(12) NOT NULL,
   `name` varchar(150) NOT NULL,
   `address` varchar(255) NOT NULL,
+  `district` varchar(50) NOT NULL,
   `blood_type` enum('A+','O+','B+','AB+','A-','O-','B-','AB-') NOT NULL,
   `age` int(11) NOT NULL,
   `contact_no` varchar(12) NOT NULL
@@ -130,17 +134,18 @@ CREATE TABLE `user` (
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `ward`
 --
 
 CREATE TABLE `ward` (
+  `id` int(11) NOT NULL,
   `ward_no` varchar(10) NOT NULL,
   `capacity` int(11) NOT NULL,
   `facility_id` int(11) NOT NULL,
-  `ward_type` int(11) NOT NULL
+  `ward_type` enum('Covid','Normal') NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -151,6 +156,7 @@ CREATE TABLE `ward` (
 -- Indexes for table `allocation`
 --
 ALTER TABLE `allocation`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `FK_AllocPatient` (`patient_id`),
   ADD KEY `FK_AllocBed` (`bed_no`);
 
@@ -158,8 +164,9 @@ ALTER TABLE `allocation`
 -- Indexes for table `bed`
 --
 ALTER TABLE `bed`
-  ADD PRIMARY KEY (`bed_no`),
-  ADD KEY `FK_BedWard` (`ward_no`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `U_BedWard` (`bed_no`,`ward`),
+  ADD KEY `FK_BedWard` (`ward`);
 
 --
 -- Indexes for table `facility`
@@ -206,7 +213,8 @@ ALTER TABLE `user`
 -- Indexes for table `ward`
 --
 ALTER TABLE `ward`
-  ADD PRIMARY KEY (`ward_no`),
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `U_WardAndFacility` (`ward_no`,`facility_id`),
   ADD KEY `FK_WardFacility` (`facility_id`);
 
 --
@@ -214,10 +222,22 @@ ALTER TABLE `ward`
 --
 
 --
+-- AUTO_INCREMENT for table `bed`
+--
+ALTER TABLE `bed`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `facility`
 --
 ALTER TABLE `facility`
   MODIFY `facility_id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `ward`
+--
+ALTER TABLE `ward`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -227,14 +247,14 @@ ALTER TABLE `facility`
 -- Constraints for table `allocation`
 --
 ALTER TABLE `allocation`
-  ADD CONSTRAINT `FK_AllocBed` FOREIGN KEY (`bed_no`) REFERENCES `bed` (`bed_no`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_AllocBed` FOREIGN KEY (`bed_no`) REFERENCES `bed` (`id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_AllocPatient` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `bed`
 --
 ALTER TABLE `bed`
-  ADD CONSTRAINT `FK_BedWard` FOREIGN KEY (`ward_no`) REFERENCES `ward` (`ward_no`) ON UPDATE CASCADE;
+  ADD CONSTRAINT `FK_BedWard` FOREIGN KEY (`ward`) REFERENCES `ward` (`id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `medical_report`

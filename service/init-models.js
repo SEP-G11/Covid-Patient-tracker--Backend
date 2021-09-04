@@ -36,8 +36,8 @@ function initModels(sequelize) {
   Patient.hasMany(MedicalReport, { as: "medical_reports", foreignKey: "patient_id"});
   Transfer.belongsTo(Patient, { as: "patient", foreignKey: "patient_id"});
   Patient.hasMany(Transfer, { as: "transfers", foreignKey: "patient_id"});
-  Bed.belongsTo(Ward, { as: "ward_no_ward", foreignKey: "ward_no"});
-  Ward.hasMany(Bed, { as: "beds", foreignKey: "ward_no"});
+  Bed.belongsTo(Ward, { as: "ward_ward", foreignKey: "ward"});
+  Ward.hasMany(Bed, { as: "beds", foreignKey: "ward"});
 
   return {
     Allocation,

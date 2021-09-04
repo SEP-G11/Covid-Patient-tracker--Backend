@@ -24,10 +24,14 @@ module.exports = function(sequelize, DataTypes) {
     },
     discharged_at: {
       type: DataTypes.DATE,
+      allowNull: true
+    },
+    description: {
+      type: DataTypes.TEXT,
       allowNull: false
     },
     status: {
-      type: DataTypes.STRING(255),
+      type: DataTypes.ENUM('Active','Dead','Recovered'),
       allowNull: false
     }
   }, {

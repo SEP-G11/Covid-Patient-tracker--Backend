@@ -14,6 +14,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(255),
       allowNull: false
     },
+    district: {
+      type: DataTypes.STRING(50),
+      allowNull: false
+    },
     blood_type: {
       type: DataTypes.ENUM('A+','O+','B+','AB+','A-','O-','B-','AB-'),
       allowNull: false

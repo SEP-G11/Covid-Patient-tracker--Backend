@@ -1,10 +1,15 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('Ward', {
-    ward_no: {
-      type: DataTypes.STRING(10),
+    id: {
+      autoIncrement: true,
+      type: DataTypes.INTEGER,
       allowNull: false,
       primaryKey: true
+    },
+    ward_no: {
+      type: DataTypes.STRING(10),
+      allowNull: false
     },
     capacity: {
       type: DataTypes.INTEGER,
@@ -19,7 +24,7 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     ward_type: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.ENUM('Covid','Normal'),
       allowNull: false
     }
   }, {
@@ -32,7 +37,16 @@ module.exports = function(sequelize, DataTypes) {
         unique: true,
         using: "BTREE",
         fields: [
+          { name: "id" },
+        ]
+      },
+      {
+        name: "U_WardAndFacility",
+        unique: true,
+        using: "BTREE",
+        fields: [
           { name: "ward_no" },
+          { name: "facility_id" },
         ]
       },
       {
