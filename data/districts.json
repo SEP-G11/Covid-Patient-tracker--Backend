@@ -1,0 +1,127 @@
+{
+  "Ampara": {
+    "latitute": "7.2833",
+    "longitude": "81.6667",
+    "province": "Eastern"
+  },
+  "Anuradhapura": {
+    "latitute": "8.35",
+    "longitude": "80.3833",
+    "province": "North Central"
+  },
+  "Badulla": {
+    "latitute": "6.995365",
+    "longitude": "81.048438",
+    "province": "Uva"
+  },
+  "Batticaloa": {
+    "latitute": "7.7167",
+    "longitude": "81.7",
+    "province": "Eastern"
+  },
+  "Colombo": {
+    "latitute": "6.925833",
+    "longitude": "79.841667",
+    "province": "Western"
+  },
+  "Galle": {
+    "latitute": "6.0536",
+    "longitude": "80.2117",
+    "province": "Southern"
+  },
+  "Gampaha": {
+    "latitute": "7.0917",
+    "longitude": "79.9942",
+    "province": "Western"
+  },
+  "Hambantota": {
+    "latitute": "6.127563",
+    "longitude": "81.111287",
+    "province": "Southern"
+  },
+  "Jaffna": {
+    "latitute": "9.660668",
+    "longitude": "80.022706",
+    "province": "Northern"
+  },
+  "Kalutara": {
+    "latitute": "6.581333",
+    "longitude": "79.958546",
+    "province": "Western"
+  },
+  "Kandy": {
+    "latitute": "7.2964",
+    "longitude": "80.635",
+    "province": "Central"
+  },
+  "Kegalle": {
+    "latitute": "7.249349",
+    "longitude": "80.351662",
+    "province": "Sabaragamuwa"
+  },
+  "Kilinochchi": {
+    "latitute": "9.416667",
+    "longitude": "80.416667",
+    "province": "Northern"
+  },
+  "Kurunegala": {
+    "latitute": "7.4867",
+    "longitude": "80.3647",
+    "province": "North Western"
+  },
+  "Mannar": {
+    "latitute": "8.9833",
+    "longitude": "79.9",
+    "province": "Northern"
+  },
+  "Matale": {
+    "latitute": "7.4717",
+    "longitude": "80.6244",
+    "province": "Central"
+  },
+  "Matara": {
+    "latitute": "5.9486",
+    "longitude": "80.5428",
+    "province": "Southern"
+  },
+  "Monaragala": {
+    "latitute": "6.8667",
+    "longitude": "81.35",
+    "province": "Uva"
+  },
+  "Mullaitivu": {
+    "latitute": "9.266667",
+    "longitude": "80.816667",
+    "province": "Northern"
+  },
+  "Nuwara Eliya": {
+    "latitute": "6.9697",
+    "longitude": "80.77",
+    "province": "Central"
+  },
+  "Polonnaruwa": {
+    "latitute": "7.940295",
+    "longitude": "81.007138",
+    "province": "North Central"
+  },
+  "Puttalam": {
+    "latitute": "8.043613",
+    "longitude": "79.841209",
+    "province": "North Western"
+  },
+  "Ratnapura": {
+    "latitute": "6.677603",
+    "longitude": "80.405592",
+    "province": "Sabaragamuwa"
+  },
+  "Trincomalee": {
+    "latitute": "8.5667",
+    "longitude": "81.2333",
+    "province": "Eastern"
+  },
+  "Vavuniya": {
+    "latitute": "8.758818",
+    "longitude": "80.493461",
+    "province": "Northern"
+  }
+}

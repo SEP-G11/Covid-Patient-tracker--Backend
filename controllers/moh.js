@@ -3,8 +3,11 @@ var models = require("../service/init-models").initModels(sequelize);
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
+const { districtStatsMutate} = require("../utils/array-mutation");
+var fs = require('fs');
 
 var User = models.User;
+var DistrictStatus = models.DistrictStatus;
 
 function validateRegister(id, name, email, contact, password,accountType) {
     const schema = Joi.object({
@@ -47,6 +50,45 @@ const register = async (req, res, next) => {
     }
 };
 
+const overallDistrictsStats = async (req,res,next) => {
+    const districtCoord = JSON.parse(fs.readFileSync('data/districts.json', 'utf8'));
+    try{
+        const overallDistrictsResult = await DistrictStatus.findAll();
+        if (overallDistrictsResult && overallDistrictsResult.length!==0){
+            return successMessage(res, districtStatsMutate(overallDistrictsResult, districtCoord), 'Districts Data Found', 201);
+        }
+        else {
+            return errorMessage(res, 'Districts Data Not Found', 404);
+        }
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+
+};
+
+const overallDistrictStats = async (req,res,next) => {
+    const district = req.params.district;
+    const districtCoord = JSON.parse(fs.readFileSync('data/districts.json', 'utf8'));
+    try{
+        const overallDistrictResult = await DistrictStatus.findAll({
+            where: {district: district}
+        });
+        if (overallDistrictResult && overallDistrictResult.length!==0){
+            return successMessage(res, districtStatsMutate(overallDistrictResult, districtCoord), 'District Data Found', 201);
+        }
+        else {
+            return errorMessage(res, 'District data Not Found', 404);
+        }
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+
+};
+
+
+
 module.exports = {
-    register
-}
+    register,overallDistrictsStats,overallDistrictStats
+};
