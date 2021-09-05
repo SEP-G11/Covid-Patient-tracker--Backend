@@ -1,16 +1,16 @@
-//convert the district stat to a better format
-const districtStatsMutate = (arr,districtCoord) => {
-    const todayStatus = {
-        Active: 'Cases',
-        Dead: 'Deaths',
-        Recovered: 'Recovered'
-    };
-    const allStatus = {
-        Active: 'active',
-        Dead: 'deaths',
-        Recovered: 'recovered'
-    };
+const todayStatus = {
+    Active: 'Cases',
+    Dead: 'Deaths',
+    Recovered: 'Recovered'
+};
+const allStatus = {
+    Active: 'active',
+    Dead: 'deaths',
+    Recovered: 'recovered'
+};
 
+//convert the district stat to a better format
+const districtStatsMutate = (arr,districtInfo) => {
     return  arr.reduce((acc, curr) => {
         const { district, districtCount,todayCount, status } = curr;
 
@@ -23,7 +23,7 @@ const districtStatsMutate = (arr,districtCoord) => {
                 todayCases: 0,
                 todayDeaths: 0,
                 todayRecovered: 0,
-                districtInfo: districtCoord[district]
+                districtInfo: districtInfo[district]
             };
         }
 
@@ -35,5 +35,17 @@ const districtStatsMutate = (arr,districtCoord) => {
     }, {});
 };
 
-module.exports = {districtStatsMutate};
+const countryStatsMutate = (arr) => {
+    return  arr.reduce((acc, curr) => {
+        const { district, districtCount,todayCount, status } = curr;
+        console.log(acc);
+        acc['cases']+=districtCount;
+        acc[allStatus[status]] += districtCount;
+        acc[`today${todayStatus[status]}`] += parseInt(todayCount);
+
+        return acc;
+    }, {cases: 0, active: 0, recovered: 0, deaths: 0, todayCases: 0, todayDeaths: 0, todayRecovered: 0});
+};
+
+module.exports = {districtStatsMutate,countryStatsMutate};
 
