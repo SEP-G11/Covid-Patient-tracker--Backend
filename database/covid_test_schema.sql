@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 04, 2021 at 05:39 PM
+-- Generation Time: Sep 05, 2021 at 12:55 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -56,6 +56,7 @@ CREATE TABLE `bed` (
 CREATE TABLE `district_status` (
 `district` varchar(50)
 ,`districtCount` bigint(21)
+,`todayCount` decimal(22,0)
 ,`status` enum('Active','Dead','Recovered')
 );
 
@@ -168,7 +169,7 @@ CREATE TABLE `ward` (
 --
 DROP TABLE IF EXISTS `district_status`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `district_status`  AS  select `patient`.`district` AS `district`,count('district') AS `districtCount`,`medicalreport`.`status` AS `status` from (`medical_report` `medicalreport` left join `patient` on(`medicalreport`.`patient_id` = `patient`.`patient_id`)) group by `patient`.`district`,`medicalreport`.`status` ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `district_status`  AS  select `patient`.`district` AS `district`,count('district') AS `districtCount`,sum(case when (cast(`medicalreport`.`admitted_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Active') then 1 when (cast(`medicalreport`.`discharged_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Recovered') then 1 when (cast(`medicalreport`.`discharged_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Dead') then 1 else 0 end) AS `todayCount`,`medicalreport`.`status` AS `status` from (`medical_report` `medicalreport` left join `patient` on(`medicalreport`.`patient_id` = `patient`.`patient_id`)) group by `patient`.`district`,`medicalreport`.`status` ;
 
 --
 -- Indexes for dumped tables

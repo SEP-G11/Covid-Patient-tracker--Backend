@@ -10,6 +10,10 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
+    todayCount: {
+      type: DataTypes.DECIMAL(22,0),
+      allowNull: true
+    },
     status: {
       type: DataTypes.ENUM('Active','Dead','Recovered'),
       allowNull: false
