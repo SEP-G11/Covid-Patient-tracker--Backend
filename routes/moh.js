@@ -1,4 +1,4 @@
-const {register,overallDistrictsStats,overallDistrictStats,overallCountryStats} = require("../controllers/moh");
+const {register,overallDistrictsStats,overallDistrictStats,overallCountryStats,historicalCases,historicalRecovered,historicalDeaths} = require("../controllers/moh");
 const authorization = require("../middlewares/authorization");
 const express = require("express");
 const router = express.Router();
@@ -9,5 +9,9 @@ router.post('/register', register);
 router.get('/districtStats',overallDistrictsStats);
 router.get('/districtStats/:district',overallDistrictStats);
 router.get('/countryStats',overallCountryStats);
+router.get('/historical/cases/:lastDays',historicalCases);
+router.get('/historical/recovered/:lastDays',historicalRecovered);
+router.get('/historical/deaths/:lastDays',historicalDeaths);
+
 
 module.exports = router;

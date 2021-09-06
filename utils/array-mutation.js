@@ -1,3 +1,5 @@
+const moment = require('moment');
+
 const todayStatus = {
     Active: 'Cases',
     Dead: 'Deaths',
@@ -47,5 +49,21 @@ const countryStatsMutate = (arr) => {
     }, {cases: 0, active: 0, recovered: 0, deaths: 0, todayCases: 0, todayDeaths: 0, todayRecovered: 0});
 };
 
-module.exports = {districtStatsMutate,countryStatsMutate};
+const dateMapToValuesMutate = (arr,lastDays) => {
+    const lastDaysArr = [...new Array(lastDays)].map((i, idx) => moment().subtract(idx, "days").format('YYYY-MM-DD'));
+    const accumulator = lastDaysArr.reduce((acc,curr)=> {
+        acc[curr]=0;
+        return acc
+    },{});
+    return  arr.reduce((acc, curr) => {
+        const { date, count} = curr.dataValues;
+
+        acc[date] += count;
+
+
+        return acc;
+    }, accumulator);
+};
+
+module.exports = {districtStatsMutate,countryStatsMutate,dateMapToValuesMutate};
 

@@ -1,13 +1,16 @@
+const { Op } = require('sequelize');
+const moment = require('moment');
 const sequelize = require('../database/db');
 var models = require("../service/init-models").initModels(sequelize);
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
-const { districtStatsMutate,countryStatsMutate} = require("../utils/array-mutation");
+const { districtStatsMutate,countryStatsMutate,dateMapToValuesMutate} = require("../utils/array-mutation");
 var fs = require('fs');
 
 var User = models.User;
 var DistrictStatus = models.DistrictStatus;
+var MedicalReport = models.MedicalReport;
 
 function validateRegister(id, name, email, contact, password,accountType) {
     const schema = Joi.object({
@@ -103,6 +106,78 @@ const overallCountryStats = async (req,res,next) => {
 
 };
 
+const historicalCases = async (req,res,next) => {
+    const lastDays = parseInt(req.params.lastDays) || 1;
+    try{
+        const activeLastXDays = await MedicalReport.findAll({
+            attributes: [
+                [sequelize.fn('date', sequelize.col('admitted_at')), 'date'],
+                [sequelize.fn('COUNT', 'admitted_at'), 'count']
+            ],
+            where: sequelize.where(sequelize.fn('date', sequelize.col('admitted_at')),
+                {[Op.gt]: moment().subtract(lastDays, 'days').toDate()}),
+            group: ('date')
+        });
+        if (activeLastXDays){
+            return successMessage(res,dateMapToValuesMutate(activeLastXDays,lastDays),`Historical Cases over last ${lastDays} days Found`, 201)
+        }
+        else {
+            return errorMessage(res, 'Data Not Found', 404);
+        }
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+};
+
+const historicalRecovered = async (req,res,next) => {
+    const lastDays = parseInt(req.params.lastDays) || 1;
+    try{
+        const recoveredLastXDays = await MedicalReport.findAll({
+            attributes: [
+                [sequelize.fn('date', sequelize.col('discharged_at')), 'date'],
+                [sequelize.fn('COUNT', 'discharged_at'), 'count']
+            ],
+            where: [sequelize.where(sequelize.fn('date', sequelize.col('discharged_at')),
+                {[Op.gt]: moment().subtract(lastDays, 'days').toDate()}),{status: 'Recovered'}],
+            group: ('date')
+        });
+        if (recoveredLastXDays){
+            return successMessage(res,dateMapToValuesMutate(recoveredLastXDays,lastDays),`Historical Recovered over last ${lastDays} days Found`, 201)
+        }
+        else {
+            return errorMessage(res, 'Data Not Found', 404);
+        }
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+};
+
+const historicalDeaths = async (req,res,next) => {
+    const lastDays = parseInt(req.params.lastDays) || 1;
+    try{
+        const recoveredLastXDays = await MedicalReport.findAll({
+            attributes: [
+                [sequelize.fn('date', sequelize.col('discharged_at')), 'date'],
+                [sequelize.fn('COUNT', 'discharged_at'), 'count']
+            ],
+            where: [sequelize.where(sequelize.fn('date', sequelize.col('discharged_at')),
+                {[Op.gt]: moment().subtract(lastDays, 'days').toDate()}),{status: 'Dead'}],
+            group: ('date')
+        });
+        if (recoveredLastXDays){
+            return successMessage(res,dateMapToValuesMutate(recoveredLastXDays,lastDays),`Historical Deaths over last ${lastDays} days Found`, 201)
+        }
+        else {
+            return errorMessage(res, 'Data Not Found', 404);
+        }
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+};
+
 module.exports = {
-    register,overallDistrictsStats,overallDistrictStats,overallCountryStats
+    register,overallDistrictsStats,overallDistrictStats,overallCountryStats,historicalCases,historicalRecovered,historicalDeaths
 };
