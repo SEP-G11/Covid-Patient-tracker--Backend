@@ -65,5 +65,20 @@ const dateMapToValuesMutate = (arr,lastDays) => {
     }, accumulator);
 };
 
-module.exports = {districtStatsMutate,countryStatsMutate,dateMapToValuesMutate};
+const dateMapToTestsMutate = (arr,lastDays) => {
+    const lastDaysArr = [...new Array(lastDays)].map((i, idx) => moment().subtract(idx, "days").format('M/D/YY'));
+    const accumulator = lastDaysArr.reduce((acc,curr)=> {
+        acc[curr]={pcr: 0, rat: 0};
+        return acc
+    },{});
+    return arr.reduce((acc, curr) => {
+        const { test_date, count, test_type} = curr.dataValues;
+
+        acc[moment(test_date).format('M/D/YY')][test_type.toLowerCase()] += count;
+
+        return acc;
+    }, accumulator);
+};
+
+module.exports = {districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate};
 

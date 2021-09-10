@@ -5,12 +5,13 @@ var models = require("../service/init-models").initModels(sequelize);
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
-const { districtStatsMutate,countryStatsMutate,dateMapToValuesMutate} = require("../utils/array-mutation");
+const { districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate} = require("../utils/array-mutation");
 var fs = require('fs');
 
 var User = models.User;
 var DistrictStatus = models.DistrictStatus;
 var MedicalReport = models.MedicalReport;
+var Test = models.Test;
 
 function validateRegister(id, name, email, contact, password,accountType) {
     const schema = Joi.object({
@@ -178,6 +179,33 @@ const historicalDeaths = async (req,res,next) => {
     }
 };
 
+const historicalTests = async (req,res,next) => {
+    const lastDays = parseInt(req.query.lastdays) || 1;
+    try{
+        const testsLastXDays = await Test.findAll({
+            attributes: [
+                [sequelize.fn('date', sequelize.col('date')), 'test_date'],
+                [sequelize.fn('COUNT', 'test_type'), 'count'],
+                'test_type'
+            ],
+            where: [sequelize.where(sequelize.fn('date', sequelize.col('date')),
+                {[Op.gt]: moment().subtract(lastDays, 'days').toDate()})],
+            group: ['test_date','test_type']
+        });
+        if (testsLastXDays){
+            return successMessage(res,dateMapToTestsMutate(testsLastXDays,lastDays),`Historical Tests over last ${lastDays} days Found`, 201)
+
+        }
+        else {
+            return errorMessage(res, 'Data Not Found', 404);
+        }
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+};
+
 module.exports = {
-    register,overallDistrictsStats,overallDistrictStats,overallCountryStats,historicalCases,historicalRecovered,historicalDeaths
+    register,overallDistrictsStats,overallDistrictStats,overallCountryStats,historicalCases,historicalRecovered,historicalDeaths,
+    historicalTests
 };
