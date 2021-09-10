@@ -107,7 +107,7 @@ const overallCountryStats = async (req,res,next) => {
 };
 
 const historicalCases = async (req,res,next) => {
-    const lastDays = parseInt(req.params.lastDays) || 1;
+    const lastDays = parseInt(req.query.lastdays) || 1;
     try{
         const activeLastXDays = await MedicalReport.findAll({
             attributes: [
@@ -131,7 +131,7 @@ const historicalCases = async (req,res,next) => {
 };
 
 const historicalRecovered = async (req,res,next) => {
-    const lastDays = parseInt(req.params.lastDays) || 1;
+    const lastDays = parseInt(req.query.lastdays) || 1;
     try{
         const recoveredLastXDays = await MedicalReport.findAll({
             attributes: [
@@ -155,7 +155,7 @@ const historicalRecovered = async (req,res,next) => {
 };
 
 const historicalDeaths = async (req,res,next) => {
-    const lastDays = parseInt(req.params.lastDays) || 1;
+    const lastDays = parseInt(req.query.lastdays) || 1;
     try{
         const recoveredLastXDays = await MedicalReport.findAll({
             attributes: [

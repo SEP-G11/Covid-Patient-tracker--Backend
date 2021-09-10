@@ -9,9 +9,9 @@ router.post('/register', register);
 router.get('/districtStats',overallDistrictsStats);
 router.get('/districtStats/:district',overallDistrictStats);
 router.get('/countryStats',overallCountryStats);
-router.get('/historical/cases/:lastDays',historicalCases);
-router.get('/historical/recovered/:lastDays',historicalRecovered);
-router.get('/historical/deaths/:lastDays',historicalDeaths);
+router.get('/historical/cases',historicalCases);
+router.get('/historical/recovered',historicalRecovered);
+router.get('/historical/deaths',historicalDeaths);
 
 
 module.exports = router;

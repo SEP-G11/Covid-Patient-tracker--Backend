@@ -50,7 +50,7 @@ const countryStatsMutate = (arr) => {
 };
 
 const dateMapToValuesMutate = (arr,lastDays) => {
-    const lastDaysArr = [...new Array(lastDays)].map((i, idx) => moment().subtract(idx, "days").format('YYYY-MM-DD'));
+    const lastDaysArr = [...new Array(lastDays)].map((i, idx) => moment().subtract(idx, "days").format('M/D/YY'));
     const accumulator = lastDaysArr.reduce((acc,curr)=> {
         acc[curr]=0;
         return acc
@@ -58,7 +58,7 @@ const dateMapToValuesMutate = (arr,lastDays) => {
     return  arr.reduce((acc, curr) => {
         const { date, count} = curr.dataValues;
 
-        acc[date] += count;
+        acc[moment(date).format('M/D/YY')] += count;
 
 
         return acc;

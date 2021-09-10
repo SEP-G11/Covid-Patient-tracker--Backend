@@ -1,127 +1,152 @@
 {
   "Ampara": {
-    "latitute": "7.2833",
+    "latitude": "7.2833",
     "longitude": "81.6667",
-    "province": "Eastern"
+    "province": "Eastern",
+    "pab":"APR"
   },
   "Anuradhapura": {
-    "latitute": "8.35",
+    "latitude": "8.35",
     "longitude": "80.3833",
-    "province": "North Central"
+    "province": "North Central",
+    "pab":"AD"
   },
   "Badulla": {
-    "latitute": "6.995365",
+    "latitude": "6.995365",
     "longitude": "81.048438",
-    "province": "Uva"
+    "province": "Uva",
+    "pab":"BD"
   },
   "Batticaloa": {
-    "latitute": "7.7167",
+    "latitude": "7.7167",
     "longitude": "81.7",
-    "province": "Eastern"
+    "province": "Eastern",
+    "pab":"BC"
   },
   "Colombo": {
-    "latitute": "6.925833",
+    "latitude": "6.925833",
     "longitude": "79.841667",
-    "province": "Western"
+    "province": "Western",
+    "pab":"CO"
   },
   "Galle": {
-    "latitute": "6.0536",
+    "latitude": "6.0536",
     "longitude": "80.2117",
-    "province": "Southern"
+    "province": "Southern",
+    "pab":"GL"
   },
   "Gampaha": {
-    "latitute": "7.0917",
+    "latitude": "7.0917",
     "longitude": "79.9942",
-    "province": "Western"
+    "province": "Western",
+    "pab":"GQ"
   },
   "Hambantota": {
-    "latitute": "6.127563",
+    "latitude": "6.127563",
     "longitude": "81.111287",
-    "province": "Southern"
+    "province": "Southern",
+    "pab":"HB"
   },
   "Jaffna": {
-    "latitute": "9.660668",
+    "latitude": "9.660668",
     "longitude": "80.022706",
-    "province": "Northern"
+    "province": "Northern",
+    "pab":"JA"
   },
   "Kalutara": {
-    "latitute": "6.581333",
+    "latitude": "6.581333",
     "longitude": "79.958546",
-    "province": "Western"
+    "province": "Western",
+    "pab":"KT"
   },
   "Kandy": {
-    "latitute": "7.2964",
+    "latitude": "7.2964",
     "longitude": "80.635",
-    "province": "Central"
+    "province": "Central",
+    "pab":"KY"
   },
   "Kegalle": {
-    "latitute": "7.249349",
+    "latitude": "7.249349",
     "longitude": "80.351662",
-    "province": "Sabaragamuwa"
+    "province": "Sabaragamuwa",
+    "pab":"KE"
   },
   "Kilinochchi": {
-    "latitute": "9.416667",
+    "latitude": "9.416667",
     "longitude": "80.416667",
-    "province": "Northern"
+    "province": "Northern",
+    "pab":"KL"
   },
   "Kurunegala": {
-    "latitute": "7.4867",
+    "latitude": "7.4867",
     "longitude": "80.3647",
-    "province": "North Western"
+    "province": "North Western",
+    "pab":"KG"
   },
   "Mannar": {
-    "latitute": "8.9833",
+    "latitude": "8.9833",
     "longitude": "79.9",
-    "province": "Northern"
+    "province": "Northern",
+    "pab":"MB"
   },
   "Matale": {
-    "latitute": "7.4717",
+    "latitude": "7.4717",
     "longitude": "80.6244",
-    "province": "Central"
+    "province": "Central",
+    "pab":"MT"
   },
   "Matara": {
-    "latitute": "5.9486",
+    "latitude": "5.9486",
     "longitude": "80.5428",
-    "province": "Southern"
+    "province": "Southern",
+    "pab":"MH"
   },
   "Monaragala": {
-    "latitute": "6.8667",
+    "latitude": "6.8667",
     "longitude": "81.35",
-    "province": "Uva"
+    "province": "Uva",
+    "pab":"MJ"
   },
   "Mullaitivu": {
-    "latitute": "9.266667",
+    "latitude": "9.266667",
     "longitude": "80.816667",
-    "province": "Northern"
+    "province": "Northern",
+    "pab":"MP"
   },
   "NuwaraEliya": {
-    "latitute": "6.9697",
+    "latitude": "6.9697",
     "longitude": "80.77",
-    "province": "Central"
+    "province": "Central",
+    "pab":"NW"
   },
   "Polonnaruwa": {
-    "latitute": "7.940295",
+    "latitude": "7.940295",
     "longitude": "81.007138",
-    "province": "North Central"
+    "province": "North Central",
+    "pab":"PR"
   },
   "Puttalam": {
-    "latitute": "8.043613",
+    "latitude": "8.043613",
     "longitude": "79.841209",
-    "province": "North Western"
+    "province": "North Western",
+    "pab":"PX"
   },
   "Ratnapura": {
-    "latitute": "6.677603",
+    "latitude": "6.677603",
     "longitude": "80.405592",
-    "province": "Sabaragamuwa"
+    "province": "Sabaragamuwa",
+    "pab":"RN"
   },
   "Trincomalee": {
-    "latitute": "8.5667",
+    "latitude": "8.5667",
     "longitude": "81.2333",
-    "province": "Eastern"
+    "province": "Eastern",
+    "pab":"TC"
   },
   "Vavuniya": {
-    "latitute": "8.758818",
+    "latitude": "8.758818",
     "longitude": "80.493461",
-    "province": "Northern"
+    "province": "Northern",
+    "pab":"VA"
   }
 }
