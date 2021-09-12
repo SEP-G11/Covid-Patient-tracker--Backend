@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 05, 2021 at 12:55 PM
+-- Generation Time: Sep 12, 2021 at 03:46 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -71,6 +71,17 @@ CREATE TABLE `facility` (
   `name` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `contact_no` varchar(12) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `facility_staff`
+--
+
+CREATE TABLE `facility_staff` (
+  `user_id` varchar(12) NOT NULL,
+  `facility_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -198,6 +209,13 @@ ALTER TABLE `facility`
   ADD PRIMARY KEY (`facility_id`);
 
 --
+-- Indexes for table `facility_staff`
+--
+ALTER TABLE `facility_staff`
+  ADD KEY `FK_FS_Facility` (`facility_id`),
+  ADD KEY `FK_FS_User` (`user_id`);
+
+--
 -- Indexes for table `medical_report`
 --
 ALTER TABLE `medical_report`
@@ -278,6 +296,13 @@ ALTER TABLE `allocation`
 --
 ALTER TABLE `bed`
   ADD CONSTRAINT `FK_BedWard` FOREIGN KEY (`ward`) REFERENCES `ward` (`id`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `facility_staff`
+--
+ALTER TABLE `facility_staff`
+  ADD CONSTRAINT `FK_FS_Facility` FOREIGN KEY (`facility_id`) REFERENCES `facility` (`facility_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_FS_User` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `medical_report`

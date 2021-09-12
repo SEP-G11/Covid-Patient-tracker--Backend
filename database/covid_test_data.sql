@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 04, 2021 at 02:17 PM
+-- Generation Time: Sep 12, 2021 at 03:46 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -193,24 +193,33 @@ INSERT INTO `facility` (`facility_id`, `name`, `address`, `contact_no`) VALUES
 (100, 'Sangallaya National Hospital', '185 Barnett Trail', '0338126272');
 
 --
+-- Dumping data for table `facility_staff`
+--
+
+INSERT INTO `facility_staff` (`user_id`, `facility_id`) VALUES
+('903000001', 1),
+('903000002', 2);
+
+--
 -- Dumping data for table `medical_report`
 --
 
 INSERT INTO `medical_report` (`report_id`, `patient_id`, `symptoms`, `admitted_at`, `discharged_at`, `description`, `status`) VALUES
-('00000001', '009987525V', 'Cough and Headache', '2021-09-01 15:17:43', NULL, '', 'Active'),
-('148701361', '674849922X', 'Asymptotic', '2020-11-08 11:20:15', NULL, '', 'Active'),
-('286740672', '819572017V', 'Fever', '2021-01-09 03:34:47', '2021-09-14 17:18:01', '', 'Recovered'),
+('00000001', '009987525V', 'Cough and Headache', '2021-09-05 15:17:43', '2021-09-09 21:28:12', '', 'Recovered'),
+('148701361', '674849922X', 'Asymptotic', '2021-09-05 11:20:15', NULL, '', 'Active'),
+('27654321', '269051204V', 'Fever and Headache', '2021-09-01 14:10:51', '2021-09-05 14:10:51', '', 'Recovered'),
+('286740672', '819572017V', 'Fever', '2021-01-09 03:34:47', '2021-09-04 17:18:01', '', 'Recovered'),
 ('369814018', '237854928X', 'Cough', '2021-06-03 08:06:26', NULL, '', 'Active'),
-('443802122', '948156298X', 'Sneezing and Headache', '2021-06-07 18:18:04', NULL, '', 'Dead'),
-('530309323', '011169845X', 'Cough and Fever', '2021-04-05 17:59:49', NULL, '', 'Active'),
-('541884370', '986735927V', 'Cough', '2020-09-11 08:04:18', '2020-09-16 17:18:15', '', 'Recovered'),
+('443802122', '948156298X', 'Sneezing and Headache', '2021-09-01 18:18:04', '2021-09-05 14:39:19', '', 'Dead'),
+('530309323', '011169845X', 'Cough and Fever', '2021-09-05 17:59:49', NULL, '', 'Active'),
+('541884370', '986735927V', 'Cough', '2020-09-11 08:04:18', '2021-09-05 17:18:15', '', 'Recovered'),
 ('585232448', '718609729V', 'Headache', '2020-12-25 13:42:23', '2020-12-29 13:42:23', '', 'Recovered'),
-('730339663', '819572017V', 'Sneezing', '2021-02-02 15:07:21', '2021-02-10 13:42:23', '', 'Recovered'),
-('788053032', '032315425V', 'Headache', '2021-02-05 20:17:01', NULL, '', 'Active'),
-('831510403', '986735927V', 'Asymptotic', '2021-07-30 02:35:26', '2021-08-05 13:42:23', '', 'Recovered'),
-('865937809', '237854928X', 'Cough', '2021-03-25 01:15:10', NULL, '', 'Dead'),
-('874686916', '674849922X', 'Fever', '2021-03-23 18:16:31', '2021-03-25 13:42:23', '', 'Recovered'),
-('882067798', '725513042V', 'Cough', '2021-04-03 19:54:10', '2021-04-10 13:42:23', '', 'Recovered');
+('730339663', '819572017V', 'Sneezing', '2021-02-02 15:07:21', '2021-09-05 13:42:23', '', 'Recovered'),
+('788053032', '032315425V', 'Headache', '2021-09-01 20:17:01', NULL, '', 'Active'),
+('831510403', '986735927V', 'Asymptotic', '2021-07-30 02:35:26', '2021-09-05 13:42:23', '', 'Recovered'),
+('865937809', '237854928X', 'Cough', '2021-03-25 01:15:10', '2021-09-05 14:39:35', '', 'Dead'),
+('874686916', '674849922X', 'Fever', '2021-03-23 18:16:31', '2021-03-24 13:42:23', '', 'Recovered'),
+('882067798', '725513042V', 'Cough', '2021-04-03 19:54:10', '2021-09-05 13:42:23', '', 'Recovered');
 
 --
 -- Dumping data for table `patient`
@@ -241,9 +250,9 @@ INSERT INTO `patient` (`patient_id`, `name`, `address`, `district`, `blood_type`
 ('234354828V', 'Cullen Breslane', '9 Fieldstone Parkway', 'Matale', 'AB+', 29, '0728247971'),
 ('237854928X', 'Sabina Hekkert', '3023 8th Point', 'Matale', 'AB+', 51, '0783215839'),
 ('240892633V', 'Brew Crowcher', '9924 Upham Crossing', 'Matale', 'A-', 30, '0764796748'),
-('269051204V', 'Hilarius Perell', '12282 2nd Lane', 'Nuwara Eliya', 'A-', 56, '0709413770'),
-('272944246V', 'Gus Buxcy', '732 Roxbury Place', 'Nuwara Eliya', 'O-', 35, '0767786196'),
-('275984016V', 'Marlyn Cuffley', '2795 Hansons Way', 'Nuwara Eliya', 'O+', 45, '0787156404'),
+('269051204V', 'Hilarius Perell', '12282 2nd Lane', 'NuwaraEliya', 'A-', 56, '0709413770'),
+('272944246V', 'Gus Buxcy', '732 Roxbury Place', 'NuwaraEliya', 'O-', 35, '0767786196'),
+('275984016V', 'Marlyn Cuffley', '2795 Hansons Way', 'NuwaraEliya', 'O+', 45, '0787156404'),
 ('278901015V', 'Tiphani Garratt', '7 Brentwood Way', 'Kegalle', 'O+', 50, '0760269265'),
 ('282595281X', 'Ambrosius Eads', '26309 Prentice Court', 'Kegalle', 'A-', 60, '0767866700'),
 ('283027297V', 'Gale McEntagart', '55 La Follette Pass', 'Kegalle', 'O-', 51, '0789269894'),
@@ -324,7 +333,7 @@ INSERT INTO `patient` (`patient_id`, `name`, `address`, `district`, `blood_type`
 
 INSERT INTO `test` (`test_id`, `report_id`, `date`, `test_type`, `result`) VALUES
 ('1933571', '00000001', '2021-08-31 15:31:38', 'PCR', 1),
-('1933572', '148701361', '2020-11-07 15:31:38', 'PCR', 1),
+('1933572', '148701361', '2021-08-31 15:31:38', 'PCR', 1),
 ('1933577', '530309323', '2021-03-26 15:35:12', 'RAT', 0),
 ('1933578', '530309323', '2021-04-27 15:35:12', 'RAT', 1),
 ('1933587', '530309323', '2021-04-01 15:36:38', 'PCR', 1);
@@ -339,7 +348,9 @@ INSERT INTO `user` (`user_id`, `name`, `email`, `password`, `contact_no`, `user_
 ('3', 'Saman Silva', 'saman@ssam.com', 'abc123', '09845373', 'DOC', 0),
 ('4', 'MOH Perera', 'mohperera@moh.lk', '$2a$12$0pIBatW/LVgGpr8FR8qeY.0g/tedU5kLOO5Qmqr6qN4GObJJCqj4S', '0771232114', 'MOH', 0),
 ('5', 'Kusal Mendis', 'kmendis@moh.lk', '$2a$12$4ctgWsgLkQsYX8Y.QuS2/uXmWBDS1jLD1t/I0bEKcKZUeAd2NoRAC', '0712729729', 'DOC', 0),
-('903000000', 'Maximilian', 'test@test.com', '$2a$12$znEbf9xPgnCauWeOb6/z.OKAYrBz3t8uahBleqU7tKPp2uv9PGDFi', '0777374839', 'HA', 0);
+('903000000', 'Maximilian', 'test@test.com', '$2a$12$znEbf9xPgnCauWeOb6/z.OKAYrBz3t8uahBleqU7tKPp2uv9PGDFi', '0777374839', 'HA', 0),
+('903000001', 'Chaminda Vaas', 'cvaas@ymail.com', '$2a$12$86d/0koae7nYqEnbQyXcxOPvrw5HIm0QmKzQiEvmD7.oOzY7VvgNG', '0771237876', 'DOC', 0),
+('903000002', 'Russel Arnold', 'rarnold@ymail.com', '$2a$12$86d/0koae7nYqEnbQyXcxOPvrw5HIm0QmKzQiEvmD7.oOzY7VvgNG', '0771234176', 'HA', 0);
 
 --
 -- Dumping data for table `ward`
@@ -352,6 +363,15 @@ INSERT INTO `ward` (`id`, `ward_no`, `capacity`, `facility_id`, `ward_type`) VAL
 (4, '2', 10, 8, 'Normal'),
 (5, '1', 5, 12, 'Covid'),
 (6, '2', 5, 12, 'Normal');
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `district_status`
+--
+DROP TABLE IF EXISTS `district_status`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `district_status`  AS  select `patient`.`district` AS `district`,count('district') AS `districtCount`,sum(case when (cast(`medicalreport`.`admitted_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Active') then 1 when (cast(`medicalreport`.`discharged_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Recovered') then 1 when (cast(`medicalreport`.`discharged_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Dead') then 1 else 0 end) AS `todayCount`,`medicalreport`.`status` AS `status` from (`medical_report` `medicalreport` left join `patient` on(`medicalreport`.`patient_id` = `patient`.`patient_id`)) group by `patient`.`district`,`medicalreport`.`status` ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
