@@ -1,5 +1,5 @@
 const {register,overallDistrictsStats,overallDistrictStats,overallCountryStats,historicalCases,historicalRecovered,
-    historicalDeaths,historicalTests} = require("../controllers/moh");
+    historicalDeaths,historicalTests,getFacilities} = require("../controllers/moh");
 const authorization = require("../middlewares/authorization");
 const express = require("express");
 const router = express.Router();
@@ -14,5 +14,7 @@ router.get('/historical/cases',historicalCases);
 router.get('/historical/recovered',historicalRecovered);
 router.get('/historical/deaths',historicalDeaths);
 router.get('/historical/tests',historicalTests);
+
+router.get('/facilities',getFacilities);
 
 module.exports = router;
