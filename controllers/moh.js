@@ -12,22 +12,25 @@ var User = models.User;
 var DistrictStatus = models.DistrictStatus;
 var MedicalReport = models.MedicalReport;
 var Test = models.Test;
+var FacilityStaff = models.FacilityStaff;
+var Facility = models.Facility;
 
-function validateRegister(id, name, email, contact, password,accountType) {
+function validateRegister(id, name, email, contact, password,accountType,facilityId) {
     const schema = Joi.object({
         id: Joi.string().required().label('ID'),
         email: Joi.string().email().trim().lowercase().max(100).required().label('Email'),
         name: Joi.string().trim().max(255).required().label('Name'),
         contact: Joi.string().max(12).required().label('Contact'),
         password: Joi.string().trim().min(5).required().label('Password'),
-        accountType: Joi.string().required().label('Account Type')
+        accountType: Joi.string().required().label('Account Type'),
+        facilityId: Joi.number().label("Facility")
     });
-    return schema.validate({ id: id, email: email, name: name, contact: contact, password: password, accountType: accountType })
+    return schema.validate({ id: id, email: email, name: name, contact: contact, password: password, accountType: accountType, facilityId: facilityId })
 }
 
 const register = async (req, res, next) => {
-    const {id,email,name,contact,password,accountType} = req.body;
-    const { error, value } = validateRegister(id, name, email, contact, password, accountType);
+    const {id,email,name,contact,password,accountType,facilityId} = req.body;
+    const { error, value } = validateRegister(id, name, email, contact, password, accountType,facilityId);
     if (error) {
         return errorMessage(res, error.details[0].message, 422)
     }
@@ -39,15 +42,36 @@ const register = async (req, res, next) => {
     }
     try {
         const hashedPw = await bcrypt.hash(value.password, 12);
-        const queryResult = await User.create({
+        let createUserObj = {
             user_id: value.id,
             name: value.name,
             email: value.email,
             contact_no: value.contact,
             password: hashedPw,
             user_type: value.accountType
-        });
-        return successMessage(res, {}, 'User created successfully', 201);
+        };
+        let queryResult;
+        if (value.accountType!=='MOH' && facilityId){
+            createUserObj["facility_staffs"] = {
+                user_id: value.id,
+                facility_id: value.facilityId
+            };
+            queryResult = await User.create(createUserObj,{
+                include: {
+                    model: FacilityStaff,
+                    as: 'facility_staffs'
+                }
+            });
+        }
+        else if(value.accountType==='MOH' && !facilityId) {
+            queryResult = await User.create(createUserObj);
+        }
+        if (queryResult){
+            return successMessage(res, 'User created successfully', 201);
+        }
+        else {
+            return errorMessage(res, "User registration failed", 400)
+        }
     }
     catch (err) {
         return errorMessage(res, 'Internal Server Error', 500);
@@ -205,7 +229,25 @@ const historicalTests = async (req,res,next) => {
     }
 };
 
+const getFacilities = async (req,res,next) => {
+    try{
+        const facilities = await Facility.findAll({
+           attributes: ['facility_id','name']
+        });
+        if (facilities){
+            return successMessage(res,facilities,'Facilities found')
+        }
+        else {
+            return errorMessage(res, 'Facilities Not Found', 404);
+        }
+
+    }
+    catch(err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+};
+
 module.exports = {
     register,overallDistrictsStats,overallDistrictStats,overallCountryStats,historicalCases,historicalRecovered,historicalDeaths,
-    historicalTests
+    historicalTests,getFacilities
 };
