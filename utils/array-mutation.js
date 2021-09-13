@@ -37,6 +37,7 @@ const districtStatsMutate = (arr,districtInfo) => {
     }, {});
 };
 
+
 const countryStatsMutate = (arr) => {
     return  arr.reduce((acc, curr) => {
         const { district, districtCount,todayCount, status } = curr;

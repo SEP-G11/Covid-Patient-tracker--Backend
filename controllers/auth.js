@@ -35,7 +35,8 @@ const login = async (req, res, next) => {
       return errorMessage(res, 'Incorrect email or password', 401);
     }
     loadedUser = result;
-    const isEqual = await bcrypt.compare(password,result.password);
+    const isEqual = await bcrypt.compare(password, result.password);
+    
     if (!isEqual){
       return errorMessage(res, 'Incorrect email or password', 401);
     }

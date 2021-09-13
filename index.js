@@ -15,6 +15,10 @@ app.use(express.urlencoded({ extended: true }));
 //Routers
 const authRouter = require("./routes/auth");
 const mohRouter = require("./routes/moh");
+const bedRouter = require("./routes/bed");
+const patientRouter = require("./routes/patient");
+
+
 // const doctorRouter = require("./routes/doctor");
 // const hospitalAdminRouter = require("./routes/hospitalAdmin");
 
@@ -25,7 +29,8 @@ app.get("/", (req, res) => {
 
 app.use("/auth", authRouter);
 app.use("/moh", mohRouter);
-// app.use("/doctor", doctorRouter);
+app.use("/bed", bedRouter);
+app.use("/patient", patientRouter);
 // app.use("/hospitalAdmin", hospitalAdminRouter);
 
 app.get("/*", (req, res) => {
