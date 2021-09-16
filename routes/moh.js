@@ -16,6 +16,6 @@ router.get('/historical/recovered',historicalRecovered);
 router.get('/historical/deaths',historicalDeaths);
 router.get('/historical/tests',historicalTests);
 
-router.get('/facilities',getFacilities);
+router.get('/facilities',protect,authorize(['MOH']),getFacilities);
 
 module.exports = router;
