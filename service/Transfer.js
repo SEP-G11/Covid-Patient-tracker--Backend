@@ -13,20 +13,20 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: false
     },
-    origin: {
+    origin_bed_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'facility',
-        key: 'facility_id'
+        model: 'bed',
+        key: 'id'
       }
     },
-    destination: {
+    destination_bed_id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {
-        model: 'facility',
-        key: 'facility_id'
+        model: 'bed',
+        key: 'id'
       }
     }
   }, {
@@ -42,17 +42,17 @@ module.exports = function(sequelize, DataTypes) {
         ]
       },
       {
-        name: "FK_TransferOrigin",
+        name: "FK_TransferDestBed",
         using: "BTREE",
         fields: [
-          { name: "origin" },
+          { name: "destination_bed_id" },
         ]
       },
       {
-        name: "FK_TransferDest",
+        name: "FK_TransferOriginBed",
         using: "BTREE",
         fields: [
-          { name: "destination" },
+          { name: "origin_bed_id" },
         ]
       },
     ]
