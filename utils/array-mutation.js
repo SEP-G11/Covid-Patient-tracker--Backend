@@ -80,5 +80,26 @@ const dateMapToTestsMutate = (arr,lastDays) => {
     }, accumulator);
 };
 
-module.exports = {districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate};
+const facilityBedsMutate = (arr) => {
+    return  arr.reduce((acc, curr) => {
+        const { facilityId, wardType,isOccupied } = curr.dataValues;
+
+        if (!acc[facilityId]) {
+            acc[facilityId] = {
+                totalCovidBeds: 0,
+                occupiedCovidBeds: 0,
+                totalNormalBeds: 0,
+                occupiedNormalBeds: 0,
+            };
+        }
+
+        acc[facilityId][`total${wardType}Beds`] += 1;
+        acc[facilityId][`occupied${wardType}Beds`] += isOccupied;
+
+        return acc;
+    },{});
+};
+
+
+module.exports = {districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate,facilityBedsMutate};
 

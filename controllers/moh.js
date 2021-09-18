@@ -5,7 +5,7 @@ var models = require("../service/init-models").initModels(sequelize);
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
-const { districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate} = require("../utils/array-mutation");
+const { districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate,facilityBedsMutate} = require("../utils/array-mutation");
 var fs = require('fs');
 
 var User = models.User;
@@ -14,6 +14,7 @@ var MedicalReport = models.MedicalReport;
 var Test = models.Test;
 var FacilityStaff = models.FacilityStaff;
 var Facility = models.Facility;
+var FacilityBed = models.FacilityBed;
 
 function validateRegister(id, name, email, contact, password,accountType,facilityId) {
     const schema = Joi.object({
@@ -232,9 +233,8 @@ const historicalTests = async (req,res,next) => {
 const getFacilities = async (req,res,next) => {
     try{
         const facilities = await Facility.findAll({
-           attributes: ['facility_id','name']
         });
-        if (facilities){
+        if (facilities && facilities.length>0){
             return successMessage(res,facilities,'Facilities found')
         }
         else {
@@ -247,7 +247,125 @@ const getFacilities = async (req,res,next) => {
     }
 };
 
+const getFacilitiesRecovered = async (req,res,next) => {
+    const facilityId = parseInt(req.query.facility) || null;
+    let queryOptions={
+        where: {
+            status: 'Recovered'
+        },
+        attributes: [['discharged_facility','facility_id'],
+            [sequelize.fn('COUNT', 'discharged_facility'), 'count'],
+            [sequelize.fn('SUM', sequelize.literal(`CASE WHEN (date(discharged_at)=date(NOW()) and status = "Recovered") THEN 1 ELSE 0 END`)), 'todayCount']
+        ],
+        group: 'discharged_facility'
+    };
+
+    if (facilityId){
+        queryOptions.where['discharged_facility'] = facilityId
+    }
+
+    try{
+        const facilitiesRecovered = await MedicalReport.findAll(queryOptions);
+
+        if (facilitiesRecovered && facilitiesRecovered.length>0){
+            return successMessage(res,facilitiesRecovered,'Facilities recoveries found')
+        }
+        else {
+            return errorMessage(res, 'Facilities recoveries Not Found', 404);
+        }
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+};
+
+const getFacilitiesDeaths = async (req,res,next) => {
+    const facilityId = parseInt(req.query.facility) || null;
+    let queryOptions={
+        where: {
+            status: 'Dead'
+        },
+        attributes: [['discharged_facility','facility_id'],
+            [sequelize.fn('COUNT', 'discharged_facility'), 'count'],
+            [sequelize.fn('SUM', sequelize.literal(`CASE WHEN (date(discharged_at)=date(NOW()) and status = "Dead") THEN 1 ELSE 0 END`)), 'todayCount']
+        ],
+        group: 'discharged_facility'
+    };
+
+    if (facilityId){
+        queryOptions.where['discharged_facility'] = facilityId
+    }
+
+    try{
+        const facilitiesDeaths = await MedicalReport.findAll(queryOptions);
+
+        if (facilitiesDeaths && facilitiesDeaths.length>0){
+            return successMessage(res,facilitiesDeaths,'Facilities deaths found')
+        }
+        else {
+            return errorMessage(res, 'Facilities deaths Not Found', 404);
+        }
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+};
+
+const getFacilitiesActive = async (req,res,next) => {
+    const facilityId = parseInt(req.query.facility) || null;
+    let queryOptions={
+        where: {
+            status: 'Active'
+        },
+        attributes: [['admitted_facility','facility_id'],
+            [sequelize.fn('COUNT', 'admitted_facility'), 'count'],
+            [sequelize.fn('SUM', sequelize.literal(`CASE WHEN (date(admitted_at)=date(NOW()) and status = "Active") THEN 1 ELSE 0 END`)), 'todayCount']
+        ],
+        group: 'admitted_facility'
+    };
+
+    if (facilityId){
+        queryOptions.where['admitted_facility'] = facilityId
+    }
+
+    try{
+        const facilitiesActive = await MedicalReport.findAll(queryOptions);
+
+        if (facilitiesActive && facilitiesActive.length>0){
+            return successMessage(res,facilitiesActive,'Facilities active found')
+        }
+        else {
+            return errorMessage(res, 'Facilities active Not Found', 404);
+        }
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+};
+
+const getFacilitiesBeds = async (req,res,next) => {
+    try{
+        const facilityBeds = await FacilityBed.findAll({
+            attributes: [['FacilityId','facilityId'],['WardType','wardType'],
+                [sequelize.literal(`CASE WHEN isOccupied is null THEN 0 ELSE isOccupied END`), 'isOccupied']
+            ],
+        });
+
+        if (facilityBeds && facilityBeds.length>0){
+            return successMessage(res,facilityBedsMutate(facilityBeds),'Facilities Beds data found')
+        }
+        else {
+            return errorMessage(res, 'Facilities Beds data Not Found', 404);
+        }
+
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+
+};
+
 module.exports = {
     register,overallDistrictsStats,overallDistrictStats,overallCountryStats,historicalCases,historicalRecovered,historicalDeaths,
-    historicalTests,getFacilities
+    historicalTests,getFacilities,getFacilitiesRecovered,getFacilitiesDeaths,getFacilitiesActive,getFacilitiesBeds
 };
