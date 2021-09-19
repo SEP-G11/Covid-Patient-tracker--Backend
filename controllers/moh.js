@@ -365,7 +365,58 @@ const getFacilitiesBeds = async (req,res,next) => {
 
 };
 
+const facilityHistorical = async (req,res,next) => {
+    const lastDays = parseInt(req.query.lastdays) || 1;
+    const caseType = req.query.type || 'cases';
+    const facilityId = req.query.facility || 1;
+    let dateType;
+    let status;
+    let  facility;
+    if (caseType==='cases'){
+        dateType='admitted_at';
+        facility='admitted_facility';
+    }
+    else if (caseType==='deaths'){
+        dateType='discharged_at';
+        facility='discharged_facility';
+        status = 'Dead';
+    }
+    else if (caseType==='recovered'){
+        dateType='discharged_at';
+        facility='discharged_facility';
+        status = 'Recovered'
+    }
+    else {
+        return errorMessage(res, 'Invalid case type', 422);
+    }
+    let queryOptions = {
+        attributes: [
+            [sequelize.fn('date', sequelize.col(dateType)), 'date'],
+            [sequelize.fn('COUNT', dateType), 'count']
+        ],
+        where: [sequelize.where(sequelize.fn('date', sequelize.col(dateType)),
+            {[Op.gt]: moment().subtract(lastDays, 'days').toDate()}),{[facility]:facilityId}],
+        group: ('date')
+    };
+    if (status==='Recovered' || status==='Dead') {
+        queryOptions.where.push({status: status})
+    }
+
+    try{
+        const facilityLastXDays = await MedicalReport.findAll(queryOptions);
+        if (facilityLastXDays){
+            return successMessage(res,dateMapToValuesMutate(facilityLastXDays,lastDays),`Historical ${caseType} of facility ${facilityId} over last ${lastDays} days Found`, 201)
+        }
+        else {
+            return errorMessage(res, 'Data Not Found', 404);
+        }
+    }
+    catch (err) {
+        return errorMessage(res, 'Internal Server Error', 500);
+    }
+};
+
 module.exports = {
     register,overallDistrictsStats,overallDistrictStats,overallCountryStats,historicalCases,historicalRecovered,historicalDeaths,
-    historicalTests,getFacilities,getFacilitiesRecovered,getFacilitiesDeaths,getFacilitiesActive,getFacilitiesBeds
+    historicalTests,getFacilities,getFacilitiesRecovered,getFacilitiesDeaths,getFacilitiesActive,getFacilitiesBeds,facilityHistorical
 };
