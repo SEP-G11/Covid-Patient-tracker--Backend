@@ -17,7 +17,8 @@ const authRouter = require("./routes/auth");
 const mohRouter = require("./routes/moh");
 const bedRouter = require("./routes/bed");
 const patientRouter = require("./routes/patient");
-
+const reportRouter = require("./routes/report");
+const testRouter  = require("./routes/test");
 
 // const doctorRouter = require("./routes/doctor");
 // const hospitalAdminRouter = require("./routes/hospitalAdmin");
@@ -31,7 +32,8 @@ app.use("/auth", authRouter);
 app.use("/moh", mohRouter);
 app.use("/bed", bedRouter);
 app.use("/patient", patientRouter);
-// app.use("/hospitalAdmin", hospitalAdminRouter);
+app.use("/report", reportRouter);
+app.use("/test", testRouter);
 
 app.get("/*", (req, res) => {
   res.status(404).json({

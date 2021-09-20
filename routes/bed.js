@@ -4,7 +4,12 @@ const express = require("express");
 const router = express.Router();
 
 
-router.get('/search/:facilityId',bedSearch);
+const {protect,authorize} = require('../middlewares/authorization');
+
+
+// router.get('/search/:facilityId',bedSearch);
+
+router.get('/search/:facilityId',protect,authorize(['HA' ,'DOC']),bedSearch);
 
 
 module.exports = router;

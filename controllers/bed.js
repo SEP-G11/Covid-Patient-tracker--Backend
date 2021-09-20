@@ -5,21 +5,24 @@ const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
 
-
+const { facilitybeds} = require("../utils/array-mutation");
 
 var FacilityBed = models.FacilityBed;
 
 
 
 const bedSearch = async (req,res,next) => {
-    const facilityId = req.params.facilityId;
+    const facilityId = req.params.facilityId=="*" ? (req.facilityId):(req.params.facilityId);
 
     try{
+
         const bedResult = await FacilityBed.findAll({
             where: {facilityId: facilityId}
         });
+
+       
         if (bedResult && bedResult.length!==0){
-            return successMessage(res, bedResult, 'Beds Data Found', 201);
+            return successMessage(res,facilitybeds( bedResult), 'Beds Data Found', 201);
         }
         else {
             return errorMessage(res, 'Beds Data Not Found', 404);

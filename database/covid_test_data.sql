@@ -25,6 +25,8 @@ SET time_zone = "+00:00";
 --
 -- Dumping data for table `allocation`
 --
+use covid_test;
+
 
 INSERT INTO `allocation` (`id`, `patient_id`, `bed_no`, `is_occupied`) VALUES
 (1, '009987525V', 1, 1),

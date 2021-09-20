@@ -7,6 +7,7 @@ const config = require("config");
 const { successMessage, errorMessage } = require("../utils/message-template");
 
 var User = models.User;
+var FacilityStaff = models.FacilityStaff;
 
 function validateLogin(email,password) {
   const schema = Joi.object({
@@ -25,27 +26,40 @@ const login = async (req, res, next) => {
   }
   let loadedUser;
   try {
-    const result = await User.findOne({
+    const result = await User.findAll({
       where: {
         email: value.email,
         is_deleted: 0
+      },
+      include: {
+        model: FacilityStaff,
+        as: 'facility_staffs'
       }
     });
-    if (!result) {
+
+    
+    if (!result.length>0) {
       return errorMessage(res, 'Incorrect email or password', 401);
     }
-    loadedUser = result;
-    const isEqual = await bcrypt.compare(password, result.password);
-    
+    loadedUser = result[0].dataValues;
+
+    const isEqual = await bcrypt.compare(password,loadedUser.password);
     if (!isEqual){
       return errorMessage(res, 'Incorrect email or password', 401);
     }
-    const token = jwt.sign({
-          email: loadedUser.email,
-          userID: loadedUser.user_id.toString(),
-          accType: loadedUser.user_type,
-          expiresIn: 3600
-        },
+   
+    let tokenData = {
+      email: loadedUser.email,
+      userID: loadedUser.user_id.toString(),
+      accType: loadedUser.user_type,
+      expiresIn: 3600
+    };
+    
+    if (loadedUser.facility_staffs[0].dataValues.facility_id){
+      tokenData["facilityId"]=loadedUser.facility_staffs[0].dataValues.facility_id;
+    }
+    //console.log("hjdkskd")
+    const token = jwt.sign(tokenData,
         'somesupersecret'                 //put in ENV
     );
     return successMessage(res, {

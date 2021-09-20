@@ -1,11 +1,16 @@
 const {admitPatient,dischargePatient,transferPatient} = require("../controllers/patient");
-const authorization = require("../middlewares/authorization");
 const express = require("express");
 const router = express.Router();
+const {protect,authorize} = require('../middlewares/authorization');
 
 
-router.post('/admit/',admitPatient);
-router.post('/discharge/', dischargePatient);
-router.post('/transfer/',transferPatient);
+
+//router.post('/admit/',admitPatient);
+
+router.post('/admit/',protect,authorize(['HA','DOC']),admitPatient);
+router.post('/discharge/',protect,authorize(['HA','DOC']), dischargePatient);
+router.post('/transfer/',protect,authorize(['HA','DOC']),transferPatient);
+
+
 
 module.exports = router;
