@@ -4,6 +4,7 @@ var models = require("../service/init-models").initModels(sequelize);
 
 var Patient = models.Patient;
 var MedicalReport = models.MedicalReport;
+var Test = models.Test;
 
 const getPatients = async (req, res, next) => {
     const patients = await Patient.findAll();
@@ -18,6 +19,13 @@ const getPatientById = async (req, res, next) => {
 const getPatientReportById = async (req, res, next) => {
   const report = await MedicalReport.findOne({where: {patient_id: req.params.id}})
   res.json(report)
+}
+
+const getTestDetailsById = async (req, res, next) => {
+  const report = await MedicalReport.findOne({where: {patient_id: req.params.id}})
+  const reportId = report.report_id
+  const test = await Test.findAll({where: {report_id: reportId}})
+  res.json(test)
 }
 
 const updatePatient = async (req, res, next) => {
@@ -71,5 +79,5 @@ const updatePatientReport = async (req, res, next) => {
 };
   
 
-module.exports = { getPatients , getPatientById , updatePatient , getPatientReportById , updatePatientReport };
+module.exports = { getPatients , getPatientById , updatePatient , getPatientReportById , getTestDetailsById, updatePatientReport };
   
