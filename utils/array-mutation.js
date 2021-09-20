@@ -59,31 +59,88 @@ const facilitybeds = (arr) => {
         }
         if (!acc["CovidBed"]) {
             acc["CovidBed"] = [];
-        }
+        }        
 
         if (!acc["NormalBed"]) {
             acc["NormalBed"] = [];
         }
 
+
+
+        if (!acc["CovidBedFree"]) {
+            acc["CovidBedFree"] = 0;
+        }
+        if (!acc["CovidBedUsed"]) {
+            acc["CovidBedUsed"] = 0;
+        }
+
+        if (!acc["NormalBedFree"]) {
+            acc["NormalBedFree"] = 0;
+        }
+
+        if (!acc["NormalBedUsed"]) {
+            acc["NormalBedUsed"] =0;
+        }
+
+
+
         if (WardType == "Covid" ) {
-            if(acc.CovidBed.find(record => record.BedID === BedID )){                                                        
+            if(acc.CovidBed.find(record => record.BedID === BedID ) ){    
+                if(acc.CovidBed.find(record => record.BedID === BedID && record.IsOccupied === 1  )){
+
+                }
+                else{
+                    if(IsOccupied){
+                        acc['CovidBed'].pop({"BedID":BedID,"IsOccupied":0});
+                        acc['CovidBed'].push({"BedID":BedID,"IsOccupied":IsOccupied});
+                        acc["CovidBedUsed"]+=1;
+                        acc["CovidBedFree"]-=1;                        
+                    }
+                    else{                        
+                    }                  
+                }
             }
             else{
                 acc['CovidBed'].push({"BedID":BedID,"IsOccupied":IsOccupied});
+                if(IsOccupied){
+                    acc["CovidBedUsed"]+=1;
+                }
+                else{
+                    acc["CovidBedFree"]+=1;
+                }
             }          
         }
 
-        if (WardType == "Normal") {
-             if(acc.NormalBed.find(record => record.BedID === BedID )){    
+     
+
+        if (WardType == "Normal" ) {
+            if(acc.CovidBed.find(record => record.BedID === BedID ) ){    
+                if(acc.CovidBed.find(record => record.BedID === BedID && record.IsOccupied === 1  )){
+                }
+                else{
+
+                    if(IsOccupied){
+                         acc['NormalBed'].pop({"BedID":BedID,"IsOccupied":0});
+                        acc['NormalBed'].push({"BedID":BedID,"IsOccupied":IsOccupied});
+                        acc["NormalBedUsed"]+=1;
+                        acc["NormalBedUsed"]-=1;
+                    }
+                    else{                                              
+                    }                   
+                }
 
             }
-            else{
+            else{            
+
                 acc['NormalBed'].push({"BedID":BedID,"IsOccupied":IsOccupied});
-            }
-
-           
+                if(IsOccupied){
+                    acc["NormalBedUsed"]+=1;
+                }
+                else{
+                    acc["NormalBedFree"]+=1;
+                }
+            }          
         }
-
 
         return acc;
     }, {});
