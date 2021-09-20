@@ -18,10 +18,10 @@ router.get('/historical/deaths',historicalDeaths);
 router.get('/historical/tests',historicalTests);
 
 router.get('/facilities',protect,authorize(['MOH']),getFacilities);
-router.get('/facilities/recovered',getFacilitiesRecovered);
-router.get('/facilities/deaths',getFacilitiesDeaths);
-router.get('/facilities/active',getFacilitiesActive);
-router.get('/facilities/beds',getFacilitiesBeds);
-router.get('/facilities/historical',facilityHistorical);
+router.get('/facilities/recovered',protect,authorize(['MOH']),getFacilitiesRecovered);
+router.get('/facilities/deaths',protect,authorize(['MOH']),getFacilitiesDeaths);
+router.get('/facilities/active',protect,authorize(['MOH']),getFacilitiesActive);
+router.get('/facilities/beds',protect,authorize(['MOH']),getFacilitiesBeds);
+router.get('/facilities/historical',protect,authorize(['MOH']),facilityHistorical);
 
 module.exports = router;
