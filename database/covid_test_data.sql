@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 12, 2021 at 03:46 PM
+-- Generation Time: Sep 20, 2021 at 05:32 AM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -28,7 +28,8 @@ SET time_zone = "+00:00";
 
 INSERT INTO `allocation` (`id`, `patient_id`, `bed_no`, `is_occupied`) VALUES
 (1, '009987525V', 1, 1),
-(2, '674849922X', 2, 1);
+(2, '674849922X', 2, 1),
+(3, '078655125V', 11, 0);
 
 --
 -- Dumping data for table `bed`
@@ -198,134 +199,135 @@ INSERT INTO `facility` (`facility_id`, `name`, `address`, `contact_no`) VALUES
 
 INSERT INTO `facility_staff` (`user_id`, `facility_id`) VALUES
 ('903000001', 1),
-('903000002', 2);
+('903000002', 2),
+('986005000', 4);
 
 --
 -- Dumping data for table `medical_report`
 --
 
-INSERT INTO `medical_report` (`report_id`, `patient_id`, `symptoms`, `admitted_at`, `discharged_at`, `description`, `status`) VALUES
-('00000001', '009987525V', 'Cough and Headache', '2021-09-05 15:17:43', '2021-09-09 21:28:12', '', 'Recovered'),
-('148701361', '674849922X', 'Asymptotic', '2021-09-05 11:20:15', NULL, '', 'Active'),
-('27654321', '269051204V', 'Fever and Headache', '2021-09-01 14:10:51', '2021-09-05 14:10:51', '', 'Recovered'),
-('286740672', '819572017V', 'Fever', '2021-01-09 03:34:47', '2021-09-04 17:18:01', '', 'Recovered'),
-('369814018', '237854928X', 'Cough', '2021-06-03 08:06:26', NULL, '', 'Active'),
-('443802122', '948156298X', 'Sneezing and Headache', '2021-09-01 18:18:04', '2021-09-05 14:39:19', '', 'Dead'),
-('530309323', '011169845X', 'Cough and Fever', '2021-09-05 17:59:49', NULL, '', 'Active'),
-('541884370', '986735927V', 'Cough', '2020-09-11 08:04:18', '2021-09-05 17:18:15', '', 'Recovered'),
-('585232448', '718609729V', 'Headache', '2020-12-25 13:42:23', '2020-12-29 13:42:23', '', 'Recovered'),
-('730339663', '819572017V', 'Sneezing', '2021-02-02 15:07:21', '2021-09-05 13:42:23', '', 'Recovered'),
-('788053032', '032315425V', 'Headache', '2021-09-01 20:17:01', NULL, '', 'Active'),
-('831510403', '986735927V', 'Asymptotic', '2021-07-30 02:35:26', '2021-09-05 13:42:23', '', 'Recovered'),
-('865937809', '237854928X', 'Cough', '2021-03-25 01:15:10', '2021-09-05 14:39:35', '', 'Dead'),
-('874686916', '674849922X', 'Fever', '2021-03-23 18:16:31', '2021-03-24 13:42:23', '', 'Recovered'),
-('882067798', '725513042V', 'Cough', '2021-04-03 19:54:10', '2021-09-05 13:42:23', '', 'Recovered');
+INSERT INTO `medical_report` (`report_id`, `patient_id`, `symptoms`, `admitted_at`, `admitted_facility`, `discharged_at`, `discharged_facility`, `description`, `status`) VALUES
+('00000001', '009987525V', 'Cough and Headache', '2021-09-05 15:17:43', 1, '2021-09-09 21:28:12', 1, '', 'Recovered'),
+('148701361', '674849922X', 'Asymptotic', '2021-09-17 11:20:15', 2, NULL, NULL, '', 'Active'),
+('27654321', '269051204V', 'Fever and Headache', '2021-09-05 14:10:51', 1, '2021-09-17 14:10:51', 1, '', 'Recovered'),
+('286740672', '819572017V', 'Fever', '2021-01-09 03:34:47', 1, '2021-09-04 17:18:01', 2, '', 'Recovered'),
+('369814018', '237854928X', 'Cough', '2021-06-03 08:06:26', 1, NULL, NULL, '', 'Active'),
+('443802122', '948156298X', 'Sneezing and Headache', '2021-09-01 18:18:04', 2, '2021-09-05 14:39:19', 2, '', 'Dead'),
+('530309323', '011169845X', 'Cough and Fever', '2021-09-05 17:59:49', 3, NULL, NULL, '', 'Active'),
+('541884370', '986735927V', 'Cough', '2020-09-11 08:04:18', 3, '2021-09-17 17:18:15', 1, '', 'Recovered'),
+('585232448', '718609729V', 'Headache', '2020-12-25 13:42:23', 1, '2020-12-29 13:42:23', 3, '', 'Recovered'),
+('730339663', '819572017V', 'Sneezing', '2021-02-02 15:07:21', 1, '2021-09-05 13:42:23', 2, '', 'Recovered'),
+('788053032', '032315425V', 'Headache', '2021-09-01 20:17:01', 3, NULL, NULL, '', 'Active'),
+('831510403', '986735927V', 'Asymptotic', '2021-07-30 02:35:26', 4, '2021-09-05 13:42:23', 2, '', 'Recovered'),
+('865937809', '237854928X', 'Cough', '2021-03-25 01:15:10', 5, '2021-09-17 14:39:35', 6, '', 'Dead'),
+('874686916', '674849922X', 'Fever', '2021-03-23 18:16:31', 6, '2021-03-24 13:42:23', 7, '', 'Recovered'),
+('882067798', '725513042V', 'Cough', '2021-04-03 19:54:10', 7, '2021-09-17 13:42:23', 5, '', 'Recovered');
 
 --
 -- Dumping data for table `patient`
 --
 
-INSERT INTO `patient` (`patient_id`, `name`, `address`, `district`, `blood_type`, `age`, `contact_no`) VALUES
-('009987525V', 'Kimmi Dekeyser', '169 Bashford Circle', 'Colombo', 'O-', 15, '0785002507'),
-('011169845X', 'Marlow Blockley', '76441 Columbus Alley', 'Colombo', 'O-', 19, '0781595378'),
-('011557052V', 'Aguste Cankett', '9 Green Ridge Lane', 'Colombo', 'AB-', 84, '0767587424'),
-('018684518V', 'Uta Scawton', '6 Ridge Oak Park', 'Gampaha', 'AB+', 83, '0786747275'),
-('022413099X', 'Jesselyn Noni', '44 Amoth Center', 'Gampaha', 'A-', 72, '0780771301'),
-('023655619V', 'Camella Woodyatt', '096 Holy Cross Lane', 'Gampaha', 'A-', 58, '0767963443'),
-('032315425V', 'Rorie Grabb', '3806 Dahle Trail', 'Kandy', 'O+', 78, '0755358255'),
-('059297390X', 'Bert Powlesland', '3794 Sycamore Pass', 'Kandy', 'O+', 30, '0762396185'),
-('078655125V', 'Emily Grinyov', '97898 Novick Court', 'Kandy', 'O+', 82, '0751054057'),
-('111897875V', 'Minna Knight', '05776 Stuart Plaza', 'Kalutara', 'AB-', 13, '0783951159'),
-('117733791V', 'Edward Martensen', '8 Erie Plaza', 'Kalutara', 'O+', 74, '0751277492'),
-('129560268X', 'Gerrilee Hakes', '0 Linden Junction', 'Kalutara', 'O+', 13, '0758963596'),
-('139395201V', 'Zsa zsa Dinsmore', '9914 Emmet Trail', 'Galle', 'A-', 51, '0765735076'),
-('173225931V', 'Talbot Askaw', '03 Declaration Parkway', 'Galle', 'A+', 43, '0769889581'),
-('206240953X', 'Caressa Weagener', '0 Green Terrace', 'Matara', 'O-', 75, '0769037950'),
-('208969701X', 'Angelika Jeannin', '7 Cambridge Crossing', 'Galle', 'A-', 10, '0784995463'),
-('211195228V', 'Marsiella Pembery', '85972 Walton Court', 'Matara', 'O+', 51, '0784298535'),
-('211837365X', 'Celestyn Fishpoole', '55020 Meadow Vale Junction', 'Matara', 'O-', 39, '0727539150'),
-('214604804X', 'Pancho Rickeard', '2193 Carey Center', 'Hambantota', 'B-', 21, '0728013048'),
-('224650919V', 'Sadye MacWhan', '7174 Sachs Road', 'Hambantota', 'B+', 49, '0781708650'),
-('224849687V', 'Ryann Basindale', '39 Columbus Drive', 'Hambantota', 'AB-', 48, '0782355078'),
-('234354828V', 'Cullen Breslane', '9 Fieldstone Parkway', 'Matale', 'AB+', 29, '0728247971'),
-('237854928X', 'Sabina Hekkert', '3023 8th Point', 'Matale', 'AB+', 51, '0783215839'),
-('240892633V', 'Brew Crowcher', '9924 Upham Crossing', 'Matale', 'A-', 30, '0764796748'),
-('269051204V', 'Hilarius Perell', '12282 2nd Lane', 'NuwaraEliya', 'A-', 56, '0709413770'),
-('272944246V', 'Gus Buxcy', '732 Roxbury Place', 'NuwaraEliya', 'O-', 35, '0767786196'),
-('275984016V', 'Marlyn Cuffley', '2795 Hansons Way', 'NuwaraEliya', 'O+', 45, '0787156404'),
-('278901015V', 'Tiphani Garratt', '7 Brentwood Way', 'Kegalle', 'O+', 50, '0760269265'),
-('282595281X', 'Ambrosius Eads', '26309 Prentice Court', 'Kegalle', 'A-', 60, '0767866700'),
-('283027297V', 'Gale McEntagart', '55 La Follette Pass', 'Kegalle', 'O-', 51, '0789269894'),
-('290084850X', 'Selby Jaggar', '1 Sommers Center', 'Ratnapura', 'B+', 56, '0718784232'),
-('291758116V', 'Heinrick Poe', '810 Carberry Way', 'Ratnapura', 'A+', 16, '0788655360'),
-('300180403X', 'Felicio Stidworthy', '2 Tennyson Drive', 'Ratnapura', 'B-', 60, '0780148305'),
-('300819639X', 'Kellsie Goves', '993 Shoshone Drive', 'Kurunegala', 'O-', 30, '0769991139'),
-('313585522X', 'Rhona Lummus', '6218 Caliangt Center', 'Kurunegala', 'A+', 7, '0761329354'),
-('320796919V', 'Noam Freed', '1836 Petterle Way', 'Kurunegala', 'O-', 35, '0782489670'),
-('321595092X', 'Octavia Klimkin', '661 Center Trail', 'Puttalam', 'A+', 89, '0783320789'),
-('325714283V', 'Chiarra Whymark', '4 Evergreen Place', 'Puttalam', 'O+', 82, '0760934115'),
-('344645956V', 'Ada Howe', '5347 Raven Parkway', 'Puttalam', 'O-', 39, '0785910732'),
-('345286813V', 'Zulema Hacon', '119 Jackson Trail', 'Polonnaruwa', 'O+', 73, '0756067549'),
-('347685825V', 'Tedi Mallabone', '6644 Fallview Plaza', 'Polonnaruwa', 'O+', 50, '0780722872'),
-('366346792X', 'Anett Rapsey', '51249 Sunfield Trail', 'Polonnaruwa', 'AB-', 72, '0768707547'),
-('389231984V', 'Launce Patriche', '06 Hermina Park', 'Anuradhapura	', 'O+', 36, '0775342114'),
-('398434626X', 'Bran Iacapucci', '55497 Debra Alley', 'Anuradhapura	', 'A-', 16, '0751086942'),
-('418781265V', 'Ted Hatch', '8 Stuart Parkway', 'Anuradhapura	', 'O+', 53, '0786042502'),
-('433591507X', 'Humfrey Harlock', '0739 Spohn Pass', 'Ampara', 'AB+', 72, '0786319993'),
-('434256607X', 'Leila Stellin', '55120 Sunfield Place', 'Ampara', 'O+', 62, '0789439162'),
-('440940435X', 'Robin Giraudoux', '5532 Butternut Center', 'Ampara', 'AB-', 57, '0767745827'),
-('453105769V', 'Lorenza Placide', '2 Park Meadow Lane', 'Batticaloa', 'O+', 17, '0760174364'),
-('453554765X', 'Currey Peinton', '919 Coleman Parkway', 'Batticaloa', 'A-', 80, '0768068127'),
-('463511888V', 'Lorettalorna Petrol', '63 Schlimgen Alley', 'Batticaloa', 'O+', 65, '0787779706'),
-('471197707V', 'Atlante Bickerstasse', '91309 Boyd Trail', 'Monaragala', 'O-', 68, '0783877196'),
-('491034116V', 'Blythe Lea', '8 Hooker Lane', 'Monaragala', 'AB-', 79, '0785798512'),
-('517531587V', 'Joey Berston', '044 Jackson Plaza', 'Monaragala', 'O-', 31, '0768259789'),
-('519036026X', 'Aprilette Remon', '78107 Sachs Park', 'Badulla', 'AB+', 12, '0768992461'),
-('537512857V', 'Brena Ruddy', '454 Portage Avenue', 'Badulla', 'B-', 49, '0787677849'),
-('561838411X', 'Caty Lampart', '47083 John Wall Point', 'Badulla', 'B+', 21, '0783852992'),
-('562325414X', 'Gabi Mugg', '7 Westridge Point', 'Jaffna', 'O+', 67, '0782446187'),
-('562529567V', 'Nicole Byre', '22942 Knutson Terrace', 'Jaffna', 'O+', 43, '0716705182'),
-('573322295X', 'Joshuah Vurley', '9177 Atwood Court', 'Jaffna', 'O+', 50, '0767581290'),
-('588339237V', 'Trever Vittori', '78344 Logan Place', 'Mannar', 'O-', 82, '0753637657'),
-('596497346X', 'Gerladina Squeers', '28 Autumn Leaf Terrace', 'Mannar', 'O+', 67, '0785601039'),
-('600385515X', 'Nikki Spreadbury', '2112 Thierer Alley', 'Mannar', 'O+', 57, '0752403517'),
-('616703616X', 'Charmane Glowach', '61878 Anderson Avenue', 'Vavuniya', 'O+', 34, '0761442297'),
-('622387967V', 'Meagan Mazella', '169 Kipling Trail', 'Vavuniya', 'AB-', 52, '0766579273'),
-('652971956V', 'Faun Frood', '50 Buena Vista Junction', 'Vavuniya', 'AB+', 47, '0784200036'),
-('661125809X', 'Fiann Renish', '4943 Northwestern Crossing', 'Mullaitivu', 'O+', 43, '0751109045'),
-('674849922X', 'Reagen McIlwaine', '09402 Mockingbird Park', 'Mullaitivu', 'O-', 25, '0783523930'),
-('687261109V', 'Langston Matzl', '03 Truax Pass', 'Mullaitivu', 'B-', 68, '0786726306'),
-('698100485V', 'Ashlie Scudder', '365 Gerald Parkway', 'Trincomalee', 'O-', 28, '0724294443'),
-('699517600X', 'Cart Osgar', '0396 Menomonie Junction', 'Trincomalee', 'B+', 38, '0780854530'),
-('718609729V', 'Vanessa Sharphurst', '63 Lakeland Terrace', 'Trincomalee', 'O-', 19, '0765123360'),
-('719532605V', 'Scarlett Shotboult', '598 Westridge Point', 'Colombo', 'O+', 15, '0702982834'),
-('725513042V', 'Thorvald Hubach', '6091 Truax Hill', 'Colombo', 'A+', 51, '0725004026'),
-('730325092V', 'Bastian Haccleton', '3 Dunning Crossing', 'Colombo', 'B+', 75, '0784970839'),
-('742208808V', 'Marion Franzoli', '0 Carpenter Center', 'Gampaha', 'O-', 14, '0784226573'),
-('754177356V', 'Tootsie Rosborough', '5 Susan Place', 'Gampaha', 'O-', 68, '0786683069'),
-('766960386X', 'Marigold Mocher', '20190 Main Junction', 'Gampaha', 'A+', 85, '0788734472'),
-('771143100X', 'Constantina Yepiskopov', '51007 Tony Circle', 'Kandy', 'B-', 67, '0763742656'),
-('794699363V', 'Agata Stranio', '9703 Anderson Center', 'Kandy', 'AB+', 58, '0785768149'),
-('817562678X', 'Chalmers Hazlegrove', '272 Golf Course Drive', 'Kandy', 'O-', 56, '0761224401'),
-('819572017V', 'Henrie Spinola', '7 Eagan Circle', 'Galle', 'O+', 77, '0710136086'),
-('824467812V', 'Moira Rawson', '36552 Cardinal Court', 'Galle', 'O+', 57, '0763969917'),
-('830824523X', 'Bunny Hanselman', '3 Kim Way', 'Galle', 'A-', 43, '0722804090'),
-('832730498X', 'Debbie Huerta', '59123 Veith Parkway', 'Colombo', 'AB+', 85, '0768658510'),
-('833680949V', 'Kakalina Alan', '221 Del Sol Parkway', 'Colombo', 'B-', 44, '0775241356'),
-('844979873V', 'Rosene Sander', '9 Shasta Crossing', 'Colombo', 'A+', 55, '0786376722'),
-('883482983X', 'Sisely Fipp', '41403 Sugar Court', 'Gampaha', 'O-', 53, '0786845529'),
-('891585711V', 'Hazel Ixer', '69 Holy Cross Center', 'Gampaha', 'O+', 54, '0784115428'),
-('894701332X', 'Isaiah Pien', '3 Delladonna Terrace', 'Gampaha', 'B+', 58, '0771608826'),
-('895608482X', 'Dotty Dolton', '79 Badeau Park', 'Kandy', 'O-', 52, '0714235104'),
-('922249289V', 'Ruby Auger', '16 Algoma Park', 'Kandy', 'A+', 11, '0762242173'),
-('930146530V', 'Heidie Richardes', '06179 Sullivan Street', 'Kandy', 'A+', 18, '0727216170'),
-('943726230V', 'Hetty Gerkens', '97992 Rutledge Alley', 'Kurunegala', 'O+', 32, '0762727724'),
-('947878011X', 'Alwyn Newbery', '4 Huxley Trail', 'Kurunegala', 'AB+', 29, '0708257734'),
-('948156298X', 'Linnell Wilce', '02 Carberry Place', 'Kurunegala', 'O-', 68, '0764871750'),
-('951651607V', 'Nedda Pattisson', '24 Victoria Center', 'Colombo', 'AB-', 68, '0718696682'),
-('975582202X', 'Mireielle Venner', '27115 Northland Pass', 'Colombo', 'A-', 34, '0789267052'),
-('986735927V', 'Gertruda Hairon', '9282 Elmside Alley', 'Colombo', 'AB-', 60, '0752931493'),
-('994982204X', 'Dewey Di Batista', '98667 Jana Parkway', 'Gampaha', 'A-', 28, '0777066167');
+INSERT INTO `patient` (`patient_id`, `name`, `address`, `district`, `blood_type`, `age`, `contact_no`, `gender`, `is_Vaccinated`) VALUES
+('009987525V', 'Kimmi Dekeyser', '169 Bashford Circle', 'Colombo', 'O-', 15, '0785002507', NULL, 0),
+('011169845X', 'Marlow Blockley', '76441 Columbus Alley', 'Colombo', 'O-', 19, '0781595378', NULL, 0),
+('011557052V', 'Aguste Cankett', '9 Green Ridge Lane', 'Colombo', 'AB-', 84, '0767587424', NULL, 0),
+('018684518V', 'Uta Scawton', '6 Ridge Oak Park', 'Gampaha', 'AB+', 83, '0786747275', NULL, 0),
+('022413099X', 'Jesselyn Noni', '44 Amoth Center', 'Gampaha', 'A-', 72, '0780771301', NULL, 1),
+('023655619V', 'Camella Woodyatt', '096 Holy Cross Lane', 'Gampaha', 'A-', 58, '0767963443', NULL, 0),
+('032315425V', 'Rorie Grabb', '3806 Dahle Trail', 'Kandy', 'O+', 78, '0755358255', NULL, 1),
+('059297390X', 'Bert Powlesland', '3794 Sycamore Pass', 'Kandy', 'O+', 30, '0762396185', NULL, 1),
+('078655125V', 'Emily Grinyov', '97898 Novick Court', 'Kandy', 'O+', 82, '0751054057', NULL, 0),
+('111897875V', 'Minna Knight', '05776 Stuart Plaza', 'Kalutara', 'AB-', 13, '0783951159', NULL, 0),
+('117733791V', 'Edward Martensen', '8 Erie Plaza', 'Kalutara', 'O+', 74, '0751277492', NULL, 1),
+('129560268X', 'Gerrilee Hakes', '0 Linden Junction', 'Kalutara', 'O+', 13, '0758963596', NULL, 0),
+('139395201V', 'Zsa zsa Dinsmore', '9914 Emmet Trail', 'Galle', 'A-', 51, '0765735076', NULL, 1),
+('173225931V', 'Talbot Askaw', '03 Declaration Parkway', 'Galle', 'A+', 43, '0769889581', NULL, 0),
+('206240953X', 'Caressa Weagener', '0 Green Terrace', 'Matara', 'O-', 75, '0769037950', NULL, 1),
+('208969701X', 'Angelika Jeannin', '7 Cambridge Crossing', 'Galle', 'A-', 10, '0784995463', NULL, 0),
+('211195228V', 'Marsiella Pembery', '85972 Walton Court', 'Matara', 'O+', 51, '0784298535', NULL, 1),
+('211837365X', 'Celestyn Fishpoole', '55020 Meadow Vale Junction', 'Matara', 'O-', 39, '0727539150', NULL, 1),
+('214604804X', 'Pancho Rickeard', '2193 Carey Center', 'Hambantota', 'B-', 21, '0728013048', NULL, 1),
+('224650919V', 'Sadye MacWhan', '7174 Sachs Road', 'Hambantota', 'B+', 49, '0781708650', NULL, 0),
+('224849687V', 'Ryann Basindale', '39 Columbus Drive', 'Hambantota', 'AB-', 48, '0782355078', NULL, 1),
+('234354828V', 'Cullen Breslane', '9 Fieldstone Parkway', 'Matale', 'AB+', 29, '0728247971', NULL, 1),
+('237854928X', 'Sabina Hekkert', '3023 8th Point', 'Matale', 'AB+', 51, '0783215839', NULL, 0),
+('240892633V', 'Brew Crowcher', '9924 Upham Crossing', 'Matale', 'A-', 30, '0764796748', NULL, 0),
+('269051204V', 'Hilarius Perell', '12282 2nd Lane', 'NuwaraEliya', 'A-', 56, '0709413770', NULL, 0),
+('272944246V', 'Gus Buxcy', '732 Roxbury Place', 'NuwaraEliya', 'O-', 35, '0767786196', NULL, 1),
+('275984016V', 'Marlyn Cuffley', '2795 Hansons Way', 'NuwaraEliya', 'O+', 45, '0787156404', NULL, 1),
+('278901015V', 'Tiphani Garratt', '7 Brentwood Way', 'Kegalle', 'O+', 50, '0760269265', NULL, 1),
+('282595281X', 'Ambrosius Eads', '26309 Prentice Court', 'Kegalle', 'A-', 60, '0767866700', NULL, 1),
+('283027297V', 'Gale McEntagart', '55 La Follette Pass', 'Kegalle', 'O-', 51, '0789269894', NULL, 1),
+('290084850X', 'Selby Jaggar', '1 Sommers Center', 'Ratnapura', 'B+', 56, '0718784232', NULL, 1),
+('291758116V', 'Heinrick Poe', '810 Carberry Way', 'Ratnapura', 'A+', 16, '0788655360', NULL, 1),
+('300180403X', 'Felicio Stidworthy', '2 Tennyson Drive', 'Ratnapura', 'B-', 60, '0780148305', NULL, 1),
+('300819639X', 'Kellsie Goves', '993 Shoshone Drive', 'Kurunegala', 'O-', 30, '0769991139', NULL, 1),
+('313585522X', 'Rhona Lummus', '6218 Caliangt Center', 'Kurunegala', 'A+', 7, '0761329354', NULL, 1),
+('320796919V', 'Noam Freed', '1836 Petterle Way', 'Kurunegala', 'O-', 35, '0782489670', NULL, 1),
+('321595092X', 'Octavia Klimkin', '661 Center Trail', 'Puttalam', 'A+', 89, '0783320789', NULL, 1),
+('325714283V', 'Chiarra Whymark', '4 Evergreen Place', 'Puttalam', 'O+', 82, '0760934115', NULL, 1),
+('344645956V', 'Ada Howe', '5347 Raven Parkway', 'Puttalam', 'O-', 39, '0785910732', NULL, 1),
+('345286813V', 'Zulema Hacon', '119 Jackson Trail', 'Polonnaruwa', 'O+', 73, '0756067549', NULL, 1),
+('347685825V', 'Tedi Mallabone', '6644 Fallview Plaza', 'Polonnaruwa', 'O+', 50, '0780722872', NULL, 1),
+('366346792X', 'Anett Rapsey', '51249 Sunfield Trail', 'Polonnaruwa', 'AB-', 72, '0768707547', NULL, 1),
+('389231984V', 'Launce Patriche', '06 Hermina Park', 'Anuradhapura	', 'O+', 36, '0775342114', NULL, 1),
+('398434626X', 'Bran Iacapucci', '55497 Debra Alley', 'Anuradhapura	', 'A-', 16, '0751086942', NULL, 1),
+('418781265V', 'Ted Hatch', '8 Stuart Parkway', 'Anuradhapura	', 'O+', 53, '0786042502', NULL, 1),
+('433591507X', 'Humfrey Harlock', '0739 Spohn Pass', 'Ampara', 'AB+', 72, '0786319993', NULL, 1),
+('434256607X', 'Leila Stellin', '55120 Sunfield Place', 'Ampara', 'O+', 62, '0789439162', NULL, 1),
+('440940435X', 'Robin Giraudoux', '5532 Butternut Center', 'Ampara', 'AB-', 57, '0767745827', NULL, 1),
+('453105769V', 'Lorenza Placide', '2 Park Meadow Lane', 'Batticaloa', 'O+', 17, '0760174364', NULL, 1),
+('453554765X', 'Currey Peinton', '919 Coleman Parkway', 'Batticaloa', 'A-', 80, '0768068127', NULL, 1),
+('463511888V', 'Lorettalorna Petrol', '63 Schlimgen Alley', 'Batticaloa', 'O+', 65, '0787779706', NULL, 1),
+('471197707V', 'Atlante Bickerstasse', '91309 Boyd Trail', 'Monaragala', 'O-', 68, '0783877196', NULL, 1),
+('491034116V', 'Blythe Lea', '8 Hooker Lane', 'Monaragala', 'AB-', 79, '0785798512', NULL, 1),
+('517531587V', 'Joey Berston', '044 Jackson Plaza', 'Monaragala', 'O-', 31, '0768259789', NULL, 1),
+('519036026X', 'Aprilette Remon', '78107 Sachs Park', 'Badulla', 'AB+', 12, '0768992461', NULL, 1),
+('537512857V', 'Brena Ruddy', '454 Portage Avenue', 'Badulla', 'B-', 49, '0787677849', NULL, 1),
+('561838411X', 'Caty Lampart', '47083 John Wall Point', 'Badulla', 'B+', 21, '0783852992', NULL, 1),
+('562325414X', 'Gabi Mugg', '7 Westridge Point', 'Jaffna', 'O+', 67, '0782446187', NULL, 1),
+('562529567V', 'Nicole Byre', '22942 Knutson Terrace', 'Jaffna', 'O+', 43, '0716705182', NULL, 1),
+('573322295X', 'Joshuah Vurley', '9177 Atwood Court', 'Jaffna', 'O+', 50, '0767581290', NULL, 1),
+('588339237V', 'Trever Vittori', '78344 Logan Place', 'Mannar', 'O-', 82, '0753637657', NULL, 1),
+('596497346X', 'Gerladina Squeers', '28 Autumn Leaf Terrace', 'Mannar', 'O+', 67, '0785601039', NULL, 1),
+('600385515X', 'Nikki Spreadbury', '2112 Thierer Alley', 'Mannar', 'O+', 57, '0752403517', NULL, 1),
+('616703616X', 'Charmane Glowach', '61878 Anderson Avenue', 'Vavuniya', 'O+', 34, '0761442297', NULL, 1),
+('622387967V', 'Meagan Mazella', '169 Kipling Trail', 'Vavuniya', 'AB-', 52, '0766579273', NULL, 1),
+('652971956V', 'Faun Frood', '50 Buena Vista Junction', 'Vavuniya', 'AB+', 47, '0784200036', NULL, 1),
+('661125809X', 'Fiann Renish', '4943 Northwestern Crossing', 'Mullaitivu', 'O+', 43, '0751109045', NULL, 1),
+('674849922X', 'Reagen McIlwaine', '09402 Mockingbird Park', 'Mullaitivu', 'O-', 25, '0783523930', NULL, 1),
+('687261109V', 'Langston Matzl', '03 Truax Pass', 'Mullaitivu', 'B-', 68, '0786726306', NULL, 1),
+('698100485V', 'Ashlie Scudder', '365 Gerald Parkway', 'Trincomalee', 'O-', 28, '0724294443', NULL, 1),
+('699517600X', 'Cart Osgar', '0396 Menomonie Junction', 'Trincomalee', 'B+', 38, '0780854530', NULL, 1),
+('718609729V', 'Vanessa Sharphurst', '63 Lakeland Terrace', 'Trincomalee', 'O-', 19, '0765123360', NULL, 1),
+('719532605V', 'Scarlett Shotboult', '598 Westridge Point', 'Colombo', 'O+', 15, '0702982834', NULL, 1),
+('725513042V', 'Thorvald Hubach', '6091 Truax Hill', 'Colombo', 'A+', 51, '0725004026', NULL, 1),
+('730325092V', 'Bastian Haccleton', '3 Dunning Crossing', 'Colombo', 'B+', 75, '0784970839', NULL, 1),
+('742208808V', 'Marion Franzoli', '0 Carpenter Center', 'Gampaha', 'O-', 14, '0784226573', NULL, 1),
+('754177356V', 'Tootsie Rosborough', '5 Susan Place', 'Gampaha', 'O-', 68, '0786683069', NULL, 1),
+('766960386X', 'Marigold Mocher', '20190 Main Junction', 'Gampaha', 'A+', 85, '0788734472', NULL, 1),
+('771143100X', 'Constantina Yepiskopov', '51007 Tony Circle', 'Kandy', 'B-', 67, '0763742656', NULL, 1),
+('794699363V', 'Agata Stranio', '9703 Anderson Center', 'Kandy', 'AB+', 58, '0785768149', NULL, 1),
+('817562678X', 'Chalmers Hazlegrove', '272 Golf Course Drive', 'Kandy', 'O-', 56, '0761224401', NULL, 1),
+('819572017V', 'Henrie Spinola', '7 Eagan Circle', 'Galle', 'O+', 77, '0710136086', NULL, 1),
+('824467812V', 'Moira Rawson', '36552 Cardinal Court', 'Galle', 'O+', 57, '0763969917', NULL, 1),
+('830824523X', 'Bunny Hanselman', '3 Kim Way', 'Galle', 'A-', 43, '0722804090', NULL, 1),
+('832730498X', 'Debbie Huerta', '59123 Veith Parkway', 'Colombo', 'AB+', 85, '0768658510', NULL, 1),
+('833680949V', 'Kakalina Alan', '221 Del Sol Parkway', 'Colombo', 'B-', 44, '0775241356', NULL, 1),
+('844979873V', 'Rosene Sander', '9 Shasta Crossing', 'Colombo', 'A+', 55, '0786376722', NULL, 1),
+('883482983X', 'Sisely Fipp', '41403 Sugar Court', 'Gampaha', 'O-', 53, '0786845529', NULL, 1),
+('891585711V', 'Hazel Ixer', '69 Holy Cross Center', 'Gampaha', 'O+', 54, '0784115428', NULL, 1),
+('894701332X', 'Isaiah Pien', '3 Delladonna Terrace', 'Gampaha', 'B+', 58, '0771608826', NULL, 1),
+('895608482X', 'Dotty Dolton', '79 Badeau Park', 'Kandy', 'O-', 52, '0714235104', NULL, 1),
+('922249289V', 'Ruby Auger', '16 Algoma Park', 'Kandy', 'A+', 11, '0762242173', NULL, 1),
+('930146530V', 'Heidie Richardes', '06179 Sullivan Street', 'Kandy', 'A+', 18, '0727216170', NULL, 1),
+('943726230V', 'Hetty Gerkens', '97992 Rutledge Alley', 'Kurunegala', 'O+', 32, '0762727724', NULL, 1),
+('947878011X', 'Alwyn Newbery', '4 Huxley Trail', 'Kurunegala', 'AB+', 29, '0708257734', NULL, 1),
+('948156298X', 'Linnell Wilce', '02 Carberry Place', 'Kurunegala', 'O-', 68, '0764871750', NULL, 1),
+('951651607V', 'Nedda Pattisson', '24 Victoria Center', 'Colombo', 'AB-', 68, '0718696682', NULL, 1),
+('975582202X', 'Mireielle Venner', '27115 Northland Pass', 'Colombo', 'A-', 34, '0789267052', NULL, 1),
+('986735927V', 'Gertruda Hairon', '9282 Elmside Alley', 'Colombo', 'AB-', 60, '0752931493', NULL, 1),
+('994982204X', 'Dewey Di Batista', '98667 Jana Parkway', 'Gampaha', 'A-', 28, '0777066167', NULL, 1);
 
 --
 -- Dumping data for table `test`
@@ -334,7 +336,7 @@ INSERT INTO `patient` (`patient_id`, `name`, `address`, `district`, `blood_type`
 INSERT INTO `test` (`test_id`, `report_id`, `date`, `test_type`, `result`) VALUES
 ('1933571', '00000001', '2021-08-31 15:31:38', 'PCR', 1),
 ('1933572', '148701361', '2021-08-31 15:31:38', 'PCR', 1),
-('1933577', '530309323', '2021-03-26 15:35:12', 'RAT', 0),
+('1933577', '530309323', '2021-08-26 15:35:12', 'RAT', 0),
 ('1933578', '530309323', '2021-04-27 15:35:12', 'RAT', 1),
 ('1933587', '530309323', '2021-04-01 15:36:38', 'PCR', 1);
 
@@ -350,7 +352,10 @@ INSERT INTO `user` (`user_id`, `name`, `email`, `password`, `contact_no`, `user_
 ('5', 'Kusal Mendis', 'kmendis@moh.lk', '$2a$12$4ctgWsgLkQsYX8Y.QuS2/uXmWBDS1jLD1t/I0bEKcKZUeAd2NoRAC', '0712729729', 'DOC', 0),
 ('903000000', 'Maximilian', 'test@test.com', '$2a$12$znEbf9xPgnCauWeOb6/z.OKAYrBz3t8uahBleqU7tKPp2uv9PGDFi', '0777374839', 'HA', 0),
 ('903000001', 'Chaminda Vaas', 'cvaas@ymail.com', '$2a$12$86d/0koae7nYqEnbQyXcxOPvrw5HIm0QmKzQiEvmD7.oOzY7VvgNG', '0771237876', 'DOC', 0),
-('903000002', 'Russel Arnold', 'rarnold@ymail.com', '$2a$12$86d/0koae7nYqEnbQyXcxOPvrw5HIm0QmKzQiEvmD7.oOzY7VvgNG', '0771234176', 'HA', 0);
+('903000002', 'Russel Arnold', 'rarnold@ymail.com', '$2a$12$86d/0koae7nYqEnbQyXcxOPvrw5HIm0QmKzQiEvmD7.oOzY7VvgNG', '0771234176', 'HA', 0),
+('903000006', 'John Doe', 'john@example.com', '$2a$12$6fp4GPUb0awh9aE9Sog09.KP3wLCCqweJMW/KUOOU55oxGG.Edwtu', '0777374839', 'MOH', 0),
+('986005000', 'John Doe', 'jo7n@example.com', '$2a$12$3ACOZb9wrrSCE2F7WxIon.i3L8X5qjuRhTg6omqZHWj23bbLRt3pS', '0777374839', 'HA', 0),
+('986009000', 'John Doe', 'joh00n@example.com', '$2a$12$OpUdqlnjzhVFsaqgYuhjru.hu5SnU.F.aQwIrt7wCO/YoW0uJS6Iy', '0777374839', 'MOH', 0);
 
 --
 -- Dumping data for table `ward`
@@ -372,6 +377,15 @@ INSERT INTO `ward` (`id`, `ward_no`, `capacity`, `facility_id`, `ward_type`) VAL
 DROP TABLE IF EXISTS `district_status`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `district_status`  AS  select `patient`.`district` AS `district`,count('district') AS `districtCount`,sum(case when (cast(`medicalreport`.`admitted_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Active') then 1 when (cast(`medicalreport`.`discharged_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Recovered') then 1 when (cast(`medicalreport`.`discharged_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Dead') then 1 else 0 end) AS `todayCount`,`medicalreport`.`status` AS `status` from (`medical_report` `medicalreport` left join `patient` on(`medicalreport`.`patient_id` = `patient`.`patient_id`)) group by `patient`.`district`,`medicalreport`.`status` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `facility_bed`
+--
+DROP TABLE IF EXISTS `facility_bed`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `facility_bed`  AS  (select `bed`.`id` AS `BedID`,`ward`.`id` AS `WardID`,`facility`.`facility_id` AS `FacilityId`,`facility`.`name` AS `FacilityName`,`ward`.`ward_type` AS `WardType`,`allocation`.`is_occupied` AS `IsOccupied`,`ward`.`capacity` AS `Capacity`,`facility`.`contact_no` AS `Contactnumber` from (((`ward` left join `bed` on(`ward`.`id` = `bed`.`ward`)) left join `allocation` on(`allocation`.`bed_no` = `bed`.`id`)) left join `facility` on(`facility`.`facility_id` = `ward`.`facility_id`))) ;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
