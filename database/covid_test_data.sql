@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 20, 2021 at 05:32 AM
+-- Generation Time: Sep 22, 2021 at 03:39 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -224,6 +224,16 @@ INSERT INTO `medical_report` (`report_id`, `patient_id`, `symptoms`, `admitted_a
 ('882067798', '725513042V', 'Cough', '2021-04-03 19:54:10', 7, '2021-09-17 13:42:23', 5, '', 'Recovered');
 
 --
+-- Dumping data for table `password_reset`
+--
+
+INSERT INTO `password_reset` (`id`, `email`, `token`, `is_used`) VALUES
+(1, 'cvaas@ymail.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImN2YWFzQHltYWlsLmNvbSIsImlhdCI6MTYzMjIyODY5MSwiZXhwIjoxNjMyMjI5ODkxfQ.o6IETTiNWpJe8pMpGSD-o-5OZ5oSQLfdKIYhCCSIZ2g', 0),
+(14, 'chesscubechesscom@gmail.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoZXNzY3ViZWNoZXNzY29tQGdtYWlsLmNvbSIsImlhdCI6MTYzMjMxNTMzMSwiZXhwIjoxNjMyMzE2NTMxfQ.tazlTWnhnKpbJuZP5W8Y-6uyLY1eiUIF5ZVC5C5sl6o', 1),
+(15, 'chesscubechesscom@gmail.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoZXNzY3ViZWNoZXNzY29tQGdtYWlsLmNvbSIsImlhdCI6MTYzMjMxNzI4OSwiZXhwIjoxNjMyMzE4NDg5fQ.GlGgxc_2j25eT9cXkY3Crd-RgcMyY-f5m4T28c75b4o', 1),
+(16, 'chesscubechesscom@gmail.com', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoZXNzY3ViZWNoZXNzY29tQGdtYWlsLmNvbSIsImlhdCI6MTYzMjMxNzcxMiwiZXhwIjoxNjMyMzE4OTEyfQ.tUT_Njh9gSjGIQdl1oXoAdVQ12QxPMgYlcrknxZ4XNc', 1);
+
+--
 -- Dumping data for table `patient`
 --
 
@@ -354,7 +364,7 @@ INSERT INTO `user` (`user_id`, `name`, `email`, `password`, `contact_no`, `user_
 ('903000001', 'Chaminda Vaas', 'cvaas@ymail.com', '$2a$12$86d/0koae7nYqEnbQyXcxOPvrw5HIm0QmKzQiEvmD7.oOzY7VvgNG', '0771237876', 'DOC', 0),
 ('903000002', 'Russel Arnold', 'rarnold@ymail.com', '$2a$12$86d/0koae7nYqEnbQyXcxOPvrw5HIm0QmKzQiEvmD7.oOzY7VvgNG', '0771234176', 'HA', 0),
 ('903000006', 'John Doe', 'john@example.com', '$2a$12$6fp4GPUb0awh9aE9Sog09.KP3wLCCqweJMW/KUOOU55oxGG.Edwtu', '0777374839', 'MOH', 0),
-('986005000', 'John Doe', 'jo7n@example.com', '$2a$12$3ACOZb9wrrSCE2F7WxIon.i3L8X5qjuRhTg6omqZHWj23bbLRt3pS', '0777374839', 'HA', 0),
+('986005000', 'John Doe', 'chesscubechesscom@gmail.com', '$2a$12$LLBIp21H6jOM.d5jaHNHjeJEiK1bf0giLuacqKfAVJe7pjpKAtTGe', '0777374839', 'HA', 0),
 ('986009000', 'John Doe', 'joh00n@example.com', '$2a$12$OpUdqlnjzhVFsaqgYuhjru.hu5SnU.F.aQwIrt7wCO/YoW0uJS6Iy', '0777374839', 'MOH', 0);
 
 --

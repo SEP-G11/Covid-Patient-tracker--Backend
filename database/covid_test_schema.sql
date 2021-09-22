@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 20, 2021 at 05:23 AM
+-- Generation Time: Sep 22, 2021 at 03:39 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -117,6 +117,19 @@ CREATE TABLE `medical_report` (
   `discharged_facility` int(11) DEFAULT NULL,
   `description` text NOT NULL,
   `status` enum('Active','Dead','Recovered') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_reset`
+--
+
+CREATE TABLE `password_reset` (
+  `id` int(11) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `token` text NOT NULL,
+  `is_used` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -255,6 +268,13 @@ ALTER TABLE `medical_report`
   ADD KEY `FK_ReportDiscFac` (`discharged_facility`);
 
 --
+-- Indexes for table `password_reset`
+--
+ALTER TABLE `password_reset`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_PWResetEmail` (`email`);
+
+--
 -- Indexes for table `patient`
 --
 ALTER TABLE `patient`
@@ -307,6 +327,12 @@ ALTER TABLE `facility`
   MODIFY `facility_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `password_reset`
+--
+ALTER TABLE `password_reset`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `ward`
 --
 ALTER TABLE `ward`
@@ -343,6 +369,12 @@ ALTER TABLE `medical_report`
   ADD CONSTRAINT `FK_ReportAdmitFac` FOREIGN KEY (`admitted_facility`) REFERENCES `facility` (`facility_id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_ReportDiscFac` FOREIGN KEY (`discharged_facility`) REFERENCES `facility` (`facility_id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_ReportPatient` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `password_reset`
+--
+ALTER TABLE `password_reset`
+  ADD CONSTRAINT `FK_PWResetEmail` FOREIGN KEY (`email`) REFERENCES `user` (`email`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `test`
