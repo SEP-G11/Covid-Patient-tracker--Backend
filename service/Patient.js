@@ -10,6 +10,10 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(150),
       allowNull: false
     },
+    bday: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
     address: {
       type: DataTypes.STRING(255),
       allowNull: false
@@ -29,6 +33,15 @@ module.exports = function(sequelize, DataTypes) {
     contact_no: {
       type: DataTypes.STRING(12),
       allowNull: false
+    },
+    gender: {
+      type: DataTypes.ENUM('Male','Female'),
+      allowNull: false
+    },    
+    is_Vaccinated: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: 0
     }
   }, {
     sequelize,

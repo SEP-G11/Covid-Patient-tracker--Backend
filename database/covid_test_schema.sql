@@ -21,7 +21,10 @@ SET time_zone = "+00:00";
 --
 -- Database: `covid_test`
 --
-
+-- DROP DATABASE covid_test;
+DROP DATABASE covid_test;
+CREATE DATABASE covid_test;
+USE covid_test;
 -- --------------------------------------------------------
 
 --
@@ -92,17 +95,48 @@ CREATE TABLE `medical_report` (
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `facility_bed`
+-- (See below for the actual view)
+--
+CREATE TABLE `facility_bed` (
+`BedID` int(11)
+,`WardID` int(11)
+,`FacilityId` int(11)
+,`FacilityName` varchar(255)
+,`WardType` enum('Covid','Normal')
+,`IsOccupied` tinyint(1)
+,`Capacity` int(11)
+,`Contactnumber` varchar(12)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `facility_staff`
+--
+
+CREATE TABLE `facility_staff` (
+  `user_id` varchar(200) NOT NULL,
+  `facility_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `patient`
 --
 
 CREATE TABLE `patient` (
-  `patient_id` varchar(12) NOT NULL,
+  `patient_id` varchar(200) NOT NULL,
   `name` varchar(150) NOT NULL,
+  `bday` date DEFAULT NULL,
   `address` varchar(255) NOT NULL,
   `district` varchar(50) NOT NULL,
   `blood_type` enum('A+','O+','B+','AB+','A-','O-','B-','AB-') NOT NULL,
   `age` int(11) NOT NULL,
-  `contact_no` varchar(12) NOT NULL
+  `contact_no` varchar(12) NOT NULL,
+  `gender` enum('Male','Female') DEFAULT NULL,
+  `is_Vaccinated` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -170,6 +204,15 @@ CREATE TABLE `ward` (
 DROP TABLE IF EXISTS `district_status`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `district_status`  AS  select `patient`.`district` AS `district`,count('district') AS `districtCount`,sum(case when (cast(`medicalreport`.`admitted_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Active') then 1 when (cast(`medicalreport`.`discharged_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Recovered') then 1 when (cast(`medicalreport`.`discharged_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Dead') then 1 else 0 end) AS `todayCount`,`medicalreport`.`status` AS `status` from (`medical_report` `medicalreport` left join `patient` on(`medicalreport`.`patient_id` = `patient`.`patient_id`)) group by `patient`.`district`,`medicalreport`.`status` ;
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `facility_bed`
+--
+DROP TABLE IF EXISTS `facility_bed`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `facility_bed`  AS  (select `bed`.`id` AS `BedID`,`ward`.`id` AS `WardID`,`facility`.`facility_id` AS `FacilityId`,`facility`.`name` AS `FacilityName`,`ward`.`ward_type` AS `WardType`,`allocation`.`is_occupied` AS `IsOccupied`,`ward`.`capacity` AS `Capacity`,`facility`.`contact_no` AS `Contactnumber` from (((`ward` left join `bed` on(`ward`.`id` = `bed`.`ward`)) left join `allocation` on(`allocation`.`bed_no` = `bed`.`id`)) left join `facility` on(`facility`.`facility_id` = `ward`.`facility_id`))) ;
 
 --
 -- Indexes for dumped tables

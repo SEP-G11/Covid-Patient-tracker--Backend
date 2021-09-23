@@ -1,13 +1,19 @@
+const {admitPatient,dischargePatient,transferPatient,getPatients,getPatientById,updatePatient} = require("../controllers/patient");
 const express = require("express");
-const router = express.Router()
-const { getPatients, getPatientById, getPatientReportById, getTestDetailsById, updatePatient, updatePatientReport } = require('../controllers/patient.js');
+const router = express.Router();
+const {protect,authorize} = require('../middlewares/authorization');
 
-router.get('/getPatients', getPatients);
-router.get('/patientDetails/:id', getPatientById);
-router.get('/patientReportDetails/:id', getPatientReportById);
-router.get('/testDetails/:id', getTestDetailsById);
-router.put('/updatePatient/:id', updatePatient);
-router.put('/updatePatientReport/:id', updatePatientReport);
+
+
+//router.post('/admit/',admitPatient);
+
+router.post('/admit/',protect,authorize(['HA','DOC']),admitPatient);
+router.post('/discharge/',protect,authorize(['HA','DOC']), dischargePatient);
+router.post('/transfer/',protect,authorize(['HA','DOC']),transferPatient);
+router.get('/getPatients',protect,authorize(['HA','DOC']),getPatients);
+router.get('/patientDetails/:id',protect,authorize(['HA','DOC']),getPatientById);
+router.put('/updatePatient/:id', protect,authorize(['HA','DOC']), updatePatient);
+
+
 
 module.exports = router;
-

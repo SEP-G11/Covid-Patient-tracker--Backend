@@ -1,0 +1,195 @@
+
+*******VIEW Facility_bed****** 
+
+create view facility_bed as ( select bed.id as "BedID",ward.id as "WardID" ,facility.facility_id  as "FacilityId",facility.name  as "FacilityName", ward.ward_type as "WardType" , allocation.is_occupied as "IsOccupied",ward.capacity as "Capacity",facility.contact_no  as "Contactnumber" from ward left join bed on (ward.id=bed.ward) left join allocation on (allocation.bed_no=bed.id) left join facility on (facility.facility_id=ward.facility_id) );
+
+
+_____________________________________________________________________________________________________________________
+******DB Table  Changes*****
+
+Use covid_test;
+ALTER TABLE `patient` ADD `gender` ENUM("Male","Female") NULL DEFAULT NULL AFTER `contact_no`;
+ALTER TABLE `patient` ADD `is_Vaccinated` BOOLEAN NOT NULL DEFAULT TRUE AFTER `gender`;
+
+ALTER TABLE transfer DROP FOREIGN KEY FK_TransferOrigin;
+ALTER TABLE transfer DROP FOREIGN KEY FK_TransferDest;
+
+ALTER TABLE `transfer` DROP `origin`, DROP `destination`;
+
+ALTER TABLE `transfer` ADD `origin_bed_id` INT(11) NOT NULL AFTER `date`;
+ALTER TABLE `transfer` ADD `destination_bed_id` INT(11) NOT NULL AFTER `origin_bed_id`;
+
+ALTER TABLE `transfer` ADD CONSTRAINT `FK_TransferDestBed` FOREIGN KEY (`destination_bed_id`) REFERENCES `bed`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+
+ALTER TABLE `transfer` ADD CONSTRAINT `FK_TransferOriginBed` FOREIGN KEY (`origin_bed_id`) REFERENCES `bed`(`id`) ON DELETE RESTRICT ON UPDATE RESTRICT;
+
+ALTER TABLE `patient` ADD `bday` DATE NULL DEFAULT NULL AFTER `name`;
+ALTER TABLE `allocation` CHANGE `id` `id` VARCHAR(200) NOT NULL;
+ALTER TABLE `medical_report` CHANGE `report_id` `report_id` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `patient` CHANGE `patient_id` `patient_id` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `test` CHANGE `test_id` `test_id` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `allocation` CHANGE `patient_id` `patient_id` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `medical_report` CHANGE `patient_id` `patient_id` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `test` CHANGE `report_id` `report_id` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `transfer` CHANGE `patient_id` `patient_id` VARCHAR(200) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+_______________________________________________________________________________________________
+
+***** Functions **************
+
+
+DELIMITER $$
+  CREATE FUNCTION `add_patient` (`name` VARCHAR(150), `patient_id` VARCHAR(200), `age` INT(11), `gender` ENUM("Male","Female"), `address` VARCHAR(255), `contact_no` VARCHAR(12), `blood_type` ENUM('A+','O+','B+','AB+','A-','O-','B-','AB-'), `district` VARCHAR(50), `test_id` VARCHAR(200), `is_Vaccinated` BOOLEAN, `result` TINYINT(1), `description` TEXT, `report_id` VARCHAR(200), `bed_id` INT(11), `allocation_id` VARCHAR(200), `admitted_at` DATETIME, `bday` DATE) RETURNS TINYINT(1) BEGIN 
+ 	
+    DECLARE patient_count integer;
+    DECLARE test_count integer;
+    DECLARE report_count integer;
+    DECLARE allocation_count integer;          
+    
+    select count(p.patient_id) into patient_count from patient p where p.patient_id=patient_id ;
+    select count(a.id) into allocation_count from allocation a where (a.bed_no=bed_id and a.is_occupied=1 or a.id=allocation_id);
+    select count(t.test_id) into test_count from test t where t.test_id=test_id ;
+    select count(r.report_id) into report_count from medical_report r where r.report_id=report_id ;
+   
+    IF(patient_count=0  and test_count=0 and report_count=0 and allocation_count=0 ) THEN
+    
+        INSERT INTO `patient` (`patient_id`, `name`,`bday`, `address`, `district`, `blood_type` , `age` , `contact_no` , `gender` , `is_Vaccinated`) VALUES (patient_id, name, bday,address, district, blood_type , age , contact_no , gender , is_Vaccinated);
+
+	INSERT INTO `medical_report` ( `report_id`,`patient_id`,`admitted_at`,`description`) VALUES (report_id,patient_id,admitted_at , description);
+	INSERT INTO `test` (`test_id`,`report_id`,`date`,`test_type`,`result`) VALUES (test_id,report_id,admitted_at,'RAT',result);
+	
+	INSERT INTO `allocation` (`id`,`patient_id`,`bed_no`,`is_occupied`) VALUES (allocation_id,patient_id,bed_id,1);
+	
+    return true;
+    
+	ELSE 
+	return false;
+    
+	END IF;
+    
+    END$$
+
+
+
+_________________________________________________________________________________________________________________________
+
+DELIMITER $$
+  CREATE FUNCTION discharge_patient(`patient_id` varchar(200), `discharged_at` datetime , `description` text , `Stat` enum('Active','Dead','Recovered'))
+  RETURNS boolean
+ DETERMINISTIC
+    BEGIN 
+ 	
+    DECLARE allocation_count integer;    
+    DECLARE report_count integer;
+    
+    
+    select count(a.patient_id) into allocation_count from allocation a where a.patient_id=patient_id ;
+    select count(r.patient_id) into report_count from medical_report r where r.patient_id=patient_id ;
+   
+    IF(allocation_count!=0  and report_count!=0 ) THEN   
+    UPDATE medical_report r SET r.discharged_at =discharged_at ,r.description=description ,  r.status= Stat where r.report_id in ( SELECT r.report_id FROM medical_report r WHERE r.patient_id=patient_id and r.discharged_at IS NULL);
+
+	UPDATE allocation a SET a.is_occupied="0"  where (a.patient_id=patient_id and a.is_occupied=1 );
+    return true;   
+    
+	ELSE
+    return false;
+    
+	END IF;    
+    END$$
+DELIMITER ;
+
+______________________________________________________________________________________________________________
+
+DELIMITER $$
+  CREATE FUNCTION transfer_patient(`patient_id` varchar(200), `transfer_date` datetime ,  `origin_bed_id` int(11),  `dest_bed_id` int(11))
+  RETURNS boolean
+ DETERMINISTIC
+    BEGIN 
+ 	
+    DECLARE allocation_count1 integer;    
+      DECLARE allocation_count2 integer;  
+    
+    select count(a.id) into allocation_count1 from allocation a where (a.bed_no=dest_bed_id and a.is_occupied=1);
+ select count(a.id) into allocation_count2 from allocation a where (a.bed_no=origin_bed_id and a.is_occupied=1);
+   
+    IF(allocation_count1 =0 and allocation_count2 !=0 ) THEN   
+	
+	INSERT INTO `transfer` (`patient_id` , `date` ,  `origin_bed_id` ,  `destination_bed_id` ) VALUES (patient_id , transfer_date ,  origin_bed_id ,  dest_bed_id);
+	
+	UPDATE allocation a SET a.bed_no=dest_bed_id where (a.patient_id=patient_id and a.is_occupied=1 );
+	
+    return true;   
+    
+	ELSE
+    return false;
+    
+	END IF;    
+    END$$
+DELIMITER ;
+
+__________________________________________________________________________________________
+
+
+
+DELIMITER $$
+  CREATE FUNCTION enter_results (`test_id` varchar(200),`report_id` varchar(200) ,`patient_id` varchar(200) , `date` datetime ,  `test_type` enum('PCR','RAT') ,`result` tinyint(1) )
+  RETURNS boolean
+ DETERMINISTIC
+    BEGIN 
+ 	
+    DECLARE test_count integer;    
+  
+    select count(t.test_id) into test_count from test t where (t.test_id=test_id );
+  
+
+   
+    IF (test_count =0) THEN   
+	
+INSERT INTO `test` (`test_id`,`report_id`,`date`,`test_type`,`result`) VALUES (test_id,report_id ,date,test_type,result);
+
+	
+	
+    return true ;   
+    
+	ELSE
+    return false;
+    
+	END IF;    
+    END$$
+DELIMITER ;
+
+
+
+_____________________________________________________________________________________________
+
+
+DELIMITER $$
+  CREATE FUNCTION `create_report` ( `patient_id` VARCHAR(200),  `test_id` VARCHAR(200),  `result` TINYINT(1), `report_id` VARCHAR(200), `bed_id` INT(11), `allocation_id` VARCHAR(200), `admitted_at` DATETIME ,`description` text ) RETURNS TINYINT(1) BEGIN 
+ 	
+   
+    DECLARE test_count integer;
+    DECLARE report_count integer;
+    DECLARE allocation_count integer;          
+    
+    select count(a.id) into allocation_count from allocation a where (a.bed_no=bed_id and a.is_occupied=1 or a.id=allocation_id);
+    select count(t.test_id) into test_count from test t where t.test_id=test_id ;
+    select count(r.report_id) into report_count from medical_report r where r.report_id=report_id ;
+   
+    IF( test_count=0 and report_count=0 and allocation_count=0 ) THEN
+    
+        
+	INSERT INTO `medical_report` ( `report_id`,`patient_id`,`admitted_at`,`description`) VALUES (report_id,patient_id,admitted_at , description);
+	INSERT INTO `test` (`test_id`,`report_id`,`date`,`test_type`,`result`) VALUES (test_id,report_id,admitted_at,'RAT',result);
+	
+	INSERT INTO `allocation` (`id`,`patient_id`,`bed_no`,`is_occupied`) VALUES (allocation_id,patient_id,bed_id,1);
+	
+    return true;
+    
+	ELSE 
+	return false;
+    
+	END IF;
+    
+    END$$
+
