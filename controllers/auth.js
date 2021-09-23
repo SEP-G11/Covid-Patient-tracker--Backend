@@ -58,7 +58,7 @@ const login = async (req, res, next) => {
     if (loadedUser.facility_staffs[0].dataValues.facility_id){
       tokenData["facilityId"]=loadedUser.facility_staffs[0].dataValues.facility_id;
     }
-    //console.log("hjdkskd")
+  
     const token = jwt.sign(tokenData,
         'somesupersecret'                 //put in ENV
     );

@@ -24,7 +24,7 @@ exports.protect = (req,res,next) => {
       next();
     }
     catch (error) {
-      console.error(error);
+    
       return errorMessage(res,"Not authorized, token failed",401);
     }
   }
@@ -38,7 +38,7 @@ exports.protect = (req,res,next) => {
 
 exports.authorize = (accTypes=[]) =>{
   return (req, res, next) => {
-    console.log(req.accType)
+   
     if (accTypes.includes(req.accType)) {
       
       return next();

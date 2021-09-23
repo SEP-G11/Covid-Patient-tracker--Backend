@@ -7,13 +7,13 @@ const Joi = require('joi');
 var Allocation = models.Allocation;
 
 
-function validateAdmitPatient(name,age,contactnumber,RATresult,bedId,admitDateTime,bday) {
+function validateAdmitPatient(name,contactnumber,RATresult,bedId,admitDateTime,bday) {
   
   
     schema = Joi.object({
       name: Joi.string().trim().max(255).required().label('Name'),
       bday : Joi.string().required().label('Date of Birthday') ,
-      age:Joi.number().positive().label('Age'),
+    
       contactnumber: Joi.string().min(12).max(12).required().label('Contact Number'),    
       RATresult: Joi.string().required().label('RAT Result'),
       bedId: Joi.string().required().label('Bed ID'),    
@@ -24,7 +24,7 @@ function validateAdmitPatient(name,age,contactnumber,RATresult,bedId,admitDateTi
 
  
   
-  return schema.validate({ name:name,bday:bday,age:age,contactnumber:contactnumber,RATresult:RATresult,bedId:bedId,admitDateTime:admitDateTime })
+  return schema.validate({ name:name,bday:bday,contactnumber:contactnumber,RATresult:RATresult,bedId:bedId,admitDateTime:admitDateTime })
 }
 
 
@@ -81,14 +81,12 @@ const admitPatient = async (req, res, next) => {
     admitDateTime,
     bday,
   } = req.body;
- 
-
 
   if (bday > new Date().toISOString().slice(0, 10)) {
     return errorMessage(res, "Please Check again Date of Birthday !", 422)
   }
 
-  const { error, value } = validateAdmitPatient(name,age,contactnumber,RATresult,bedId,admitDateTime,bday);
+  const { error, value } = validateAdmitPatient(name,contactnumber,RATresult,bedId,admitDateTime,bday);
   const d = new Date();
 
   if (error) {
@@ -171,7 +169,6 @@ const dischargePatient = async (req, res, next) => {
       return errorMessage(res, "Internal Server Error!", 500);
     }
   };
-
 
 
 

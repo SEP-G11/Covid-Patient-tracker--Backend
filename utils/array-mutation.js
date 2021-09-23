@@ -62,8 +62,7 @@ const facilitybeds = (arr) => {
         }        
 
         if (!acc["NormalBed"]) {
-            acc["NormalBed"] = [];
-        }
+            acc["NormalBed"] = [];        }
 
 
 
@@ -114,24 +113,22 @@ const facilitybeds = (arr) => {
      
 
         if (WardType == "Normal" ) {
-            if(acc.CovidBed.find(record => record.BedID === BedID ) ){    
-                if(acc.CovidBed.find(record => record.BedID === BedID && record.IsOccupied === 1  )){
+            if(acc.NormalBed.find(record => record.BedID === BedID ) ){    
+                if(acc.NormalBed.find(record => record.BedID === BedID && record.IsOccupied === 1  )){
+
                 }
                 else{
-
                     if(IsOccupied){
-                         acc['NormalBed'].pop({"BedID":BedID,"IsOccupied":0});
+                        acc['NormalBed'].pop({"BedID":BedID,"IsOccupied":0});
                         acc['NormalBed'].push({"BedID":BedID,"IsOccupied":IsOccupied});
                         acc["NormalBedUsed"]+=1;
-                        acc["NormalBedUsed"]-=1;
+                        acc["NormalBedFree"]-=1;                        
                     }
-                    else{                                              
-                    }                   
+                    else{                        
+                    }                  
                 }
-
             }
-            else{            
-
+            else{
                 acc['NormalBed'].push({"BedID":BedID,"IsOccupied":IsOccupied});
                 if(IsOccupied){
                     acc["NormalBedUsed"]+=1;
