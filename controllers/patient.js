@@ -5,7 +5,7 @@ const { successMessage, errorMessage } = require("../utils/message-template");
 const Joi = require('joi');
 
 var Allocation = models.Allocation;
-
+var Patient = models.Patient;
 
 function validateAdmitPatient(name,contactnumber,RATresult,bedId,admitDateTime,bday) {
   
@@ -206,9 +206,80 @@ const transferPatient = async (req, res, next) => {
   }
 };
 
+const getPatients = async (req, res, next) => {
+  try{
+    const patients = await Patient.findAll();
+    res.json(patients);
+  } catch (err) {
+    return errorMessage(res, "Internal Server Error!", 500);
+  }
+};
+
+const getPatientById = async (req, res, next) => {
+  try{
+    const patient = await Patient.findByPk(req.params.id)
+    if (patient.is_Vaccinated.toString()=="true"){
+      patient.is_Vaccinated="Vaccinated"
+    }else{
+      patient.is_Vaccinated="Not Vaccinated"
+    }
+    res.json(patient)
+  } catch (err) {
+    return errorMessage(res, "Internal Server Error!", 500);
+  }
+}
+
+
+const updatePatient = async (req, res, next) => {
+
+ if (req.body.is_Vaccinated.toString()=="Vaccinated"){
+   req.body.is_Vaccinated="true"
+ }else{
+  req.body.is_Vaccinated="false"
+ }
+
+ if (req.body.contact_no.length != 10) {
+  return errorMessage(res, "Please Check again Contact Number !", 422)
+}
+ try{
+  const patient = await Patient.findByPk(req.params.id)
+      patient.name = req.body.name || patient.name
+      patient.age = req.body.age || patient.age
+      patient.gender = req.body.gender || patient.gender
+      patient.blood_type = req.body.blood_type || patient.blood_type
+      patient.address = req.body.address || patient.address
+      patient.contact_no = req.body.contact_no || patient.contact_no
+      patient.district = req.body.district || patient.district
+      patient.bday = req.body.bday || patient.bday
+      patient.is_Vaccinated = req.body.is_Vaccinated || patient.is_Vaccinated
+
+      const updatedPatient = await patient.save()
+
+      if (updatedPatient.is_Vaccinated.toString()=="true"){
+        updatedPatient.is_Vaccinated="Vaccinated"
+      }else{
+        updatedPatient.is_Vaccinated="Not Vaccinated"
+      }
+
+      res.json({
+        name: updatedPatient.name,
+        age: updatedPatient.age,
+        blood_type: updatedPatient.blood_type,
+        address: updatedPatient.address,
+        contact_no: updatedPatient.contact_no,
+        district: updatedPatient.district,
+        gender: updatedPatient.gender,
+        bday: updatedPatient.bday,
+        is_Vaccinated:updatePatient.is_Vaccinated
+      })
+
+    } catch (err) {
+      return errorMessage(res, "Internal Server Error!", 500);
+    }
+};
 
 module.exports = {
-  admitPatient, dischargePatient,transferPatient
+  admitPatient, dischargePatient,transferPatient,getPatients,getPatientById,updatePatient
 };
 
 
