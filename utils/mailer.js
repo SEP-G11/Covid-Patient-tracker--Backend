@@ -2,8 +2,6 @@ const nodemailer = require('nodemailer');
 const sendgridTransport = require('nodemailer-sendgrid-transport');
 
 
-//const EMAIL_KEY = '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'
-
 const transporter = nodemailer.createTransport(sendgridTransport({
     auth: {
         api_key:process.env.EMAIL_KEY
@@ -12,7 +10,7 @@ const transporter = nodemailer.createTransport(sendgridTransport({
 
 
 const forgotPwTemplate = (token) => {
-    const resetUrl = `http://localhost:3000/reset-password/${token}`;
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${token}`;
 
     return `
 <body marginheight="0" topmargin="0" marginwidth="0" style="margin: 0px; background-color: #f2f3f8;" leftmargin="0">

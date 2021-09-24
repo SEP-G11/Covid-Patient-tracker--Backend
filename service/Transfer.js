@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('Transfer', {
     patient_id: {
-      type: DataTypes.STRING(12),
+      type: DataTypes.STRING(200),
       allowNull: false,
       references: {
         model: 'patient',

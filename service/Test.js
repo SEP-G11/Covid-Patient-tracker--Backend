@@ -2,12 +2,12 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('Test', {
     test_id: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(200),
       allowNull: false,
       primaryKey: true
     },
     report_id: {
-      type: DataTypes.STRING(10),
+      type: DataTypes.STRING(200),
       allowNull: false,
       references: {
         model: 'medical_report',

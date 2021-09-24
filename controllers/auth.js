@@ -3,7 +3,6 @@ var models = require("../service/init-models").initModels(sequelize);
 const jwt = require("jsonwebtoken");
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
-const config = require("config");
 const { successMessage, errorMessage } = require("../utils/message-template");
 const { sendResetPasswordEmail } = require("../utils/mailer");
 

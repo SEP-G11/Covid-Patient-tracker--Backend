@@ -1,47 +1,45 @@
 const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
-  return sequelize.define('FacilityBed', {
-
+    return sequelize.define('FacilityBed', {
         BedID: {
-          type: DataTypes.INTEGER(11),
-          allowNull: true
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue: 0
         },
         WardID: {
-          type: DataTypes.INTEGER(11),
-          allowNull: true
+            type: DataTypes.INTEGER,
+            allowNull: false,
+            defaultValue: 0
         },
         FacilityId: {
-          type: DataTypes.INTEGER(11),
-          allowNull: true
+            type: DataTypes.INTEGER,
+            allowNull: true,
+            defaultValue: 0
         },
         FacilityName: {
-          type: DataTypes.STRING(255),
-          allowNull: true
+            type: DataTypes.STRING(255),
+            allowNull: true
         },
         WardType: {
-          type: DataTypes.ENUM('Normal','Covid'),
-          allowNull: true
+            type: DataTypes.ENUM('Covid','Normal'),
+            allowNull: false
         },
         IsOccupied: {
-          type: DataTypes.TINYINT,
-          allowNull: false,
-          defaultValue: 1
+            type: DataTypes.BOOLEAN,
+            allowNull: true,
+            defaultValue: 1
         },
         Capacity: {
-          type: DataTypes.INTEGER(11),
-          allowNull: false
+            type: DataTypes.INTEGER,
+            allowNull: false
         },
         Contactnumber: {
-          type: DataTypes.STRING(50),
-          allowNull: false
+            type: DataTypes.STRING(12),
+            allowNull: true
         }
-
-      },
-      {
+    }, {
         sequelize,
         tableName: 'facility_bed',
         timestamps: false
-      });
-
-
+    });
 };

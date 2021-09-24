@@ -1,10 +1,9 @@
 const {register,overallDistrictsStats,overallDistrictStats,overallCountryStats,historicalCases,historicalRecovered,
     historicalDeaths,historicalTests,getFacilities,getFacilitiesRecovered,getFacilitiesDeaths,getFacilitiesActive,getFacilitiesBeds,
     facilityHistorical} = require("../controllers/moh");
-const {protect,authorize} = require('../middlewares/authorization')
 const express = require("express");
 const router = express.Router();
-const {protect,authorize} = require('../middlewares/authorization')
+const {protect,authorize} = require('../middlewares/authorization');
 
 
 router.post('/register',protect,authorize(['MOH']),register);

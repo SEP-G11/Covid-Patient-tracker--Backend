@@ -2,12 +2,12 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('Allocation', {
     id: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING(200),
       allowNull: false,
       primaryKey: true
     },
     patient_id: {
-      type: DataTypes.STRING(12),
+      type: DataTypes.STRING(200),
       allowNull: false,
       references: {
         model: 'patient',
