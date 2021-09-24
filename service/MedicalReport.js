@@ -22,9 +22,25 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.DATE,
       allowNull: false
     },
+    admitted_facility: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'facility',
+        key: 'facility_id'
+      }
+    },
     discharged_at: {
       type: DataTypes.DATE,
       allowNull: true
+    },
+    discharged_facility: {
+      type: DataTypes.INTEGER,
+      allowNull: true,
+      references: {
+        model: 'facility',
+        key: 'facility_id'
+      }
     },
     description: {
       type: DataTypes.TEXT,
@@ -52,6 +68,20 @@ module.exports = function(sequelize, DataTypes) {
         using: "BTREE",
         fields: [
           { name: "patient_id" },
+        ]
+      },
+      {
+        name: "FK_ReportAdmitFac",
+        using: "BTREE",
+        fields: [
+          { name: "admitted_facility" },
+        ]
+      },
+      {
+        name: "FK_ReportDiscFac",
+        using: "BTREE",
+        fields: [
+          { name: "discharged_facility" },
         ]
       },
     ]

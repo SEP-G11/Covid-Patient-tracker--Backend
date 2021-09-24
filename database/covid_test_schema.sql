@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 05, 2021 at 12:55 PM
+-- Generation Time: Sep 22, 2021 at 03:39 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -78,6 +78,34 @@ CREATE TABLE `facility` (
 -- --------------------------------------------------------
 
 --
+-- Stand-in structure for view `facility_bed`
+-- (See below for the actual view)
+--
+CREATE TABLE `facility_bed` (
+`BedID` int(11)
+,`WardID` int(11)
+,`FacilityId` int(11)
+,`FacilityName` varchar(255)
+,`WardType` enum('Covid','Normal')
+,`IsOccupied` tinyint(1)
+,`Capacity` int(11)
+,`Contactnumber` varchar(12)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `facility_staff`
+--
+
+CREATE TABLE `facility_staff` (
+  `user_id` varchar(12) NOT NULL,
+  `facility_id` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `medical_report`
 --
 
@@ -86,9 +114,24 @@ CREATE TABLE `medical_report` (
   `patient_id` varchar(12) NOT NULL,
   `symptoms` varchar(255) NOT NULL,
   `admitted_at` datetime NOT NULL,
+  `admitted_facility` int(11) NOT NULL,
   `discharged_at` datetime DEFAULT NULL,
+  `discharged_facility` int(11) DEFAULT NULL,
   `description` text NOT NULL,
   `status` enum('Active','Dead','Recovered') NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `password_reset`
+--
+
+CREATE TABLE `password_reset` (
+  `id` int(11) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `token` text NOT NULL,
+  `is_used` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -104,7 +147,9 @@ CREATE TABLE `patient` (
   `district` varchar(50) NOT NULL,
   `blood_type` enum('A+','O+','B+','AB+','A-','O-','B-','AB-') NOT NULL,
   `age` int(11) NOT NULL,
-  `contact_no` varchar(12) NOT NULL
+  `contact_no` varchar(12) NOT NULL,
+  `gender` enum('Male','Female') DEFAULT NULL,
+  `is_Vaccinated` tinyint(1) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -130,8 +175,8 @@ CREATE TABLE `test` (
 CREATE TABLE `transfer` (
   `patient_id` varchar(12) NOT NULL,
   `date` datetime NOT NULL,
-  `origin` int(11) NOT NULL,
-  `destination` int(11) NOT NULL
+  `origin_bed_id` int(11) NOT NULL,
+  `destination_bed_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -173,6 +218,15 @@ DROP TABLE IF EXISTS `district_status`;
 
 CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `district_status`  AS  select `patient`.`district` AS `district`,count('district') AS `districtCount`,sum(case when (cast(`medicalreport`.`admitted_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Active') then 1 when (cast(`medicalreport`.`discharged_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Recovered') then 1 when (cast(`medicalreport`.`discharged_at` as date) = cast(current_timestamp() as date) and `medicalreport`.`status` = 'Dead') then 1 else 0 end) AS `todayCount`,`medicalreport`.`status` AS `status` from (`medical_report` `medicalreport` left join `patient` on(`medicalreport`.`patient_id` = `patient`.`patient_id`)) group by `patient`.`district`,`medicalreport`.`status` ;
 
+-- --------------------------------------------------------
+
+--
+-- Structure for view `facility_bed`
+--
+DROP TABLE IF EXISTS `facility_bed`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `facility_bed`  AS  (select `bed`.`id` AS `BedID`,`ward`.`id` AS `WardID`,`facility`.`facility_id` AS `FacilityId`,`facility`.`name` AS `FacilityName`,`ward`.`ward_type` AS `WardType`,`allocation`.`is_occupied` AS `IsOccupied`,`ward`.`capacity` AS `Capacity`,`facility`.`contact_no` AS `Contactnumber` from (((`ward` left join `bed` on(`ward`.`id` = `bed`.`ward`)) left join `allocation` on(`allocation`.`bed_no` = `bed`.`id`)) left join `facility` on(`facility`.`facility_id` = `ward`.`facility_id`))) ;
+
 --
 -- Indexes for dumped tables
 --
@@ -200,11 +254,27 @@ ALTER TABLE `facility`
   ADD PRIMARY KEY (`facility_id`);
 
 --
+-- Indexes for table `facility_staff`
+--
+ALTER TABLE `facility_staff`
+  ADD KEY `FK_FS_Facility` (`facility_id`),
+  ADD KEY `FK_FS_User` (`user_id`);
+
+--
 -- Indexes for table `medical_report`
 --
 ALTER TABLE `medical_report`
   ADD PRIMARY KEY (`report_id`),
-  ADD KEY `FK_ReportPatient` (`patient_id`);
+  ADD KEY `FK_ReportPatient` (`patient_id`),
+  ADD KEY `FK_ReportAdmitFac` (`admitted_facility`),
+  ADD KEY `FK_ReportDiscFac` (`discharged_facility`);
+
+--
+-- Indexes for table `password_reset`
+--
+ALTER TABLE `password_reset`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `FK_PWResetEmail` (`email`);
 
 --
 -- Indexes for table `patient`
@@ -224,8 +294,8 @@ ALTER TABLE `test`
 --
 ALTER TABLE `transfer`
   ADD KEY `FK_TransferPatient` (`patient_id`),
-  ADD KEY `FK_TransferOrigin` (`origin`),
-  ADD KEY `FK_TransferDest` (`destination`);
+  ADD KEY `FK_TransferDestBed` (`destination_bed_id`),
+  ADD KEY `FK_TransferOriginBed` (`origin_bed_id`);
 
 --
 -- Indexes for table `user`
@@ -259,6 +329,12 @@ ALTER TABLE `facility`
   MODIFY `facility_id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `password_reset`
+--
+ALTER TABLE `password_reset`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `ward`
 --
 ALTER TABLE `ward`
@@ -282,10 +358,25 @@ ALTER TABLE `bed`
   ADD CONSTRAINT `FK_BedWard` FOREIGN KEY (`ward`) REFERENCES `ward` (`id`) ON UPDATE CASCADE;
 
 --
+-- Constraints for table `facility_staff`
+--
+ALTER TABLE `facility_staff`
+  ADD CONSTRAINT `FK_FS_Facility` FOREIGN KEY (`facility_id`) REFERENCES `facility` (`facility_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_FS_User` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`) ON UPDATE CASCADE;
+
+--
 -- Constraints for table `medical_report`
 --
 ALTER TABLE `medical_report`
+  ADD CONSTRAINT `FK_ReportAdmitFac` FOREIGN KEY (`admitted_facility`) REFERENCES `facility` (`facility_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_ReportDiscFac` FOREIGN KEY (`discharged_facility`) REFERENCES `facility` (`facility_id`) ON UPDATE CASCADE,
   ADD CONSTRAINT `FK_ReportPatient` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`) ON UPDATE CASCADE;
+
+--
+-- Constraints for table `password_reset`
+--
+ALTER TABLE `password_reset`
+  ADD CONSTRAINT `FK_PWResetEmail` FOREIGN KEY (`email`) REFERENCES `user` (`email`) ON UPDATE CASCADE;
 
 --
 -- Constraints for table `test`
@@ -297,8 +388,8 @@ ALTER TABLE `test`
 -- Constraints for table `transfer`
 --
 ALTER TABLE `transfer`
-  ADD CONSTRAINT `FK_TransferDest` FOREIGN KEY (`destination`) REFERENCES `facility` (`facility_id`) ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK_TransferOrigin` FOREIGN KEY (`origin`) REFERENCES `facility` (`facility_id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_TransferDestBed` FOREIGN KEY (`destination_bed_id`) REFERENCES `bed` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK_TransferOriginBed` FOREIGN KEY (`origin_bed_id`) REFERENCES `bed` (`id`),
   ADD CONSTRAINT `FK_TransferPatient` FOREIGN KEY (`patient_id`) REFERENCES `patient` (`patient_id`) ON UPDATE CASCADE;
 
 --

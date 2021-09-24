@@ -6,6 +6,7 @@ var _Facility = require("./Facility");
 var _FacilityBed = require("./FacilityBed");
 var _FacilityStaff = require("./FacilityStaff");
 var _MedicalReport = require("./MedicalReport");
+var _PasswordReset = require("./PasswordReset");
 var _Patient = require("./Patient");
 var _Test = require("./Test");
 var _Transfer = require("./Transfer");
@@ -20,6 +21,7 @@ function initModels(sequelize) {
   var FacilityBed = _FacilityBed(sequelize, DataTypes);
   var FacilityStaff = _FacilityStaff(sequelize, DataTypes);
   var MedicalReport = _MedicalReport(sequelize, DataTypes);
+  var PasswordReset = _PasswordReset(sequelize, DataTypes);
   var Patient = _Patient(sequelize, DataTypes);
   var Test = _Test(sequelize, DataTypes);
   var Transfer = _Transfer(sequelize, DataTypes);
@@ -34,7 +36,10 @@ function initModels(sequelize) {
   Bed.hasMany(Transfer, { as: "destination_bed_transfers", foreignKey: "destination_bed_id"});
   FacilityStaff.belongsTo(Facility, { as: "facility", foreignKey: "facility_id"});
   Facility.hasMany(FacilityStaff, { as: "facility_staffs", foreignKey: "facility_id"});
-
+  MedicalReport.belongsTo(Facility, { as: "admitted_facility_facility", foreignKey: "admitted_facility"});
+  Facility.hasMany(MedicalReport, { as: "medical_reports", foreignKey: "admitted_facility"});
+  MedicalReport.belongsTo(Facility, { as: "discharged_facility_facility", foreignKey: "discharged_facility"});
+  Facility.hasMany(MedicalReport, { as: "discharged_facility_medical_reports", foreignKey: "discharged_facility"});
   Ward.belongsTo(Facility, { as: "facility", foreignKey: "facility_id"});
   Facility.hasMany(Ward, { as: "wards", foreignKey: "facility_id"});
   Test.belongsTo(MedicalReport, { as: "report", foreignKey: "report_id"});
@@ -47,6 +52,8 @@ function initModels(sequelize) {
   Patient.hasMany(Transfer, { as: "transfers", foreignKey: "patient_id"});
   FacilityStaff.belongsTo(User, { as: "user", foreignKey: "user_id"});
   User.hasMany(FacilityStaff, { as: "facility_staffs", foreignKey: "user_id"});
+  PasswordReset.belongsTo(User, { as: "email_user", foreignKey: "email"});
+  User.hasMany(PasswordReset, { as: "password_resets", foreignKey: "email"});
   Bed.belongsTo(Ward, { as: "ward_ward", foreignKey: "ward"});
   Ward.hasMany(Bed, { as: "beds", foreignKey: "ward"});
   DistrictStatus.removeAttribute('id');
@@ -60,6 +67,7 @@ function initModels(sequelize) {
     FacilityBed,
     FacilityStaff,
     MedicalReport,
+    PasswordReset,
     Patient,
     Test,
     Transfer,

@@ -32,8 +32,9 @@ module.exports = function(sequelize, DataTypes) {
     },
     gender: {
       type: DataTypes.ENUM('Male','Female'),
-      allowNull: false
-    },    
+      allowNull: true
+    },
+
     is_Vaccinated: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
