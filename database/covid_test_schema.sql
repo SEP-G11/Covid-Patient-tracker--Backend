@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 22, 2021 at 03:39 PM
+-- Generation Time: Sep 24, 2021 at 02:51 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -21,9 +21,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `covid_test`
 --
--- DROP DATABASE covid_test;
-CREATE DATABASE covid_test;
-USE covid_test;
+
 -- --------------------------------------------------------
 
 --
@@ -31,8 +29,8 @@ USE covid_test;
 --
 
 CREATE TABLE `allocation` (
-  `id` int(11) NOT NULL,
-  `patient_id` varchar(12) NOT NULL,
+  `id` varchar(200) NOT NULL,
+  `patient_id` varchar(200) NOT NULL,
   `bed_no` int(11) NOT NULL,
   `is_occupied` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -110,8 +108,8 @@ CREATE TABLE `facility_staff` (
 --
 
 CREATE TABLE `medical_report` (
-  `report_id` varchar(10) NOT NULL,
-  `patient_id` varchar(12) NOT NULL,
+  `report_id` varchar(200) NOT NULL,
+  `patient_id` varchar(200) NOT NULL,
   `symptoms` varchar(255) NOT NULL,
   `admitted_at` datetime NOT NULL,
   `admitted_facility` int(11) NOT NULL,
@@ -141,8 +139,9 @@ CREATE TABLE `password_reset` (
 --
 
 CREATE TABLE `patient` (
-  `patient_id` varchar(12) NOT NULL,
+  `patient_id` varchar(200) NOT NULL,
   `name` varchar(150) NOT NULL,
+  `bday` date DEFAULT NULL,
   `address` varchar(255) NOT NULL,
   `district` varchar(50) NOT NULL,
   `blood_type` enum('A+','O+','B+','AB+','A-','O-','B-','AB-') NOT NULL,
@@ -159,8 +158,8 @@ CREATE TABLE `patient` (
 --
 
 CREATE TABLE `test` (
-  `test_id` varchar(10) NOT NULL,
-  `report_id` varchar(10) NOT NULL,
+  `test_id` varchar(200) NOT NULL,
+  `report_id` varchar(200) NOT NULL,
   `date` datetime NOT NULL,
   `test_type` enum('PCR','RAT') NOT NULL,
   `result` tinyint(1) NOT NULL
@@ -173,7 +172,7 @@ CREATE TABLE `test` (
 --
 
 CREATE TABLE `transfer` (
-  `patient_id` varchar(12) NOT NULL,
+  `patient_id` varchar(200) NOT NULL,
   `date` datetime NOT NULL,
   `origin_bed_id` int(11) NOT NULL,
   `destination_bed_id` int(11) NOT NULL
