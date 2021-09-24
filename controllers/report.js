@@ -7,6 +7,7 @@ const Joi = require('joi');
 var Allocation = models.Allocation;
 var MedicalReport = models.MedicalReport;
 var Patient = models.Patient;
+var Bed = models.Bed;
 
 function validateCreateReport(RATresult, bedId, date, bday, phonenumber) {
 
@@ -16,7 +17,7 @@ function validateCreateReport(RATresult, bedId, date, bday, phonenumber) {
         RATresult: Joi.string().required().label('RAT Result'),
         bedId: Joi.string().required().label('Bed ID'),
         date: Joi.string().required().label(' Date'),
-      
+
     });
 
 
@@ -86,10 +87,64 @@ const createReport = async (req, res, next) => {
     }
 };
 
+const getPatientReportById = async (req, res, next) => {
 
-module.exports = {
-    createReport
+
+    const report = await MedicalReport.findOne({where: {patient_id: req.params.id}})
+
+    const allocation = await Allocation.findOne({where: {patient_id: req.params.id}})
+    const bed = await Bed.findOne({where: {id: allocation.id}})
+
+    try{
+    res.json({
+        report_id:report.report_id,
+        patient_id:report.patient_id,
+        symptoms:report.symptoms,
+        admitted_at:report.admitted_at,
+        discharged_at:report.discharged_at,
+        description:report.description,
+        status:report.status,
+        bed_no:bed.bed_no,
+        ward:bed.ward
+    })
+} catch (err) {
+    return errorMessage(res, "Internal Server Error!", 500);
+}
+
+}
+
+const updateReport = async (req, res, next) => {
+
+    const report = await MedicalReport.findOne({where: {patient_id: req.params.id}})
+    const bed = await Bed.findOne({where: {ward: req.body.ward} && {bed_no: req.body.bed_no}})
+
+    report.symptoms = req.body.symptoms || report.symptoms
+    report.admitted_at = req.body.admitted_at || report.admitted_at
+    report.discharged_at = req.body.discharged_at || report.discharged_at
+    report.description = req.body.description || report.description
+    report.status = req.body.status || report.status
+
+
+    try{
+    const updatedReport = await report.save()
+    const updatedBed = await bed.save()
+
+    res.json({
+        bed_no: updatedBed.bed_no,
+        ward: updatedBed.ward,
+        symptoms: updatedReport.symptoms,
+        admitted_at: updatedReport.admitted_at,
+        discharged_at: updatedReport.discharged_at,
+        description: updatedReport.description,
+        status: updatedReport.status,
+    })
+
+    } catch (err) {
+        return errorMessage(res, "Internal Server Error!", 500);
+    }
 };
 
 
-
+module.exports = {
+    createReport,getPatientReportById,updateReport
+};
