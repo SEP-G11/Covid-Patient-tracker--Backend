@@ -5,7 +5,7 @@ const { successMessage, errorMessage } = require("../utils/message-template");
 const Joi = require('joi');
 const { isNull } = require("lodash");
 
-
+var Test = models.Test;
 var MedicalReport = models.MedicalReport;
 
 function validateEnterResult(id, RATresult, testType, date) {
@@ -43,8 +43,8 @@ const enterResult = async (req, res, next) => {
     else{
         const data =  await MedicalReport.findOne({where: {patient_id: value.id ,discharged_at:null}});    
         report_id=(data.dataValues.report_id)
-        
-   
+
+
 
     try {
         const result = await sequelize.query(
@@ -57,7 +57,7 @@ const enterResult = async (req, res, next) => {
                     date,
                     testType,
                     RATresult                
-                 
+
                 },
             }
         );
@@ -75,10 +75,18 @@ const enterResult = async (req, res, next) => {
     }}
 };
 
+const getTestDetailsById = async (req, res, next) => {
+    try{
+        const report = await MedicalReport.findOne({where: {patient_id: req.params.id}})
+        const reportId = report.report_id
+        const test = await Test.findAll({where: {report_id: reportId}})
+        res.json(test)
+    } catch (err) {
+        return errorMessage(res, "Internal Server Error!", 500);
+      }
+  }  
+
 
 module.exports = {
-    enterResult
+    enterResult,getTestDetailsById
 };
-
-
-
