@@ -21,7 +21,9 @@ SET time_zone = "+00:00";
 --
 -- Database: `covid_test`
 --
-
+-- DROP DATABASE covid_test;
+CREATE DATABASE covid_test;
+USE covid_test;
 -- --------------------------------------------------------
 
 --

@@ -2,7 +2,7 @@ const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
   return sequelize.define('FacilityStaff', {
     user_id: {
-      type: DataTypes.STRING(12),
+      type: DataTypes.STRING(200),
       allowNull: false,
       references: {
         model: 'user',
@@ -39,3 +39,4 @@ module.exports = function(sequelize, DataTypes) {
     ]
   });
 };
+
