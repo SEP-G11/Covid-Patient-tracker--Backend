@@ -39,7 +39,7 @@ ________________________________________________________________________________
 
 
 DELIMITER $$
-  CREATE FUNCTION `add_patient` (`name` VARCHAR(150), `patient_id` VARCHAR(200), `age` INT(11), `gender` ENUM("Male","Female"), `address` VARCHAR(255), `contact_no` VARCHAR(12), `blood_type` ENUM('A+','O+','B+','AB+','A-','O-','B-','AB-'), `district` VARCHAR(50), `test_id` VARCHAR(200), `is_Vaccinated` BOOLEAN, `result` TINYINT(1), `description` TEXT, `report_id` VARCHAR(200), `bed_id` INT(11), `allocation_id` VARCHAR(200), `admitted_at` DATETIME, `bday` DATE) RETURNS TINYINT(1) BEGIN 
+  CREATE FUNCTION `add_patient` (`name` VARCHAR(150), `admitted_facility` int(11),`patient_id` VARCHAR(200), `age` INT(11), `gender` ENUM("Male","Female"), `address` VARCHAR(255), `contact_no` VARCHAR(12), `blood_type` ENUM('A+','O+','B+','AB+','A-','O-','B-','AB-'), `district` VARCHAR(50), `test_id` VARCHAR(200), `is_Vaccinated` BOOLEAN, `result` TINYINT(1), `description` TEXT, `report_id` VARCHAR(200), `bed_id` INT(11), `allocation_id` VARCHAR(200), `admitted_at` DATETIME, `bday` DATE) RETURNS TINYINT(1) BEGIN 
  	
     DECLARE patient_count integer;
     DECLARE test_count integer;
@@ -55,7 +55,7 @@ DELIMITER $$
     
         INSERT INTO `patient` (`patient_id`, `name`,`bday`, `address`, `district`, `blood_type` , `age` , `contact_no` , `gender` , `is_Vaccinated`) VALUES (patient_id, name, bday,address, district, blood_type , age , contact_no , gender , is_Vaccinated);
 
-	INSERT INTO `medical_report` ( `report_id`,`patient_id`,`admitted_at`,`description`) VALUES (report_id,patient_id,admitted_at , description);
+	INSERT INTO `medical_report` ( `report_id`,`patient_id`,`admitted_at`,`admitted_facility`,`description`) VALUES (report_id,patient_id,admitted_at ,admitted_facility, description);
 	INSERT INTO `test` (`test_id`,`report_id`,`date`,`test_type`,`result`) VALUES (test_id,report_id,admitted_at,'RAT',result);
 	
 	INSERT INTO `allocation` (`id`,`patient_id`,`bed_no`,`is_occupied`) VALUES (allocation_id,patient_id,bed_id,1);
@@ -74,7 +74,7 @@ DELIMITER $$
 _________________________________________________________________________________________________________________________
 
 DELIMITER $$
-  CREATE FUNCTION discharge_patient(`patient_id` varchar(200), `discharged_at` datetime , `description` text , `Stat` enum('Active','Dead','Recovered'))
+  CREATE FUNCTION discharge_patient(`patient_id` varchar(200),`discharged_facility` int(11) , `discharged_at` datetime , `description` text , `Stat` enum('Active','Dead','Recovered'))
   RETURNS boolean
  DETERMINISTIC
     BEGIN 
@@ -87,7 +87,7 @@ DELIMITER $$
     select count(r.patient_id) into report_count from medical_report r where r.patient_id=patient_id ;
    
     IF(allocation_count!=0  and report_count!=0 ) THEN   
-    UPDATE medical_report r SET r.discharged_at =discharged_at ,r.description=description ,  r.status= Stat where r.report_id in ( SELECT r.report_id FROM medical_report r WHERE r.patient_id=patient_id and r.discharged_at IS NULL);
+    UPDATE medical_report r SET r.discharged_at =discharged_at ,r.description=description , r.discharged_facility=discharged_facility, r.status= Stat where r.report_id in ( SELECT r.report_id FROM medical_report r WHERE r.patient_id=patient_id and r.discharged_at IS NULL);
 
 	UPDATE allocation a SET a.is_occupied="0"  where (a.patient_id=patient_id and a.is_occupied=1 );
     return true;   
@@ -165,7 +165,7 @@ ________________________________________________________________________________
 
 
 DELIMITER $$
-  CREATE FUNCTION `create_report` ( `patient_id` VARCHAR(200),  `test_id` VARCHAR(200),  `result` TINYINT(1), `report_id` VARCHAR(200), `bed_id` INT(11), `allocation_id` VARCHAR(200), `admitted_at` DATETIME ,`description` text ) RETURNS TINYINT(1) BEGIN 
+  CREATE FUNCTION `create_report` ( `patient_id` VARCHAR(200), `admitted_facility` int(11), `test_id` VARCHAR(200),  `result` TINYINT(1), `report_id` VARCHAR(200), `bed_id` INT(11), `allocation_id` VARCHAR(200), `admitted_at` DATETIME ,`description` text ) RETURNS TINYINT(1) BEGIN 
  	
    
     DECLARE test_count integer;
@@ -179,7 +179,7 @@ DELIMITER $$
     IF( test_count=0 and report_count=0 and allocation_count=0 ) THEN
     
         
-	INSERT INTO `medical_report` ( `report_id`,`patient_id`,`admitted_at`,`description`) VALUES (report_id,patient_id,admitted_at , description);
+	INSERT INTO `medical_report` ( `report_id`,`patient_id`,`admitted_at`,`admitted_facility`,`description`) VALUES (report_id,patient_id,admitted_at ,admitted_facility, description);
 	INSERT INTO `test` (`test_id`,`report_id`,`date`,`test_type`,`result`) VALUES (test_id,report_id,admitted_at,'RAT',result);
 	
 	INSERT INTO `allocation` (`id`,`patient_id`,`bed_no`,`is_occupied`) VALUES (allocation_id,patient_id,bed_id,1);
