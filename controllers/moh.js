@@ -84,7 +84,7 @@ const overallDistrictsStats = async (req,res,next) => {
     try{
         const overallDistrictsResult = await DistrictStatus.findAll();
         if (overallDistrictsResult && overallDistrictsResult.length!==0){
-            return successMessage(res, districtStatsMutate(overallDistrictsResult, districtInfo), 'Districts Data Found', 201);
+            return successMessage(res, districtStatsMutate(overallDistrictsResult, districtInfo), 'Districts Data Found');
         }
         else {
             return errorMessage(res, 'Districts Data Not Found', 404);
@@ -104,7 +104,7 @@ const overallDistrictStats = async (req,res,next) => {
             where: {district: district}
         });
         if (overallDistrictResult && overallDistrictResult.length!==0){
-            return successMessage(res, districtStatsMutate(overallDistrictResult, districtInfo), 'District Data Found', 201);
+            return successMessage(res, districtStatsMutate(overallDistrictResult, districtInfo), 'District Data Found');
         }
         else {
             return errorMessage(res, 'District Data Not Found', 404);
@@ -120,7 +120,7 @@ const overallCountryStats = async (req,res,next) => {
     try{
         const overallCountryResult = await DistrictStatus.findAll();
         if (overallCountryResult && overallCountryResult.length!==0){
-            return successMessage(res, countryStatsMutate(overallCountryResult), 'Country Data Found', 201);
+            return successMessage(res, countryStatsMutate(overallCountryResult), 'Country Data Found');
         }
         else {
             return errorMessage(res, 'Country Data Not Found', 404);
@@ -145,7 +145,7 @@ const historicalCases = async (req,res,next) => {
             group: ('date')
         });
         if (activeLastXDays){
-            return successMessage(res,dateMapToValuesMutate(activeLastXDays,lastDays),`Historical Cases over last ${lastDays} days Found`, 201)
+            return successMessage(res,dateMapToValuesMutate(activeLastXDays,lastDays),`Historical Cases over last ${lastDays} days Found`)
         }
         else {
             return errorMessage(res, 'Data Not Found', 404);
@@ -169,7 +169,7 @@ const historicalRecovered = async (req,res,next) => {
             group: ('date')
         });
         if (recoveredLastXDays){
-            return successMessage(res,dateMapToValuesMutate(recoveredLastXDays,lastDays),`Historical Recovered over last ${lastDays} days Found`, 201)
+            return successMessage(res,dateMapToValuesMutate(recoveredLastXDays,lastDays),`Historical Recovered over last ${lastDays} days Found`)
         }
         else {
             return errorMessage(res, 'Data Not Found', 404);
@@ -193,7 +193,7 @@ const historicalDeaths = async (req,res,next) => {
             group: ('date')
         });
         if (recoveredLastXDays){
-            return successMessage(res,dateMapToValuesMutate(recoveredLastXDays,lastDays),`Historical Deaths over last ${lastDays} days Found`, 201)
+            return successMessage(res,dateMapToValuesMutate(recoveredLastXDays,lastDays),`Historical Deaths over last ${lastDays} days Found`)
         }
         else {
             return errorMessage(res, 'Data Not Found', 404);
@@ -218,7 +218,7 @@ const historicalTests = async (req,res,next) => {
             group: ['test_date','test_type']
         });
         if (testsLastXDays){
-            return successMessage(res,dateMapToTestsMutate(testsLastXDays,lastDays),`Historical Tests over last ${lastDays} days Found`, 201)
+            return successMessage(res,dateMapToTestsMutate(testsLastXDays,lastDays),`Historical Tests over last ${lastDays} days Found`)
 
         }
         else {
