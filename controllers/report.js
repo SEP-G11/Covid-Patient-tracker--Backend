@@ -17,7 +17,7 @@ function validateCreateReport(RATresult, bedId, date, bday, phonenumber) {
         RATresult: Joi.string().required().label('RAT Result'),
         bedId: Joi.string().required().label('Bed ID'),
         date: Joi.string().required().label(' Date'),
-
+      
     });
 
 
@@ -39,6 +39,7 @@ const createReport = async (req, res, next) => {
         description
     } = req.body;
 
+    const admitted_facility = req.facilityId;
 
     if (bday > new Date().toISOString().slice(0, 10)) {
         return errorMessage(res, "Please Check again Date of Birthday !", 422)
@@ -62,10 +63,11 @@ const createReport = async (req, res, next) => {
     }
     try {
         const result = await sequelize.query(
-            "select create_report(:id,:testId,:RATresult,:reportId,:bedId,:allocationId,:date, :description) as result",
+            "select create_report(:id,:admitted_facility,:testId,:RATresult,:reportId,:bedId,:allocationId,:date, :description) as result",
             {
                 replacements: {
                     id,
+                    admitted_facility,
                     testId,
                     RATresult,
                     reportId,
