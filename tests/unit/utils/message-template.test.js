@@ -1,7 +1,7 @@
 const { successMessage,errorMessage } = require("../../../utils/message-template");
 
 
-describe('success message',() => {
+describe('successMessage util',() => {
     it('should send success message along with results with 200(default) status code', async ()=>{
         const res = {
             status: jest.fn(() => res),
@@ -30,7 +30,7 @@ describe('success message',() => {
     });
 });
 
-describe('error message',() => {
+describe('errorMessage util',() => {
     it('should send error message with 400(default) status code', async ()=>{
         const res = {
             status: jest.fn(() => res),
