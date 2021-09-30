@@ -172,8 +172,10 @@ const resetPassword = async (req,res,next) => {
 
     }
     catch (err) {
-        await t.rollback();
-        return errorMessage(res, 'Internal Server Error', 500);
+        if (t){
+            await t.rollback();
+        }
+        return errorMessage(res, 'Failed or Expired Token', 500);
     }
 
 };
