@@ -1,4 +1,4 @@
-const {enterResult,getTestDetailsById} = require("../controllers/test");
+const {enterResult,getTestDetailsById} = require("../controllers/tests");
 const express = require("express");
 const router = express.Router();
 const {protect,authorize} = require('../middlewares/authorization');
