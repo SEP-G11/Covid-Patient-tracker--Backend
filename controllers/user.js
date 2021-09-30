@@ -29,7 +29,7 @@ const getUserProfile = async (req,res,next) => {
             attributes: { exclude: ['password','is_deleted']}
         });
         if (user){
-            return successMessage(res, user, 'User Found');
+            return successMessage(res, user.dataValues, 'User Found');
         }
         else {
             return errorMessage(res, 'User Not Found', 404);

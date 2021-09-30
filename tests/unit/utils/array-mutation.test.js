@@ -1,7 +1,7 @@
 var fs = require('fs');
 const { districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate,facilityBedsMutate} = require("../../../utils/array-mutation");
 
-describe('district stats mutate util',() => {
+describe('districtStatsMutate util',() => {
     it('should mutate district stats to the required format', async ()=>{
         const districtInfo = JSON.parse(fs.readFileSync('data/districts.json', 'utf8'));
 
@@ -24,7 +24,7 @@ describe('district stats mutate util',() => {
     });
 });
 
-describe('country stats mutate util',() => {
+describe('countryStatsMutate util',() => {
     it('should mutate country stats to the required format', async ()=>{
 
         const overallDistrictStats = [
@@ -40,6 +40,78 @@ describe('country stats mutate util',() => {
         };
 
         const res = countryStatsMutate(overallDistrictStats);
+        expect(res).toEqual(expectedResult);
+    });
+});
+
+describe('dateMapToTestsMutate util',() => {
+    it('should mutate date to tests mapping to the required format', async ()=>{
+        Date.now = jest.fn(() => new Date("2021-09-29T12:33:37.000Z"));
+        const lastDays = 5;
+        const mutableArr = [
+            {dataValues:  { test_date: '2021-09-27', count: 2, test_type: 'PCR' }},
+            {dataValues:  { test_date: '2021-09-27', count: 5, test_type: 'RAT' }},
+            {dataValues: { test_date: '2021-09-25', count: 1, test_type: 'PCR' }},
+            {dataValues: { test_date: '2021-09-25', count: 2, test_type: 'RAT' }},
+        ];
+
+        const expectedResult = {
+            '9/29/21':{pcr: 0,rat: 0},
+            '9/28/21':{pcr: 0,rat: 0},
+            '9/27/21':{pcr: 2,rat: 5},
+            '9/26/21':{pcr: 0,rat: 0},
+            '9/25/21':{pcr: 1,rat: 2},
+
+        };
+
+        const res = dateMapToTestsMutate(mutableArr,lastDays);
+        expect(res).toEqual(expectedResult);
+    });
+});
+
+describe('dateMapToValuesMutate util',() => {
+    it('should mutate date to count mapping to the required format', async ()=>{
+        Date.now = jest.fn(() => new Date("2021-09-29T12:33:37.000Z"));
+        const lastDays = 5;
+        const mutableArr = [
+            {dataValues:  { date: '2021-09-27', count: 2}},
+            {dataValues: { date: '2021-09-25', count: 1}},
+        ];
+
+        const expectedResult = {
+            '9/29/21':0,
+            '9/28/21':0,
+            '9/27/21':2,
+            '9/26/21':0,
+            '9/25/21':1,
+
+        };
+
+        const res = dateMapToValuesMutate(mutableArr,lastDays);
+        expect(res).toEqual(expectedResult);
+    });
+});
+
+describe('facilityBedsMutate util',() => {
+    it('should mutate facility beds to the required format', async ()=>{
+
+        const mutableArr = [
+            {dataValues: { facilityId: 4, wardType: 'Covid', isOccupied: 1 }},
+            {dataValues: { facilityId: 4, wardType: 'Normal', isOccupied: 0 }},
+            {dataValues: { facilityId: 4, wardType: 'Covid', isOccupied: 0 }},
+            {dataValues: { facilityId: 8, wardType: 'Covid', isOccupied: 0 }},
+            {dataValues: { facilityId: 12, wardType: 'Covid', isOccupied: 0 }},
+            {dataValues: { facilityId: 12, wardType: 'Normal', isOccupied: 1 }}
+        ];
+
+        const expectedResult = {
+            4:{totalCovidBeds: 2, occupiedCovidBeds: 1, totalNormalBeds: 1, occupiedNormalBeds: 0},
+            8:{totalCovidBeds: 1, occupiedCovidBeds: 0, totalNormalBeds: 0, occupiedNormalBeds: 0},
+            12:{totalCovidBeds: 1, occupiedCovidBeds: 0, totalNormalBeds: 1, occupiedNormalBeds: 1}
+
+        };
+
+        const res = facilityBedsMutate(mutableArr);
         expect(res).toEqual(expectedResult);
     });
 });
