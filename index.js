@@ -20,6 +20,7 @@ const patientRouter = require("./routes/patient");
 const reportRouter = require("./routes/report");
 const testRouter  = require("./routes/tests");
 const facilityRouter =   require("./routes/facility");
+const userRouter =   require("./routes/user");
 // const doctorRouter = require("./routes/doctor");
 // const hospitalAdminRouter = require("./routes/hospitalAdmin");
 
@@ -35,6 +36,7 @@ app.use("/patient", patientRouter);
 app.use("/report", reportRouter);
 app.use("/test", testRouter);
 app.use("/facility", facilityRouter);
+app.use("/user", userRouter);
 
 app.get("/*", (req, res) => {
   res.status(404).json({
