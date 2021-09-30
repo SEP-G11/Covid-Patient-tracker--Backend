@@ -134,7 +134,7 @@ if (await Allocation.findOne({where: {bed_no: value.bedId ,is_occupied:"1" }})){
   if (result[0][0]["result"] == 1) {
     return successMessage(res, result, "Patient successfully  Admited!", 201);
   } else {
-    return errorMessage(res, "Patient successfully not Admited.Please Check again Details!", 404);
+    return errorMessage(res, "Patient  not Admited.Please Check again Details!", 404);
   }
 } catch (err) {
   return errorMessage(res, "Internal Server Error!", 500);
@@ -169,7 +169,7 @@ const dischargePatient = async (req, res, next) => {
     if (result[0][0]["result"] == 1) {
       return successMessage(res, result, "Patient successfully  Discharged!", 201);
     } else {
-      return errorMessage(res, "Patient successfully not Discharged!", 404);
+      return errorMessage(res, "Patient  not Discharged!", 404);
     }
   } catch (err) {
     return errorMessage(res, "Internal Server Error!", 500);
@@ -205,7 +205,7 @@ if (error) {
   if (result[0][0]["result"] == 1) {
     return successMessage(res, result, "Patient successfully  Transfered!", 201);
   } else {
-    return errorMessage(res, "Patient successfully not Transfered!", 404);
+    return errorMessage(res, "Patient  not Transfered!", 404);
   }
 } catch (err) {
   return errorMessage(res, "Internal Server Error!", 500);
