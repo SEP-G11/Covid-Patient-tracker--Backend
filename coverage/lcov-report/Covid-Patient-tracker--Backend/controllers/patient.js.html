@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.69% </span>
+                <span class="strong">52.68% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>54/92</span>
+                <span class='fraction'>49/93</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">23.8% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>14/42</span>
+                <span class='fraction'>10/42</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">58.69% </span>
+                <span class="strong">52.68% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>54/92</span>
+                <span class='fraction'>49/93</span>
             </div>
         
             
@@ -438,7 +438,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -456,12 +456,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -487,10 +485,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -564,9 +564,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -735,7 +735,7 @@ const {
   bday,
 } = req.body;
 &nbsp;
-// console.log(req.body)
+ console.log(req.body)
 const admitted_facility = req.facilityId;
 &nbsp;
 &nbsp;
@@ -752,11 +752,11 @@ if (error) {
 &nbsp;
 &nbsp;
 &nbsp;
-if (await Allocation.findOne({where: {bed_no: value.bedId ,is_occupied:"1" }})){
+<span class="missing-if-branch" title="else path not taken" >E</span>if (await Allocation.findOne({where: {bed_no: value.bedId ,is_occupied:"1" }})){
   return errorMessage(res, "Bed has already Occupied", 422)
 }
-  try {
-  const result = await sequelize.query(
+<span class="cstat-no" title="statement not covered" >  try {</span>
+  const result = <span class="cstat-no" title="statement not covered" >await sequelize.query(</span>
     "select add_patient(:name,:admitted_facility,:id,:age,:gender,:address,:contactnumber,:bloodtype,:district,:testId,:isvaccinated,:RATresult,:medicalHistory,:reportId,:bedId,:allocationId,:admitDateTime,:bday) as result",
     {
       replacements: {
@@ -784,10 +784,10 @@ if (await Allocation.findOne({where: {bed_no: value.bedId ,is_occupied:"1" }})){
 &nbsp;
 // console.log(result);
 &nbsp;
-  if (result[0][0]["result"] == 1) {
-    return successMessage(res, result, "Patient successfully  Admited!", 201);
+<span class="cstat-no" title="statement not covered" >  if (result[0][0]["result"] == 1) {</span>
+<span class="cstat-no" title="statement not covered" >    return successMessage(res, result, "Patient successfully  Admited!", 201);</span>
   } else {
-    return errorMessage(res, "Patient  not Admited.Please Check again Details!", 404);
+<span class="cstat-no" title="statement not covered" >    return errorMessage(res, "Patient  not Admited.Please Check again Details!", 404);</span>
   }
 } catch (err) {
 <span class="cstat-no" title="statement not covered" >  return errorMessage(res, "Internal Server Error!", 500);</span>
@@ -860,8 +860,8 @@ if (error) {
 &nbsp;
 &nbsp;
 &nbsp;
-  if (result[0][0]["result"] == 1) {
-    return successMessage(res, result, "Patient successfully  Transfered!", 201);
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (result[0][0]["result"] == 1) {
+<span class="cstat-no" title="statement not covered" >    return successMessage(res, result, "Patient successfully  Transfered!", 201);</span>
   } else {
     return errorMessage(res, "Patient  not Transfered!", 404);
   }
@@ -955,7 +955,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Oct 01 2021 10:39:02 GMT+0530 (India Standard Time)
+                at Fri Oct 01 2021 16:25:38 GMT+0530 (India Standard Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

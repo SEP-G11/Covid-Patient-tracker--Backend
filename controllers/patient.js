@@ -82,7 +82,7 @@ const {
   bday,
 } = req.body;
 
-// console.log(req.body)
+ console.log(req.body)
 const admitted_facility = req.facilityId;
 
 
