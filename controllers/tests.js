@@ -30,6 +30,7 @@ const enterResult = async (req, res, next) => {
         RATresult   
     } = req.body;
 
+    console.log(req.body)
     const { error, value } = validateEnterResult(id, RATresult, testType, date);
 
     if (error) {
@@ -64,7 +65,7 @@ const enterResult = async (req, res, next) => {
 
 
 
-
+console.log(result)
         if (result[0][0]["result"] == 1) {
             return successMessage(res, result, "Test result successfully  Entered!", 201);
         } else {
