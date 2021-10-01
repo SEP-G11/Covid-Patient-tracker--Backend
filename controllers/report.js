@@ -118,8 +118,7 @@ const getPatientReportById = async (req, res, next) => {
 const updateReport = async (req, res, next) => {
 
     const report = await MedicalReport.findOne({where: {patient_id: req.params.id}})
-    const bed = await Bed.findOne({where: {ward: req.body.ward} && {bed_no: req.body.bed_no}})
-
+    
     report.symptoms = req.body.symptoms || report.symptoms
     report.admitted_at = req.body.admitted_at || report.admitted_at
     report.discharged_at = req.body.discharged_at || report.discharged_at
@@ -129,11 +128,8 @@ const updateReport = async (req, res, next) => {
 
     try{
     const updatedReport = await report.save()
-    const updatedBed = await bed.save()
 
     res.json({
-        bed_no: updatedBed.bed_no,
-        ward: updatedBed.ward,
         symptoms: updatedReport.symptoms,
         admitted_at: updatedReport.admitted_at,
         discharged_at: updatedReport.discharged_at,
