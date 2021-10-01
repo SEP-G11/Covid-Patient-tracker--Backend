@@ -82,7 +82,7 @@ const {
   bday,
 } = req.body;
 
-
+// console.log(req.body)
 const admitted_facility = req.facilityId;
 
 
@@ -129,7 +129,7 @@ if (await Allocation.findOne({where: {bed_no: value.bedId ,is_occupied:"1" }})){
     }
   );
 
-
+// console.log(result);
 
   if (result[0][0]["result"] == 1) {
     return successMessage(res, result, "Patient successfully  Admited!", 201);
@@ -150,6 +150,7 @@ const dischargePatient = async (req, res, next) => {
       patient_id,discharged_at,description,status
   } = req.body;
 
+  console.log(req.body)
   const discharged_facility = req.facilityId;
   const { error } = validateDischargePatient(patient_id,discharged_at,status);
 
@@ -165,7 +166,7 @@ const dischargePatient = async (req, res, next) => {
         },
       }
     );
-
+    console.log(result);
     if (result[0][0]["result"] == 1) {
       return successMessage(res, result, "Patient successfully  Discharged!", 201);
     } else {
@@ -184,6 +185,8 @@ const {
   patient_id, transfer_date ,  origin_bed_id,  dest_bed_id
 } = req.body;
 
+
+
 const { error, } = validateTransferPatient(patient_id, transfer_date ,  origin_bed_id,  dest_bed_id);
 
 
@@ -201,6 +204,8 @@ if (error) {
       },
     }
   );
+
+
 
   if (result[0][0]["result"] == 1) {
     return successMessage(res, result, "Patient successfully  Transfered!", 201);

@@ -13,7 +13,7 @@ var FacilityBed = models.FacilityBed;
 
 const bedSearch = async (req,res,next) => {
     const facilityId = req.params.facilityId=="*" ? (req.facilityId):(req.params.facilityId);
-    console.log(facilityId)
+    // console.log(facilityId)
 
     try{
 
