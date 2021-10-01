@@ -18,7 +18,7 @@ var FacilityBed = models.FacilityBed;
 
 function validateRegister(id, name, email, contact, password,accountType,facilityId) {
     const schema = Joi.object({
-        id: Joi.string().required().label('ID'),
+        id: Joi.string().pattern(/^([0-9]{9}[x|X|v|V]|[0-9]{12})$/).required().label('ID').messages({'string.pattern.base': '"ID" must be a valid NIC'}),
         email: Joi.string().email().trim().lowercase().max(100).required().label('Email'),
         name: Joi.string().trim().max(255).required().label('Name'),
         contact: Joi.string().max(12).required().label('Contact'),
