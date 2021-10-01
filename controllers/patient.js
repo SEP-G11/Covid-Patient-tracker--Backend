@@ -226,8 +226,10 @@ const getPatients = async (req, res, next) => {
     for (let i = 0; i < beds.length; i++) {
       const bedId = beds[i].BedID
       const allocation = await Allocation.findOne({where: {id:bedId}})
-      const patient = await Patient.findOne({where: {patient_id:allocation.patient_id}})
-      patients.push(patient);
+      if (allocation) {
+        const patient = await Patient.findOne({where: {patient_id:allocation.patient_id}})
+        patients.push(patient);
+      }
     } 
     res.json(patients);
   } catch (err) {
