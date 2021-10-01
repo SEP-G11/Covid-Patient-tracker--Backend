@@ -4,8 +4,9 @@ var models = require("../service/init-models").initModels(sequelize);
 const { successMessage, errorMessage } = require("../utils/message-template");
 const Joi = require('joi');
 
-var Allocation = models.Allocation;
 var Patient = models.Patient;
+var FacilityBed = models.FacilityBed;
+var Allocation = models.Allocation;
 
 function validateAdmitPatient(name,contactnumber,RATresult,bedId,admitDateTime,bday) {
   
@@ -214,7 +215,15 @@ if (error) {
 
 const getPatients = async (req, res, next) => {
   try{
-    const patients = await Patient.findAll();
+    const facilityId = req.facilityId
+    const beds = await FacilityBed.findAll({where: {facilityId: facilityId}})
+    const patients= []
+    for (let i = 0; i < beds.length; i++) {
+      const bedId = beds[i].BedID
+      const allocation = await Allocation.findOne({where: {id:bedId}})
+      const patient = await Patient.findOne({where: {patient_id:allocation.patient_id}})
+      patients.push(patient);
+    } 
     res.json(patients);
   } catch (err) {
     return errorMessage(res, "Internal Server Error!", 500);
