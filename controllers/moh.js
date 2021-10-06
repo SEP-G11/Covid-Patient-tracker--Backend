@@ -23,8 +23,8 @@ function validateRegister(id, name, email, contact, password,accountType,facilit
         name: Joi.string().trim().max(255).required().label('Name'),
         contact: Joi.string().max(12).required().label('Contact'),
         password: Joi.string().trim().min(5).required().label('Password'),
-        accountType: Joi.string().required().label('Account Type'),
-        facilityId: Joi.number().label("Facility")
+        accountType: Joi.string().valid('MOH','DOC','HA').required().label('Account Type'),
+        facilityId: Joi.number().when('accountType',{not: 'MOH',then: Joi.number().required()}).label("Facility")
     });
     return schema.validate({ id: id, email: email, name: name, contact: contact, password: password, accountType: accountType, facilityId: facilityId })
 }
@@ -68,7 +68,7 @@ const register = async (req, res, next) => {
             queryResult = await User.create(createUserObj);
         }
         if (queryResult){
-            return successMessage(res, 'User created successfully', 201);
+            return successMessage(res,{},'User created successfully', 201);
         }
         else {
             return errorMessage(res, "User registration failed", 400)
