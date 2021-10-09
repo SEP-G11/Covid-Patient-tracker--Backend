@@ -138,6 +138,7 @@ if (await Allocation.findOne({where: {bed_no: value.bedId ,is_occupied:"1" }})){
     return errorMessage(res, "Patient  not Admited.Please Check again Details!", 404);
   }
 } catch (err) {
+  console.log(err.message)
   return errorMessage(res, "Internal Server Error!", 500);
 }
 };
@@ -220,17 +221,7 @@ if (error) {
 
 const getPatients = async (req, res, next) => {
   try{
-    const facilityId = req.facilityId
-    const beds = await FacilityBed.findAll({where: {facilityId: facilityId}})
-    const patients= []
-    for (let i = 0; i < beds.length; i++) {
-      const bedId = beds[i].BedID
-      const allocation = await Allocation.findOne({where: {id:bedId}})
-      if (allocation) {
-        const patient = await Patient.findOne({where: {patient_id:allocation.patient_id}})
-        patients.push(patient);
-      }
-    } 
+    const patients = await Patient.findAll();
     res.json(patients);
   } catch (err) {
     return errorMessage(res, "Internal Server Error!", 500);
@@ -259,10 +250,12 @@ const updatePatient = async (req, res, next) => {
  }else{
   req.body.is_Vaccinated="false"
  }
-
- if (req.body.contact_no.length != 10) {
-  return errorMessage(res, "Please Check again Contact Number !", 422)
-}
+ if (req.body.contact_no.length>0){
+  req.body.contact_no = req.body.contact_no.split("94").pop()
+  if (req.body.contact_no.length != 10) {
+    return errorMessage(res, "Please Check again Contact Number !", 422)
+  }
+ }
  try{
   const patient = await Patient.findByPk(req.params.id)
       patient.name = req.body.name || patient.name
@@ -300,8 +293,23 @@ const updatePatient = async (req, res, next) => {
     }
 };
 
+const filterPatients = async (req, res, next) => {
+  try{
+    const filteredPatients = await Patient.findAll({
+      where: {
+        [Op.or]: [{patient_id: req.params.input}, {name: req.params.input},
+          {address: req.params.input}, {district: req.params.input}, {blood_type: req.params.input},
+          {age: req.params.input}, {contact_no: req.params.input}]
+      }
+    });
+    res.json(filteredPatients);
+  } catch (err) {
+    return errorMessage(res, "Internal Server Error!", 500);
+  }
+};
+
 module.exports = {
-  admitPatient, dischargePatient,transferPatient,getPatients,getPatientById,updatePatient
+  admitPatient, dischargePatient,transferPatient,getPatients,getPatientById,updatePatient,filterPatients
 };
 
 
