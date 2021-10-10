@@ -1,21 +1,21 @@
 const { Op } = require('sequelize');
 const moment = require('moment');
-const sequelize = require('../database/db');
-var models = require("../service/init-models").initModels(sequelize);
+// const sequelize = require('../database/db');
+// var models = require("../service/init-models").initModels(sequelize);
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
 const { districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate,facilityBedsMutate} = require("../utils/array-mutation");
 var fs = require('fs');
 
-var User = models.User;
-var DistrictStatus = models.DistrictStatus;
-var MedicalReport = models.MedicalReport;
-var Test = models.Test;
-var FacilityStaff = models.FacilityStaff;
-var Facility = models.Facility;
-var FacilityBed = models.FacilityBed;
-
+// var User = models.User;
+// var DistrictStatus = models.DistrictStatus;
+// var MedicalReport = models.MedicalReport;
+// var Test = models.Test;
+// var FacilityStaff = models.FacilityStaff;
+// var Facility = models.Facility;
+// var FacilityBed = models.FacilityBed;
+const {User,DistrictStatus,MedicalReport,Test,FacilityStaff,Facility,FacilityBed,sequelize} = require('../service/models');
 function validateRegister(id, name, email, contact, password,accountType,facilityId) {
     const schema = Joi.object({
         id: Joi.string().pattern(/^([0-9]{9}[x|X|v|V]|[0-9]{12})$/).required().label('ID').messages({'string.pattern.base': '"ID" must be a valid NIC'}),
