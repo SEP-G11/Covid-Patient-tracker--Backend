@@ -39,6 +39,9 @@ const createReport = async (req, res, next) => {
         description
     } = req.body;
 
+
+    console.log(req.body)
+
     const admitted_facility = req.facilityId;
 
     if (bday > new Date().toISOString().slice(0, 10)) {
@@ -78,7 +81,7 @@ const createReport = async (req, res, next) => {
                 },
             }
         );
-
+        console.log(result)
         if (result[0][0]["result"] == 1) {
             return successMessage(res, result, "Report successfully  Created!", 201);
         } else {

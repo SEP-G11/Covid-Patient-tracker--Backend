@@ -14,8 +14,7 @@ const getAllFacility = async (req,res,next) => {
    
   
     try{
-
-     
+    
         const facilityResult = await Facility.findAll();
 
        

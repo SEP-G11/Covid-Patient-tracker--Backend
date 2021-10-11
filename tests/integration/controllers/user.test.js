@@ -58,7 +58,7 @@ describe('User Controller', () => {
         });
 
         it("should return 500 if Internal server error", async () => {
-           req.userID = new Error("Mock Error");
+            req.userID = new Error("Mock Error");
            //const mock = jest.spyOn(User, "findByPk").mockImplementation(() => {return new Error('mock error')});
 
             await getUserProfile(req,res,next);
