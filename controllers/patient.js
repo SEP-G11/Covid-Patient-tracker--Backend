@@ -221,7 +221,24 @@ if (error) {
 
 const getPatients = async (req, res, next) => {
   try{
-    const patients = await Patient.findAll();
+    const facility_Id = req.facilityId
+    const facilityBeds = await FacilityBed.findAll({where: {facilityId: facility_Id}})
+    const allocations = await Allocation.findAll()
+    const beds= []
+    const patients = []
+    for (let i = 0; i < allocations.length; i++) {
+      beds.push(allocations[i].id)
+    } 
+    for (let j = 0; j < facilityBeds.length; j++) {
+      if (beds.includes(''+facilityBeds[j].BedID)){
+        const Id = facilityBeds[j].BedID
+        const allocation = await Allocation.findOne({where: {id: Id}})
+        if (allocation.is_occupied){
+          const patient = await Patient.findOne({where: {patient_id: allocation.patient_id}})
+          patients.push(patient)
+        }
+      }
+    } 
     res.json(patients);
   } catch (err) {
     return errorMessage(res, "Internal Server Error!", 500);
@@ -295,15 +312,43 @@ const updatePatient = async (req, res, next) => {
 
 const filterPatients = async (req, res, next) => {
   try{
-    const filteredPatients = await Patient.findAll({
+    const facility_Id = req.facilityId
+    const facilityBeds = await FacilityBed.findAll({where: {facilityId: facility_Id}})
+    const allocations = await Allocation.findAll()
+    const beds= []
+    const patients = []
+    for (let i = 0; i < allocations.length; i++) {
+      beds.push(allocations[i].id)
+    } 
+    for (let j = 0; j < facilityBeds.length; j++) {
+      if (beds.includes(''+facilityBeds[j].BedID)){
+        const Id = facilityBeds[j].BedID
+        const allocation = await Allocation.findOne({where: {id: Id}})
+        if (allocation.is_occupied){
+          patients.push(allocation.patient_id)
+        }
+      }
+    } 
+    const filteredPatients = []
+    const filteredBed = await Allocation.findOne({where: {id: req.params.input}})
+    if (filteredBed){
+      req.params.input = filteredBed.patient_id
+    }
+    const allPatients = await Patient.findAll({
       where: {
         [Op.or]: [{patient_id: req.params.input}, {name: req.params.input},
-          {address: req.params.input}, {district: req.params.input}, {blood_type: req.params.input},
-          {age: req.params.input}, {contact_no: req.params.input}]
+          {district: req.params.input}, {blood_type: req.params.input}, 
+          {contact_no: req.params.input},{gender: req.params.input}]
       }
     });
+    for (let k = 0; k < allPatients.length; k++) {
+      if (patients.includes(allPatients[k].patient_id)){
+        filteredPatients.push(allPatients[k])
+      }
+    }
     res.json(filteredPatients);
   } catch (err) {
+    console.log(err.message)
     return errorMessage(res, "Internal Server Error!", 500);
   }
 };
