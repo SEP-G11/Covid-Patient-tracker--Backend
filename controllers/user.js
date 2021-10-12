@@ -1,11 +1,11 @@
-const sequelize = require('../database/db');
-var models = require("../service/init-models").initModels(sequelize);
+// const sequelize = require('../database/db');
+// var models = require("../service/init-models").initModels(sequelize);
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
 
-var User = models.User;
-
+// var User = models.User;
+const {User,sequelize} = require('../service/models');
 function validateEditProfile(name, contact,newPassword) {
     const schema = Joi.object({
         name: Joi.string().trim().max(255).label('Name'),

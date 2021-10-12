@@ -1,5 +1,5 @@
 const {getUserProfile,editUserProfile } = require('../../../controllers/user');
-const sequelize = require('../../../database/testingDB');
+const sequelize = require('../../../database/db');
 var models = require("../../../service/init-models").initModels(sequelize);
 var User = models.User;
 
@@ -30,7 +30,7 @@ describe('User Controller', () => {
 
             const expectedUser = {
                 "contact_no": "94777374839",
-                    "email": "john@example.com",
+                    "email": "testmoh@test.com",
                     "name": "John Doe",
                     "user_id": "903000006",
                     "user_type": "MOH",

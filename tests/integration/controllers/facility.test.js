@@ -1,6 +1,6 @@
 const e = require('express');
 const { getAllFacility} = require('../../../controllers/facility');
-const sequelize = require('../../../database/testingDB');
+const sequelize = require('../../../database/db');
 var models = require("../../../service/init-models").initModels(sequelize);
 var User = models.User;
 

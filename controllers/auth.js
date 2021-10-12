@@ -1,5 +1,5 @@
-const sequelize = require('../database/db');
-var models = require("../service/init-models").initModels(sequelize);
+// const sequelize = require('../database/db');
+// var models = require("../service/init-models").initModels(sequelize);
 const jwt = require("jsonwebtoken");
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
@@ -7,10 +7,10 @@ const { successMessage, errorMessage } = require("../utils/message-template");
 const { sendResetPasswordEmail } = require("../utils/mailer");
 
 
-var User = models.User;
-var FacilityStaff = models.FacilityStaff;
-var PasswordReset = models.PasswordReset;
-
+// var User = models.User;
+// var FacilityStaff = models.FacilityStaff;
+// var PasswordReset = models.PasswordReset;
+const {User,FacilityStaff,PasswordReset,sequelize} = require('../service/models')
 function validateLogin(email,password) {
     const schema = Joi.object({
         email: Joi.string().email().trim().lowercase().required().label('Email'),
