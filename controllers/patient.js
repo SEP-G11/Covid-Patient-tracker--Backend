@@ -83,7 +83,7 @@ const {
   bday,
 } = req.body;
 
-// console.log(req.body)
+ console.log(req.body)
 const admitted_facility = req.facilityId;
 
 
@@ -219,18 +219,23 @@ if (error) {
 };
 
 const getPatients = async (req, res, next) => {
+ 
+
   try{
     const facilityId = req.facilityId
-    const beds = await FacilityBed.findAll({where: {facilityId: facilityId}})
+    const beds = await FacilityBed.findAll({where: {facilityId: facilityId}})        
+  
     const patients= []
     for (let i = 0; i < beds.length; i++) {
       const bedId = beds[i].BedID
-      const allocation = await Allocation.findOne({where: {id:bedId}})
+      const allocation = await Allocation.findOne({where: {bed_no:bedId}})
+  
       if (allocation) {
         const patient = await Patient.findOne({where: {patient_id:allocation.patient_id}})
         patients.push(patient);
       }
     } 
+
     res.json(patients);
   } catch (err) {
     return errorMessage(res, "Internal Server Error!", 500);

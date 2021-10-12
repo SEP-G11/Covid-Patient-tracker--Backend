@@ -1,5 +1,5 @@
 const {getUserProfile,editUserProfile } = require('../../../controllers/user');
-const sequelize = require('../../../database/db');
+const sequelize = require('../../../database/testingDB');
 var models = require("../../../service/init-models").initModels(sequelize);
 var User = models.User;
 
