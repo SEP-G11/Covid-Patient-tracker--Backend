@@ -29,7 +29,7 @@ describe('User Controller', () => {
            // const expectedUser = 1;
 
             const expectedUser = {
-                "contact_no": "0777374839",
+                "contact_no": "94777374839",
                     "email": "john@example.com",
                     "name": "John Doe",
                     "user_id": "903000006",
