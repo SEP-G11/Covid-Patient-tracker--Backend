@@ -2,8 +2,8 @@
   "database_credentials": {
     "host": "localhost",
     "user": "root",
-    "database": "covid_test",
-    "password":"Lahiru7*"
+    "database": "covid_db",
+    "password":""
   },
   
   "site_name": "http://localhost:8000"
