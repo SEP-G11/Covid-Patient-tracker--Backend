@@ -1,5 +1,5 @@
 const { admitPatient ,dischargePatient,transferPatient} = require('../../../controllers/patient');
-const sequelize = require('../../../database/testingDB');
+const sequelize = require('../../../database/db');
 var models = require("../../../service/init-models").initModels(sequelize);
 var User = models.User;
 
