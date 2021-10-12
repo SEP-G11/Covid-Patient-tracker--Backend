@@ -1,7 +1,5 @@
 const {getUserProfile,editUserProfile } = require('../../../controllers/user');
-const sequelize = require('../../../database/db');
-var models = require("../../../service/init-models").initModels(sequelize);
-var User = models.User;
+const {User,sequelize} = require('../../../service/models');
 
 let server;
 
@@ -23,6 +21,7 @@ describe('User Controller', () => {
         });
         afterEach(async () => {
             await server.close();
+            jest.restoreAllMocks();
         });
 
         it("should return 200 and send user details if found", async () => {
@@ -58,13 +57,11 @@ describe('User Controller', () => {
         });
 
         it("should return 500 if Internal server error", async () => {
-            req.userID = new Error("Mock Error");
-           //const mock = jest.spyOn(User, "findByPk").mockImplementation(() => {return new Error('mock error')});
+            const mock = jest.spyOn(User, "findByPk").mockImplementation(() => {return Promise.reject(new Error('Mock DB Error'))});
 
             await getUserProfile(req,res,next);
             expect(res.status).toHaveBeenCalledWith(500);
             expect(res.send).toHaveBeenCalledWith({ object : null, message: 'Internal Server Error' });
-            //mock.mockRestore();
         });
 
     });
@@ -92,6 +89,7 @@ describe('User Controller', () => {
         afterEach(async () => {
             await sequelize.query("ROLLBACK");
             await server.close();
+            jest.restoreAllMocks();
         });
 
         it("should return 422 if no user id provided", async () => {
@@ -115,20 +113,18 @@ describe('User Controller', () => {
             expect(res.send).toHaveBeenCalledWith({ object : null, message: 'User Not Found' });
         });
         it("should update user and send success message", async () => {
-            req.userID = "903000006"; //unlikely to exist
+            req.userID = "903000006";
             req.body.newPassword = "newpassword"
             await editUserProfile(req, res,next);
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.send).toHaveBeenCalledWith({ results: {},message:"User Details Updated Successfully" });
         });
         it("should return 500 if Internal server error", async () => {
-            req.userID = new Error("Mock Error");
-            //const mock = jest.spyOn(User, "findByPk").mockImplementation(() => {return new Error('mock error')});
+            const mock = jest.spyOn(User, "findByPk").mockImplementation(() => {return Promise.reject(new Error('Mock DB Error'))});
 
             await editUserProfile(req,res,next);
             expect(res.status).toHaveBeenCalledWith(500);
             expect(res.send).toHaveBeenCalledWith({ object : null, message: 'Internal Server Error' });
-            //mock.mockRestore();
         });
 
     });
