@@ -1,9 +1,8 @@
-const sequelize = require('../../../database/db');
- var models = require("../../../service/init-models").initModels(sequelize);
-
 const {login,forgotPassword,resetPassword} = require('../../../controllers/auth');
-let server;
 const {User} = require('../../../service/models');
+
+let server;
+
 
 describe('Auth Controller', () => {
     describe('login', () => {
@@ -66,7 +65,7 @@ describe('Auth Controller', () => {
             req.body={
                 email: "testmoh@test.com",
                 password: "password"
-            }
+            };
             Date.now = jest.fn(() => new Date("2021-05-10T12:33:37.000Z"));
             const expectedOutput = {results : {
                     id:"903000006",
@@ -84,15 +83,11 @@ describe('Auth Controller', () => {
             req.body={
                 email: "testmoh@test.com",
                 password: "password"
-            }
-            User.findAll = jest.fn().mockImplementation(() => {
-                return Promise.reject(new Error('Mock DB Error'))
-            });
-            const spy = jest.spyOn(User, "findAll")
-            //console.log(await models.User.findAll())
+            };
+            const mock = jest.spyOn(User, "findAll").mockImplementation(() => {return Promise.reject(new Error('Mock DB Error'))});
+
             const expectedOutput = {object : null, message: 'Internal Server Error'};
             await login(req,res,next);
-            //TODO
             expect(res.status).toBeCalledWith(500);
             expect(res.send).toHaveBeenCalledWith(expectedOutput)
         });
