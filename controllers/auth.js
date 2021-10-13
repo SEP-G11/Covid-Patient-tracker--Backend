@@ -146,10 +146,6 @@ const resetPassword = async (req,res,next) => {
             return errorMessage(res, 'Password reset failed', 400);
         }
 
-        if (Date.now() >= exp * 1000){
-            return errorMessage(res, 'Link expired', 400);
-        }
-
         const hashedPw = await bcrypt.hash(value.password, 12);
 
         t =  await sequelize.transaction();
