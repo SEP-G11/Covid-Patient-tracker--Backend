@@ -25,15 +25,13 @@ describe('User Controller', () => {
         });
 
         it("should return 200 and send user details if found", async () => {
-           // const expectedUser = 1;
-
             const expectedUser = {
                 "contact_no": "94777374839",
                     "email": "testmoh@test.com",
                     "name": "John Doe",
                     "user_id": "903000006",
                     "user_type": "MOH",
-            }
+            };
 
             const expectedOutput = {results: expectedUser,message:"User Found"};
             await getUserProfile(req,res,next);
