@@ -139,9 +139,7 @@ const historicalCases = async (req,res,next) => {
         if (activeLastXDays){
             return successMessage(res,dateMapToValuesMutate(activeLastXDays,lastDays),`Historical Cases over last ${lastDays} days Found`)
         }
-        else {
-            return errorMessage(res, 'Data Not Found', 404);
-        }
+
     }
     catch (err) {
         return errorMessage(res, 'Internal Server Error', 500);
@@ -163,9 +161,7 @@ const historicalRecovered = async (req,res,next) => {
         if (recoveredLastXDays){
             return successMessage(res,dateMapToValuesMutate(recoveredLastXDays,lastDays),`Historical Recovered over last ${lastDays} days Found`)
         }
-        else {
-            return errorMessage(res, 'Data Not Found', 404);
-        }
+
     }
     catch (err) {
         return errorMessage(res, 'Internal Server Error', 500);
@@ -187,9 +183,7 @@ const historicalDeaths = async (req,res,next) => {
         if (recoveredLastXDays){
             return successMessage(res,dateMapToValuesMutate(recoveredLastXDays,lastDays),`Historical Deaths over last ${lastDays} days Found`)
         }
-        else {
-            return errorMessage(res, 'Data Not Found', 404);
-        }
+
     }
     catch (err) {
         return errorMessage(res, 'Internal Server Error', 500);
@@ -213,9 +207,7 @@ const historicalTests = async (req,res,next) => {
             return successMessage(res,dateMapToTestsMutate(testsLastXDays,lastDays),`Historical Tests over last ${lastDays} days Found`)
 
         }
-        else {
-            return errorMessage(res, 'Data Not Found', 404);
-        }
+
     }
     catch (err) {
         return errorMessage(res, 'Internal Server Error', 500);
