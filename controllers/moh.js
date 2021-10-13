@@ -389,11 +389,9 @@ const facilityHistorical = async (req,res,next) => {
     try{
         const facilityLastXDays = await MedicalReport.findAll(queryOptions);
         if (facilityLastXDays){
-            return successMessage(res,dateMapToValuesMutate(facilityLastXDays,lastDays),`Historical ${caseType} of facility ${facilityId} over last ${lastDays} days Found`, 201)
+            return successMessage(res,dateMapToValuesMutate(facilityLastXDays,lastDays),`Historical ${caseType} of facility ${facilityId} over last ${lastDays} days Found`, 200)
         }
-        else {
-            return errorMessage(res, 'Data Not Found', 404);
-        }
+
     }
     catch (err) {
         return errorMessage(res, 'Internal Server Error', 500);
