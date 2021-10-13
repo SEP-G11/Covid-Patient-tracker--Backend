@@ -2,7 +2,7 @@ const { overallCountryStats,overallDistrictStats,overallDistrictsStats,
     historicalTests,historicalDeaths,historicalRecovered,historicalCases,
     facilityHistorical,getFacilitiesBeds,getFacilitiesActive,getFacilitiesDeaths,
     getFacilitiesRecovered,getFacilities,register} = require('../../../controllers/moh');
-const {DistrictStatus,MedicalReport,Test,Facility,FacilityBed,sequelize} = require('../../../service/models');
+const {DistrictStatus,MedicalReport,Test,Facility,FacilityBed,User,sequelize} = require('../../../service/models');
 let server;
 
 describe('MOH Controller', () => {
@@ -19,8 +19,12 @@ describe('MOH Controller', () => {
 
     beforeEach(async () => {
         server = require('../../../index');
+        req.body ={};
+        await sequelize.query("SET autocommit = OFF");
+        await sequelize.query("BEGIN");
     });
     afterEach(async () => {
+        await sequelize.query("ROLLBACK");
         await server.close();
         jest.restoreAllMocks();
     });
@@ -673,6 +677,82 @@ describe('MOH Controller', () => {
 
             const expectedOutput = {object: null,message:"Internal Server Error"};
             await facilityHistorical(req,res,next);
+            expect(res.status).toBeCalledWith(500);
+            expect(res.send).toHaveBeenCalledWith(expectedOutput)
+        });
+    });
+
+    describe('register', () => {
+        it("should return 422 and error message if input validation failed", async () => {
+            req.body={
+                id:"123456789",email:"someemail@domain.com",name:"Some Name",contact:"94123123121",password:"password",accountType:"MOH"
+            };
+            const expectedOutput = {object : null, message: '"ID" must be a valid NIC'};
+            await register(req,res,next);
+
+            expect(res.status).toBeCalledWith(422);
+            expect(res.send).toHaveBeenCalledWith(expectedOutput)
+
+        });
+        it("should return 422 and error message if id already registered", async () => {
+            req.body={
+                id:"986005000X",email:"someemail@domain.com",name:"Some Name",contact:"94123123121",password:"password",accountType:"MOH"
+            };
+            const expectedOutput = {object : null, message: 'ID already registered'};
+            await register(req,res,next);
+
+            expect(res.status).toBeCalledWith(422);
+            expect(res.send).toHaveBeenCalledWith(expectedOutput)
+
+        });
+        it("should return 422 and error message if email already registered", async () => {
+            req.body={
+                id:"986005999X",email:"testmoh@test.com",name:"Some Name",contact:"94123123121",password:"password",accountType:"MOH"
+            };
+            const expectedOutput = {object : null, message: 'Email already registered'};
+            await register(req,res,next);
+
+            expect(res.status).toBeCalledWith(422);
+            expect(res.send).toHaveBeenCalledWith(expectedOutput)
+
+        });
+        it("should return 201 and success message if MOH user created", async () => {
+            req.body={
+                id:"986005999X",email:"somenewemail@test.com",name:"Some Name",contact:"94123123121",password:"password",accountType:"MOH"
+            };
+            const expectedOutput = {results : {}, message: 'User created successfully'};
+            await register(req,res,next);
+            expect(res.status).toBeCalledWith(201);
+            expect(res.send).toHaveBeenCalledWith(expectedOutput)
+        });
+        it("should return 201 and success message if non MOH user created", async () => {
+            req.body={
+                id:"986006999X",email:"anothernewemail@test.com",name:"Some Name",contact:"94123123121",password:"password",accountType:"DOC",facilityId:1
+            };
+            const expectedOutput = {results : {}, message: 'User created successfully'};
+            await register(req,res,next);
+            expect(res.status).toBeCalledWith(201);
+            expect(res.send).toHaveBeenCalledWith(expectedOutput)
+        });
+        it("should return 400 and error message if user registration failed", async () => {
+            req.body={
+                id:"986005999X",email:"somenewemail@test.com",name:"Some Name",contact:"94123123121",password:"password",accountType:"MOH"
+            };
+            jest.spyOn(User, "create").mockImplementation(() => {return Promise.resolve(false)});
+
+            const expectedOutput = {object : null, message: 'User registration failed'};
+            await register(req,res,next);
+            expect(res.status).toBeCalledWith(400);
+            expect(res.send).toHaveBeenCalledWith(expectedOutput)
+        });
+        it("should return 500 if Internal server error", async () => {
+            req.body={
+                id:"986005999X",email:"somenewemail@test.com",name:"Some Name",contact:"94123123121",password:"password",accountType:"MOH"
+            };
+            jest.spyOn(User, "create").mockImplementation(() => {return Promise.reject(new Error('Mock DB Error'))});
+
+            const expectedOutput = {object : null, message: 'Internal Server Error'};
+            await register(req,res,next);
             expect(res.status).toBeCalledWith(500);
             expect(res.send).toHaveBeenCalledWith(expectedOutput)
         });
