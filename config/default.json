@@ -1,7 +1,0 @@
-{
-  "host": "localhost",
-  "user": "root",
-  "db": "corona_test_test",
-  "password": "",
-  "port": 3306
-}
