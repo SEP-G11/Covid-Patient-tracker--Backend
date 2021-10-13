@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 24, 2021 at 02:51 PM
+-- Generation Time: Oct 12, 2021 at 01:07 PM
 -- Server version: 10.4.11-MariaDB-log
 -- PHP Version: 7.4.3
 
@@ -148,7 +148,9 @@ CREATE TABLE `patient` (
   `age` int(11) NOT NULL,
   `contact_no` varchar(12) NOT NULL,
   `gender` enum('Male','Female') DEFAULT NULL,
-  `is_Vaccinated` tinyint(1) NOT NULL DEFAULT 0
+  `is_Vaccinated` tinyint(1) NOT NULL DEFAULT 0,
+  `Type_vaccine` enum('Sputnik V','Sinopharm','Sinovac','Pfizer','AstraZeneca','Moderna') DEFAULT NULL,
+  `Num_vaccine` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------

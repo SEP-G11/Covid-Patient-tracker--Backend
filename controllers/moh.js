@@ -1,21 +1,13 @@
 const { Op } = require('sequelize');
 const moment = require('moment');
-// const sequelize = require('../database/db');
-// var models = require("../service/init-models").initModels(sequelize);
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
 const { districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate,facilityBedsMutate} = require("../utils/array-mutation");
 var fs = require('fs');
 
-// var User = models.User;
-// var DistrictStatus = models.DistrictStatus;
-// var MedicalReport = models.MedicalReport;
-// var Test = models.Test;
-// var FacilityStaff = models.FacilityStaff;
-// var Facility = models.Facility;
-// var FacilityBed = models.FacilityBed;
 const {User,DistrictStatus,MedicalReport,Test,FacilityStaff,Facility,FacilityBed,sequelize} = require('../service/models');
+
 function validateRegister(id, name, email, contact, password,accountType,facilityId) {
     const schema = Joi.object({
         id: Joi.string().pattern(/^([0-9]{9}[x|X|v|V]|[0-9]{12})$/).required().label('ID').messages({'string.pattern.base': '"ID" must be a valid NIC'}),
@@ -147,9 +139,7 @@ const historicalCases = async (req,res,next) => {
         if (activeLastXDays){
             return successMessage(res,dateMapToValuesMutate(activeLastXDays,lastDays),`Historical Cases over last ${lastDays} days Found`)
         }
-        else {
-            return errorMessage(res, 'Data Not Found', 404);
-        }
+
     }
     catch (err) {
         return errorMessage(res, 'Internal Server Error', 500);
@@ -171,9 +161,7 @@ const historicalRecovered = async (req,res,next) => {
         if (recoveredLastXDays){
             return successMessage(res,dateMapToValuesMutate(recoveredLastXDays,lastDays),`Historical Recovered over last ${lastDays} days Found`)
         }
-        else {
-            return errorMessage(res, 'Data Not Found', 404);
-        }
+
     }
     catch (err) {
         return errorMessage(res, 'Internal Server Error', 500);
@@ -195,9 +183,7 @@ const historicalDeaths = async (req,res,next) => {
         if (recoveredLastXDays){
             return successMessage(res,dateMapToValuesMutate(recoveredLastXDays,lastDays),`Historical Deaths over last ${lastDays} days Found`)
         }
-        else {
-            return errorMessage(res, 'Data Not Found', 404);
-        }
+
     }
     catch (err) {
         return errorMessage(res, 'Internal Server Error', 500);
@@ -221,9 +207,7 @@ const historicalTests = async (req,res,next) => {
             return successMessage(res,dateMapToTestsMutate(testsLastXDays,lastDays),`Historical Tests over last ${lastDays} days Found`)
 
         }
-        else {
-            return errorMessage(res, 'Data Not Found', 404);
-        }
+
     }
     catch (err) {
         return errorMessage(res, 'Internal Server Error', 500);
