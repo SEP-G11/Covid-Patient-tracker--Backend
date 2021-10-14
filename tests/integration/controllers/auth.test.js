@@ -72,7 +72,7 @@ describe('Auth Controller', () => {
             };
             Date.now = jest.fn(() => new Date("2021-05-10T12:33:37.000Z"));
             const expectedOutput = {results : {
-                    id:"903000006",
+                    id:"903000006V",
                     email:"testmoh@test.com",
                     accType:"MOH",
                     token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3Rtb2hAdGVzdC5jb20iLCJ1c2VySUQiOiI5MDMwMDAwMDYiLCJhY2NUeXBlIjoiTU9IIiwiaWF0IjoxNjIwNjUwMDE3LCJleHAiOjE2MjMyNDIwMTd9.GAgVKoCIfm7IlggC_wxkCP3_zW-KEYMYEBqe9dUTahM"
