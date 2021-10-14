@@ -65,17 +65,34 @@ describe('Auth Controller', () => {
             expect(res.send).toHaveBeenCalledWith(expectedOutput)
         });
 
-        it("should return 200 and user and token data if successfully logged", async () => {
+        it("should return 200 and user and token data if successfully logged - MOH user", async () => {
             req.body={
                 email: "testmoh@test.com",
                 password: "password"
             };
             Date.now = jest.fn(() => new Date("2021-05-10T12:33:37.000Z"));
             const expectedOutput = {results : {
-                    id:"903000006",
+                    id:"903000006V",
                     email:"testmoh@test.com",
                     accType:"MOH",
-                    token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3Rtb2hAdGVzdC5jb20iLCJ1c2VySUQiOiI5MDMwMDAwMDYiLCJhY2NUeXBlIjoiTU9IIiwiaWF0IjoxNjIwNjUwMDE3LCJleHAiOjE2MjMyNDIwMTd9.GAgVKoCIfm7IlggC_wxkCP3_zW-KEYMYEBqe9dUTahM"
+                    token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3Rtb2hAdGVzdC5jb20iLCJ1c2VySUQiOiI5MDMwMDAwMDZWIiwiYWNjVHlwZSI6Ik1PSCIsImlhdCI6MTYyMDY1MDAxNywiZXhwIjoxNjIzMjQyMDE3fQ.HpQFJpDIXldR88f4vzd4PENMJMg0SD4wqCrrZVtaXWQ"
+                }, message: 'Logged in successfully'};
+            await login(req,res,next);
+
+            expect(res.status).toBeCalledWith(200);
+            expect(res.send).toHaveBeenCalledWith(expectedOutput)
+        });
+        it("should return 200 and user and token data if successfully logged - non MOH user", async () => {
+            req.body={
+                email: "kmendis@moh.lk",
+                password: "password"
+            };
+            Date.now = jest.fn(() => new Date("2021-05-10T12:33:37.000Z"));
+            const expectedOutput = {results : {
+                    id:"903110000V",
+                    email:"kmendis@moh.lk",
+                    accType:"DOC",
+                    token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImttZW5kaXNAbW9oLmxrIiwidXNlcklEIjoiOTAzMTEwMDAwViIsImFjY1R5cGUiOiJET0MiLCJmYWNpbGl0eUlkIjo4LCJpYXQiOjE2MjA2NTAwMTcsImV4cCI6MTYyMzI0MjAxN30.uwF98Q4iTTWQtZtnP1HJHzCbpfldjG1lZtiLWsnvV9w"
                 }, message: 'Logged in successfully'};
             await login(req,res,next);
 
@@ -176,9 +193,9 @@ describe('Auth Controller', () => {
         it("should return 500 and error message if internal server error or password token expired", async () => {
             req.body={
                 password: "newpassword",
-                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImNoZXNzY3ViZWNoZXNzY29tQGdtYWlsLmNvbSIsImlhdCI6MTYzMjM5MzU2MiwiZXhwIjoxNjMyMzk0NzYyfQ.JbPytwHIQKzgpQZa6ED7WfjVSPowUbPYqDDVKvNrGws"
-            }; //token is expired
-
+                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRlc3Rtb2hAdGVzdC5jb20iLCJpYXQiOjE2MjA2NTAwMTcsImV4cCI6MTYyMDY1MTIxN30.aI1nQiKMsWAovW3MIh74jXAK6Z5JaBXo1eyOu5OBM4k"
+            };
+            jest.spyOn(User, "update").mockImplementation(() => {return Promise.reject(new Error('Mock error'))});
             const expectedOutput = {object : null, message: 'Failed or Expired Token'};
             await resetPassword(req,res,next);
 

@@ -6,7 +6,7 @@ let server;
 describe('User Controller', () => {
     describe('getUserProfile', () => {
         const req = {
-            userID: "903000006",
+            userID: "903000006V",
             params:{}
         };
         const res = {
@@ -29,7 +29,7 @@ describe('User Controller', () => {
                 "contact_no": "94777374839",
                     "email": "testmoh@test.com",
                     "name": "John Doe",
-                    "user_id": "903000006",
+                    "user_id": "903000006V",
                     "user_type": "MOH",
             };
 
@@ -65,12 +65,8 @@ describe('User Controller', () => {
     });
     describe('editUserProfile', () => {
         const req = {
-            userID: "903000006",
-            body:{
-                name: "Jonathan Doe",
-                contact: "94767374839",
-                newPassword: "testpassword"
-            }
+            userID: "903000006V",
+            body:{}
         };
         const res = {
             status: jest.fn(() => res),
@@ -92,27 +88,49 @@ describe('User Controller', () => {
 
         it("should return 422 if no user id provided", async () => {
             req.userID = null;
+            req.body = {name: "Jonathan Doe", contact: "94767374839", newPassword: "newpassword"};
             await editUserProfile(req, res,next);
             expect(res.status).toBeCalledWith(422);
             expect(res.send).toHaveBeenCalledWith({ object : null, message: 'User ID required' });
         });
         it("should return 422 if no password shorter than 5 characters", async () => {
-            req.userID= "903000006";
-            req.body.newPassword = "1234"
+            req.userID= "903000006V";
+            req.body = {name: "Jonathan Doe", contact: "94767374839", newPassword: "1234"};
             await editUserProfile(req, res,next);
             expect(res.status).toBeCalledWith(422);
             expect(res.send).toHaveBeenCalledWith({ object : null, message: "\"Password\" length must be at least 5 characters long" });
         });
         it("should return 404 if user not found", async () => {
             req.userID = "999999999"; //unlikely to exist
-            req.body.newPassword = "newpassword"
+            req.body = {name: "Jonathan Doe", contact: "94767374839", newPassword: "newpassword"};
             await editUserProfile(req, res,next);
             expect(res.status).toHaveBeenCalledWith(404);
             expect(res.send).toHaveBeenCalledWith({ object : null, message: 'User Not Found' });
         });
-        it("should update user and send success message", async () => {
-            req.userID = "903000006";
-            req.body.newPassword = "newpassword"
+        it("should update user and return 200 and send success message - name,contact,newpasssword given", async () => {
+            req.userID = "903000006V";
+            req.body = {name: "Jonathan Doe", contact: "94767374839", newPassword: "newpassword"};
+            await editUserProfile(req, res,next);
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.send).toHaveBeenCalledWith({ results: {},message:"User Details Updated Successfully" });
+        });
+        it("should update user and return 200 and send success message - name only given", async () => {
+            req.userID = "903000006V";
+            req.body = {name: "Jonathan Doez"};
+            await editUserProfile(req, res,next);
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.send).toHaveBeenCalledWith({ results: {},message:"User Details Updated Successfully" });
+        });
+        it("should update user and return 200 and send success message - contact only given", async () => {
+            req.userID = "903000006V";
+            req.body = {contact: "94767376839"};
+            await editUserProfile(req, res,next);
+            expect(res.status).toHaveBeenCalledWith(200);
+            expect(res.send).toHaveBeenCalledWith({ results: {},message:"User Details Updated Successfully" });
+        });
+        it("should update user and return 200 and send success message - password only given", async () => {
+            req.userID = "903000006V";
+            req.body = {newPassword: "newpassword"};
             await editUserProfile(req, res,next);
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.send).toHaveBeenCalledWith({ results: {},message:"User Details Updated Successfully" });

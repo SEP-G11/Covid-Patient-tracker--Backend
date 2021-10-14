@@ -648,14 +648,14 @@ describe('MOH Controller', () => {
         });
         it("should return 200 and send facility historical data - specify lastDays,caseType,facilityId", async () => {
             req.query={
-                type: 'deaths',
+                type: 'recovered',
                 facility :2,
                 lastdays: 5
             };
             Date.now = jest.fn(() => new Date("2021-10-13T12:33:37.000Z"));
             const expectedResult = {"10/13/21": 0, "10/12/21": 0, "10/11/21": 0, "10/10/21": 0, "10/9/21": 0};
 
-            const expectedOutput = {results: expectedResult,message:"Historical deaths of facility 2 over last 5 days Found"};
+            const expectedOutput = {results: expectedResult,message:"Historical recovered of facility 2 over last 5 days Found"};
             await facilityHistorical(req,res,next);
             expect(res.status).toBeCalledWith(200);
             expect(res.send).toHaveBeenCalledWith(expectedOutput)
@@ -673,6 +673,11 @@ describe('MOH Controller', () => {
             expect(res.send).toHaveBeenCalledWith(expectedOutput)
         });
         it("should return 500 if Internal server error", async () => {
+            req.query={
+                type: 'recovered',
+                facility :2,
+                lastdays: 5
+            };
             jest.spyOn(MedicalReport, "findAll").mockImplementation(() => {return Promise.reject(new Error('Mock DB Error'))});
 
             const expectedOutput = {object: null,message:"Internal Server Error"};
