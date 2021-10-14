@@ -1,6 +1,5 @@
 const { Op } = require('sequelize');
 const moment = require('moment');
-const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
 const { districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate,facilityBedsMutate} = require("../utils/array-mutation");
