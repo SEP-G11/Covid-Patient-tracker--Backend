@@ -1,6 +1,5 @@
 const jwt = require("jsonwebtoken");
-const config = require("config");
-const { successMessage, errorMessage } = require("../utils/message-template");
+const { errorMessage } = require("../utils/message-template");
 
 exports.protect = (req,res,next) => {
   let token;
@@ -21,7 +20,7 @@ exports.protect = (req,res,next) => {
       next();
     }
     catch (error) {
-      console.log(error);
+    
       return errorMessage(res,"Not authorized, token failed",401);
     }
   }

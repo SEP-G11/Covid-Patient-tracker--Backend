@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">18.45% </span>
+                <span class="strong">14.37% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>31/168</span>
+                <span class='fraction'>23/160</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">18.45% </span>
+                <span class="strong">14.37% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>31/168</span>
+                <span class='fraction'>23/160</span>
             </div>
         
             
@@ -470,17 +470,7 @@
 <a name='L411'></a><a href='#L411'>411</a>
 <a name='L412'></a><a href='#L412'>412</a>
 <a name='L413'></a><a href='#L413'>413</a>
-<a name='L414'></a><a href='#L414'>414</a>
-<a name='L415'></a><a href='#L415'>415</a>
-<a name='L416'></a><a href='#L416'>416</a>
-<a name='L417'></a><a href='#L417'>417</a>
-<a name='L418'></a><a href='#L418'>418</a>
-<a name='L419'></a><a href='#L419'>419</a>
-<a name='L420'></a><a href='#L420'>420</a>
-<a name='L421'></a><a href='#L421'>421</a>
-<a name='L422'></a><a href='#L422'>422</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
+<a name='L414'></a><a href='#L414'>414</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -488,12 +478,6 @@
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -901,31 +885,23 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">const { Op } = require('sequelize');
 const moment = require('moment');
-const sequelize = require('../database/db');
-var models = require("../service/init-models").initModels(sequelize);
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
 const { districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate,facilityBedsMutate} = require("../utils/array-mutation");
 var fs = require('fs');
 &nbsp;
-var User = models.User;
-var DistrictStatus = models.DistrictStatus;
-var MedicalReport = models.MedicalReport;
-var Test = models.Test;
-var FacilityStaff = models.FacilityStaff;
-var Facility = models.Facility;
-var FacilityBed = models.FacilityBed;
+const {User,DistrictStatus,MedicalReport,Test,FacilityStaff,Facility,FacilityBed,sequelize} = require('../service/models');
 &nbsp;
 function <span class="fstat-no" title="function not covered" >validateRegister(</span>id, name, email, contact, password,accountType,facilityId) {
     const schema = <span class="cstat-no" title="statement not covered" >Joi.object({</span>
-        id: Joi.string().required().label('ID'),
+        id: Joi.string().pattern(/^([0-9]{9}[x|X|v|V]|[0-9]{12})$/).required().label('ID').messages({'string.pattern.base': '"ID" must be a valid NIC'}),
         email: Joi.string().email().trim().lowercase().max(100).required().label('Email'),
         name: Joi.string().trim().max(255).required().label('Name'),
         contact: Joi.string().max(12).required().label('Contact'),
         password: Joi.string().trim().min(5).required().label('Password'),
-        accountType: Joi.string().required().label('Account Type'),
-        facilityId: Joi.number().label("Facility")
+        accountType: Joi.string().valid('MOH','DOC','HA').required().label('Account Type'),
+        facilityId: Joi.number().when('accountType',{not: 'MOH',then: Joi.number().required()}).label("Facility")
     });
 <span class="cstat-no" title="statement not covered" >    return schema.validate({ id: id, email: email, name: name, contact: contact, password: password, accountType: accountType, facilityId: facilityId })</span>
 }
@@ -969,7 +945,7 @@ const register = <span class="fstat-no" title="function not covered" >as</span>y
 <span class="cstat-no" title="statement not covered" >            queryResult = await User.create(createUserObj);</span>
         }
 <span class="cstat-no" title="statement not covered" >        if (queryResult){</span>
-<span class="cstat-no" title="statement not covered" >            return successMessage(res, 'User created successfully', 201);</span>
+<span class="cstat-no" title="statement not covered" >            return successMessage(res,{},'User created successfully', 201);</span>
         }
         else {
 <span class="cstat-no" title="statement not covered" >            return errorMessage(res, "User registration failed", 400)</span>
@@ -1327,7 +1303,7 @@ module.exports = {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Fri Oct 01 2021 16:25:38 GMT+0530 (India Standard Time)
+                at Fri Oct 15 2021 16:53:50 GMT+0530 (India Standard Time)
             </div>
         </div>
         <script src="../../prettify.js"></script>

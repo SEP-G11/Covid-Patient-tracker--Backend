@@ -1,8 +1,9 @@
 const Sequelize = require('sequelize');
+const config = require('../config/config');
 
-const sequelize = new Sequelize('covid_test','root','',{
+const sequelize = new Sequelize(config[process.env.NODE_ENV]['database'],config[process.env.NODE_ENV]['username'],config[process.env.NODE_ENV]['password'],{
     dialect: 'mysql',
-    host: 'localhost',
+    host: config[process.env.NODE_ENV]['host'],
     dialectOptions:{
         decimalNumbers: true
     }

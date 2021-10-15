@@ -1,15 +1,10 @@
-const sequelize = require('../database/db');
-var models = require("../service/init-models").initModels(sequelize);
 const jwt = require("jsonwebtoken");
 const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
 const { sendResetPasswordEmail } = require("../utils/mailer");
 
-
-var User = models.User;
-var FacilityStaff = models.FacilityStaff;
-var PasswordReset = models.PasswordReset;
+const {User,FacilityStaff,PasswordReset,sequelize} = require('../service/models')
 
 function validateLogin(email,password) {
     const schema = Joi.object({
@@ -35,6 +30,7 @@ function validateResetPassword(password){
 
 
 const login = async (req, res, next) => {
+    
     const {email, password} = req.body;
     const { error, value } = validateLogin(email,password);
     if (error) {
@@ -52,6 +48,8 @@ const login = async (req, res, next) => {
                 as: 'facility_staffs'
             }
         });
+
+      
         if (!result.length>0) {
             return errorMessage(res, 'Incorrect email or password', 401);
         }
@@ -82,6 +80,7 @@ const login = async (req, res, next) => {
         }, 'Logged in successfully')
     }
     catch (err) {
+     
         return errorMessage(res, 'Internal Server Error', 500);
     }
 };

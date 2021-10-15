@@ -1,22 +1,11 @@
-const { Op } = require('sequelize');
-const sequelize = require('../database/db');
-var models = require("../service/init-models").initModels(sequelize);
-const Joi = require('joi');
-const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
 
-
-var Facility = models.Facility;
-
+const {Facility} = require('../service/models')
 
 
-const getAllFacility = async (req,res,next) => {
-   
-  
-    try{
-    
+const getAllFacility = async (req,res,next) => {     
+    try{    
         const facilityResult = await Facility.findAll();
-
        
         if (facilityResult && facilityResult.length!==0){
             return successMessage(res,facilityResult, 'facility Data Found', 201);
