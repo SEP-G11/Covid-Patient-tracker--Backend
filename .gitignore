@@ -1,5 +1,6 @@
 /.idea
 node_modules
+coverage
 build
 npm-debug.log
 .env
@@ -9,6 +10,6 @@ npm-debug.log
 # Ignore test-related files
 /coverage.data
 /coverage/
-coverage
+
 
 

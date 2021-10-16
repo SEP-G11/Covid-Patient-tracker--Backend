@@ -1,12 +1,5 @@
-<<<<<<< HEAD
 const { bedSearch } = require('../../../controllers/bed');
 const { sequelize } = require('../../../service/models');
-=======
-const {bedSearch } = require('../../../controllers/bed');
-const sequelize = require('../../../database/db');
-var models = require("../../../service/init-models").initModels(sequelize);
-var User = models.User;
->>>>>>> master
 
 let server;
 
