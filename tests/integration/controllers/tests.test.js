@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 const { enterResult } = require('../../../controllers/tests');
 const sms = require("../../../utils/sms");
 const { Patient, sequelize } = require('../../../service/models');
+=======
+const e = require('express');
+const { enterResult} = require('../../../controllers/tests');
+const sequelize = require('../../../database/db');
+var models = require("../../../service/init-models").initModels(sequelize);
+var User = models.User;
+>>>>>>> master
 
 let server;
 

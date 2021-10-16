@@ -1,5 +1,11 @@
 const { createReport} = require('../../../controllers/report');
+<<<<<<< HEAD
 const {sequelize,} = require('../../../service/models');
+=======
+const sequelize = require('../../../database/db');
+var models = require("../../../service/init-models").initModels(sequelize);
+var User = models.User;
+>>>>>>> master
 
 let server;
 
