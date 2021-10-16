@@ -20,7 +20,7 @@ exports.protect = (req,res,next) => {
       next();
     }
     catch (error) {
-      console.log(error);
+    
       return errorMessage(res,"Not authorized, token failed",401);
     }
   }

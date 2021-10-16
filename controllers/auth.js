@@ -7,6 +7,7 @@ const {validateLogin,validateForgotPassword,validateResetPassword} = require('..
 const {User,FacilityStaff,PasswordReset,sequelize} = require('../service/models');
 
 const login = async (req, res, next) => {
+    
     const {email, password} = req.body;
     const { error, value } = validateLogin(email,password);
     if (error) {
@@ -24,6 +25,8 @@ const login = async (req, res, next) => {
                 as: 'facility_staffs'
             }
         });
+
+      
         if (!result.length>0) {
             return errorMessage(res, 'Incorrect email or password', 401);
         }
@@ -54,6 +57,7 @@ const login = async (req, res, next) => {
         }, 'Logged in successfully')
     }
     catch (err) {
+     
         return errorMessage(res, 'Internal Server Error', 500);
     }
 };

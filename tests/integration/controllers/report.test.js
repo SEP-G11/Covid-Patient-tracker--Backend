@@ -1,8 +1,5 @@
-const e = require('express');
 const { createReport} = require('../../../controllers/report');
-const sequelize = require('../../../database/db');
-var models = require("../../../service/init-models").initModels(sequelize);
-var User = models.User;
+const {sequelize,} = require('../../../service/models');
 
 let server;
 
@@ -12,19 +9,19 @@ describe('Report Controller', () => {
         const req = {
             facilityId: "12",
             body: {
-                id: '1236987451630886400000',
-                testId: '12369874516308864000001633060920000T',
+                id: '942222222221605052800000',
+                testId: '9422222222216050528000001634230740000T',
                 RATresult: '1',
-                reportId: '12369874516308864000001633060920000R',
-                bedId: '25',
-                allocationId: '12369874516308864000001633060920000A',
-                date: '2021-10-01T09:32',
-                phonenumber: '+94123698745',
-                bday: '2021-09-01',
+                reportId: '9422222222216050528000001634230740000R',
+                bedId: '21',
+                allocationId: '9422222222216050528000001634230740000A',
+                date: '2021-10-14T22:29',
+                phonenumber: '+94222222222',
+                bday: '2020-11-11',
                 description: 'testing'
               }
         };
-
+        
         const res = {
             status: jest.fn(() => res),
             send: jest.fn(),
@@ -43,34 +40,24 @@ describe('Report Controller', () => {
         });
       
         it("should return 201 and send success message", async () => {
-          
-            // const expectedOutput = { results: null, message:" successfully  created!", };
+      
             await createReport(req, res, next);
             expect(res.status).toBeCalledWith(201);
       
             
         });
 
+     
         it("should return 422 and send bed has already used message", async () => {
 
-            req.body.bedId = '47'
+            req.body.bedId = '5'
             const expectedOutput = { object: null, message: "Bed has already Occupied", };
             await createReport(req, res, next);
 
             expect(res.status).toBeCalledWith(422);
             expect(res.send).toHaveBeenCalledWith(expectedOutput)
         });
-
-
-      
-        it("should return 422 if no Bed ID provided", async () => {
-            req.body.bedId = "";
-            await createReport(req, res, next);
-            expect(res.status).toBeCalledWith(422);
-            expect(res.send).toHaveBeenCalledWith({ object: null, message: "\"Bed ID\" is not allowed to be empty" });
-          
-        });
-
+           
         
         it("should return 422 if no RAT Result provided", async () => {
             req.body.RATresult = "";
@@ -94,26 +81,23 @@ describe('Report Controller', () => {
             expect(res.status).toBeCalledWith(422);
             expect(res.send).toHaveBeenCalledWith({ object: null, message: "\"Date of Birthday\" is not allowed to be empty"});
            
-        });
-     
-     
+        });   
            
 
         it("should return 422 and send not registerd message", async () => {
 
             req.body= {
-                id: '946666666661618272000000',
-                testId: '9466666666616182720000001633060680000T',
+                id: '962222222221605052800000',
+                testId: '9422222222216050528000001634230740000T',
                 RATresult: '1',
-                reportId: '9466666666616182720000001633060680000R',
-                bedId: '25',
-                allocationId: '9466666666616182720000001633060680000A',
-                date: '2021-10-01T09:28',
-                phonenumber: '+94666666666',
-                bday: '2021-04-13',
+                reportId: '9422222222216050528000001634230740000R',
+                bedId: '21',
+                allocationId: '9422222222216050528000001634230740000A',
+                date: '2021-10-14T22:29',
+                phonenumber: '+94222222222',
+                bday: '2020-11-11',
                 description: 'testing'
               }
-
 
             const expectedOutput = { object: null, message: "Patient is not Registered", };
             await createReport(req, res, next);
@@ -122,16 +106,6 @@ describe('Report Controller', () => {
             expect(res.send).toHaveBeenCalledWith(expectedOutput)
         });
 
-        // it("should return 500 if Internal server error", async () => {
-        //     req.body.reportId = undefined
-        
- 
-        //      await createReport(req,res,next);
-        //      expect(res.status).toHaveBeenCalledWith(500);
-        //      expect(res.send).toHaveBeenCalledWith({ object : null, message: 'Internal Server Error' });
-        //      //mock.mockRestore();
-        //  });
-     
 
     });
     
