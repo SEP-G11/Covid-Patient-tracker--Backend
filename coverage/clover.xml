@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1634297030575" clover="3.2.0">
-  <project timestamp="1634297030575" name="All files">
+<coverage generated="1634300220218" clover="3.2.0">
+  <project timestamp="1634300220218" name="All files">
     <metrics statements="850" coveredstatements="566" conditionals="298" coveredconditionals="119" methods="89" coveredmethods="56" elements="1237" coveredelements="741" complexity="0" loc="850" ncloc="850" packages="9" files="42" classes="42"/>
     <package name="Covid-Patient-tracker--Backend">
       <metrics statements="31" coveredstatements="29" conditionals="2" coveredconditionals="2" methods="3" coveredmethods="1"/>
