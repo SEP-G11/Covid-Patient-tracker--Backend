@@ -39,7 +39,7 @@ ________________________________________________________________________________
 
 
 DELIMITER $$
-  CREATE FUNCTION `add_patient` (`name` VARCHAR(150), `admitted_facility` int(11),`patient_id` VARCHAR(200), `age` INT(11), `gender` ENUM("Male","Female"), `address` VARCHAR(255), `contact_no` VARCHAR(12), `blood_type` ENUM('A+','O+','B+','AB+','A-','O-','B-','AB-'), `district` VARCHAR(50), `test_id` VARCHAR(200), `is_Vaccinated` BOOLEAN, `result` TINYINT(1), `description` TEXT, `report_id` VARCHAR(200), `bed_id` INT(11), `allocation_id` VARCHAR(200), `admitted_at` DATETIME, `bday` DATE) RETURNS TINYINT(1) BEGIN 
+  CREATE FUNCTION `add_patient` (`name` VARCHAR(150), `admitted_facility` int(11),`patient_id` VARCHAR(200), `age` INT(11), `gender` ENUM("Male","Female"), `address` VARCHAR(255), `contact_no` VARCHAR(12), `blood_type` ENUM('A+','O+','B+','AB+','A-','O-','B-','AB-'), `district` VARCHAR(50), `test_id` VARCHAR(200), `is_Vaccinated` BOOLEAN, `result` TINYINT(1), `description` TEXT, `report_id` VARCHAR(200), `bed_id` INT(11), `allocation_id` VARCHAR(200), `admitted_at` DATETIME, `bday` DATE ,`Type_vaccine` ENUM("Sputnik V", "Sinopharm", "Sinovac","Pfizer" , "AstraZeneca","Moderna"),`Num_vaccine` INT(11) ) RETURNS TINYINT(1) BEGIN 
  	
     DECLARE patient_count integer;
     DECLARE test_count integer;
@@ -53,7 +53,7 @@ DELIMITER $$
    
     IF(patient_count=0  and test_count=0 and report_count=0 and allocation_count=0 ) THEN
     
-        INSERT INTO `patient` (`patient_id`, `name`,`bday`, `address`, `district`, `blood_type` , `age` , `contact_no` , `gender` , `is_Vaccinated`) VALUES (patient_id, name, bday,address, district, blood_type , age , contact_no , gender , is_Vaccinated);
+        INSERT INTO `patient` (`patient_id`, `name`,`bday`, `address`, `district`, `blood_type` , `age` , `contact_no` , `gender` , `is_Vaccinated`,`Type_vaccine`,`Num_vaccine`) VALUES (patient_id, name, bday,address, district, blood_type , age , contact_no , gender , is_Vaccinated,Type_vaccine,Num_vaccine );
 
 	INSERT INTO `medical_report` ( `report_id`,`patient_id`,`admitted_at`,`admitted_facility`,`description`) VALUES (report_id,patient_id,admitted_at ,admitted_facility, description);
 	INSERT INTO `test` (`test_id`,`report_id`,`date`,`test_type`,`result`) VALUES (test_id,report_id,admitted_at,'RAT',result);
@@ -68,6 +68,8 @@ DELIMITER $$
 	END IF;
     
     END$$
+
+
 
 
 
@@ -102,16 +104,20 @@ DELIMITER ;
 ______________________________________________________________________________________________________________
 
 DELIMITER $$
-  CREATE FUNCTION transfer_patient(`patient_id` varchar(200), `transfer_date` datetime ,  `origin_bed_id` int(11),  `dest_bed_id` int(11))
+  CREATE FUNCTION transfer_patient(`patient_id` varchar(200), `transfer_date` datetime , `dest_bed_id` int(11))
   RETURNS boolean
  DETERMINISTIC
     BEGIN 
  	
+ 	
     DECLARE allocation_count1 integer;    
-      DECLARE allocation_count2 integer;  
+    DECLARE allocation_count2 integer;  
+    DECLARE origin_bed_id integer;  
     
+    select a.bed_no into origin_bed_id from allocation a where (a.patient_id=patient_id and a.is_occupied=1);
     select count(a.id) into allocation_count1 from allocation a where (a.bed_no=dest_bed_id and a.is_occupied=1);
- select count(a.id) into allocation_count2 from allocation a where (a.bed_no=origin_bed_id and a.is_occupied=1);
+    select count(a.id) into allocation_count2 from allocation a where (a.bed_no=origin_bed_id and a.is_occupied=1);
+
    
     IF(allocation_count1 =0 and allocation_count2 !=0 ) THEN   
 	
@@ -125,6 +131,7 @@ DELIMITER $$
     return false;
     
 	END IF;    
+
     END$$
 DELIMITER ;
 

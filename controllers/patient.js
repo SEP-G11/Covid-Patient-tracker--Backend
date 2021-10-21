@@ -1,65 +1,9 @@
 const { Op } = require("sequelize");
-const sequelize = require("../database/db");
-var models = require("../service/init-models").initModels(sequelize);
 const { successMessage, errorMessage } = require("../utils/message-template");
 const Joi = require('joi');
+const {validateAdmitPatient,validateDischargePatient,validateTransferPatient} = require('../utils/validationSchemas/patientValidationSchemas');
 
-var Patient = models.Patient;
-var FacilityBed = models.FacilityBed;
-var Allocation = models.Allocation;
-
-function validateAdmitPatient(name,contactnumber,RATresult,bedId,admitDateTime,bday) {
-  
-  
-  schema = Joi.object({
-    name: Joi.string().trim().max(255).required().label('Name'),
-    bday : Joi.string().required().label('Date of Birthday') ,
-  
-    contactnumber: Joi.string().min(12).max(12).required().label('Contact Number'),    
-    RATresult: Joi.string().required().label('RAT Result'),
-    bedId: Joi.string().required().label('Bed ID'),    
-    admitDateTime: Joi.string().required().label('Admit Date'),
-    
-  });
-
-
-
-
-return schema.validate({ name:name,bday:bday,contactnumber:contactnumber,RATresult:RATresult,bedId:bedId,admitDateTime:admitDateTime })
-}
-
-
-
-
-function validateDischargePatient(patient_id,discharged_at,status) {
-
-
-const schema = Joi.object({
-  patient_id: Joi.string().required().label('Patient Id'),  
-  status: Joi.string().required().label('Status'),    
-  discharged_at: Joi.string().required().label('Discharge Date'),
-   
- });
-
-
-return schema.validate({patient_id: patient_id,discharged_at : discharged_at,status :status })
-}
-
-
-function validateTransferPatient(patient_id, transfer_date ,  origin_bed_id,  dest_bed_id) {
-
-
-const schema = Joi.object({
-  patient_id: Joi.string().required().label('Patient Id'),  
-  origin_bed_id: Joi.number().required().label('Origin Bed Id'),    
-  dest_bed_id: Joi.number().required().label('Destination Bed Id'),    
-  transfer_date: Joi.string().required().label('Transfer Date'),
-   
- });
-
-
-return schema.validate({patient_id: patient_id,transfer_date : transfer_date,origin_bed_id :origin_bed_id, dest_bed_id:dest_bed_id})
-}
+const {Patient,Allocation,FacilityBed,sequelize} = require('../service/models');
 
 const admitPatient = async (req, res, next) => {
 
@@ -81,6 +25,9 @@ const {
   allocationId,
   admitDateTime,
   bday,
+  Type_vaccine,
+  Num_vaccine,
+
 } = req.body;
 
 
@@ -91,21 +38,25 @@ if (bday > new Date().toISOString().slice(0, 10)) {
   return errorMessage(res, "Please Check again Date of Birthday !", 422)
 }
 
-const { error, value } = validateAdmitPatient(name,contactnumber,RATresult,bedId,admitDateTime,bday);
+
+const { error, value } = validateAdmitPatient(name,contactnumber,RATresult,admitDateTime,bday);
 const d = new Date();
 
 if (error) {
   return errorMessage(res, error.details[0].message, 422)
 }
 
+if (req.bedId==="no") {
+  return errorMessage(res, "No free beds!", 422)
+}
 
 
-if (await Allocation.findOne({where: {bed_no: value.bedId ,is_occupied:"1" }})){
+if (await Allocation.findOne({where: {bed_no: bedId ,is_occupied:"1" }})){
   return errorMessage(res, "Bed has already Occupied", 422)
 }
   try {
   const result = await sequelize.query(
-    "select add_patient(:name,:admitted_facility,:id,:age,:gender,:address,:contactnumber,:bloodtype,:district,:testId,:isvaccinated,:RATresult,:medicalHistory,:reportId,:bedId,:allocationId,:admitDateTime,:bday) as result",
+    "select add_patient(:name,:admitted_facility,:id,:age,:gender,:address,:contactnumber,:bloodtype,:district,:testId,:isvaccinated,:RATresult,:medicalHistory,:reportId,:bedId,:allocationId,:admitDateTime,:bday,:Type_vaccine ,:Num_vaccine) as result",
     {
       replacements: {
         name,
@@ -126,6 +77,8 @@ if (await Allocation.findOne({where: {bed_no: value.bedId ,is_occupied:"1" }})){
         allocationId,
         admitDateTime,
         bday,
+        Type_vaccine,
+        Num_vaccine
       },
     }
   );
@@ -166,7 +119,7 @@ const dischargePatient = async (req, res, next) => {
         },
       }
     );
-
+   
     if (result[0][0]["result"] == 1) {
       return successMessage(res, result, "Patient successfully  Discharged!", 201);
     } else {
@@ -182,26 +135,26 @@ const dischargePatient = async (req, res, next) => {
 
 const transferPatient = async (req, res, next) => {
 const {
-  patient_id, transfer_date ,  origin_bed_id,  dest_bed_id
+  patient_id, transfer_date ,   dest_bed_id
 } = req.body;
 
-const { error, } = validateTransferPatient(patient_id, transfer_date ,  origin_bed_id,  dest_bed_id);
 
+const { error, } = validateTransferPatient(patient_id, transfer_date , dest_bed_id);
 
 if (error) {
   return errorMessage(res, error.details[0].message, 422)
 }
 
-
   try {
   const result = await sequelize.query(
-    "select transfer_patient( :patient_id, :transfer_date ,  :origin_bed_id,  :dest_bed_id) as result",
+    "select transfer_patient( :patient_id, :transfer_date , :dest_bed_id) as result",
     {
       replacements: {
-        patient_id, transfer_date ,  origin_bed_id,  dest_bed_id
+        patient_id, transfer_date ,  dest_bed_id
       },
     }
   );
+
 
   if (result[0][0]["result"] == 1) {
     return successMessage(res, result, "Patient successfully  Transfered!", 201);
@@ -215,15 +168,22 @@ if (error) {
 
 const getPatients = async (req, res, next) => {
   try{
-    const facilityId = req.facilityId
-    const beds = await FacilityBed.findAll({where: {facilityId: facilityId}})
-    const patients= []
-    for (let i = 0; i < beds.length; i++) {
-      const bedId = beds[i].BedID
-      const allocation = await Allocation.findOne({where: {id:bedId}})
-      if (allocation) {
-        const patient = await Patient.findOne({where: {patient_id:allocation.patient_id}})
-        patients.push(patient);
+    const facility_Id = req.facilityId
+    const facilityBeds = await FacilityBed.findAll({where: {facilityId: facility_Id}})
+    const allocations = await Allocation.findAll()
+    const beds= []
+    const patients = []
+    for (let i = 0; i < allocations.length; i++) {
+      beds.push(allocations[i].id)
+    } 
+    for (let j = 0; j < facilityBeds.length; j++) {
+      if (beds.includes(''+facilityBeds[j].BedID)){
+        const Id = facilityBeds[j].BedID
+        const allocation = await Allocation.findOne({where: {id: Id}})
+        if (allocation.is_occupied){
+          const patient = await Patient.findOne({where: {patient_id: allocation.patient_id}})
+          patients.push(patient)
+        }
       }
     } 
     res.json(patients);
@@ -249,15 +209,18 @@ const getPatientById = async (req, res, next) => {
 
 const updatePatient = async (req, res, next) => {
 
+  console.log("ss")
  if (req.body.is_Vaccinated.toString()=="Vaccinated"){
    req.body.is_Vaccinated="true"
  }else{
   req.body.is_Vaccinated="false"
  }
-
- if (req.body.contact_no.length != 10) {
-  return errorMessage(res, "Please Check again Contact Number !", 422)
-}
+ if (req.body.contact_no.length>0){
+  req.body.contact_no = req.body.contact_no.split("94").pop()
+  if (req.body.contact_no.length != 10) {
+    return errorMessage(res, "Please Check again Contact Number !", 422)
+  }
+ }
  try{
   const patient = await Patient.findByPk(req.params.id)
       patient.name = req.body.name || patient.name
@@ -295,8 +258,51 @@ const updatePatient = async (req, res, next) => {
     }
 };
 
+const filterPatients = async (req, res, next) => {
+  try{
+    const facility_Id = req.facilityId
+    const facilityBeds = await FacilityBed.findAll({where: {facilityId: facility_Id}})
+    const allocations = await Allocation.findAll()
+    const beds= []
+    const patients = []
+    for (let i = 0; i < allocations.length; i++) {
+      beds.push(allocations[i].id)
+    } 
+    for (let j = 0; j < facilityBeds.length; j++) {
+      if (beds.includes(''+facilityBeds[j].BedID)){
+        const Id = facilityBeds[j].BedID
+        const allocation = await Allocation.findOne({where: {id: Id}})
+        if (allocation.is_occupied){
+          patients.push(allocation.patient_id)
+        }
+      }
+    } 
+    const filteredPatients = []
+    const filteredBed = await Allocation.findOne({where: {id: req.params.input}})
+    if (filteredBed){
+      req.params.input = filteredBed.patient_id
+    }
+    const allPatients = await Patient.findAll({
+      where: {
+        [Op.or]: [{patient_id: req.params.input}, {name: req.params.input},
+          {district: req.params.input}, {blood_type: req.params.input}, 
+          {contact_no: req.params.input},{gender: req.params.input}]
+      }
+    });
+    for (let k = 0; k < allPatients.length; k++) {
+      if (patients.includes(allPatients[k].patient_id)){
+        filteredPatients.push(allPatients[k])
+      }
+    }
+    res.json(filteredPatients);
+  } catch (err) {
+    console.log(err.message)
+    return errorMessage(res, "Internal Server Error!", 500);
+  }
+};
+
 module.exports = {
-  admitPatient, dischargePatient,transferPatient,getPatients,getPatientById,updatePatient
+  admitPatient, dischargePatient,transferPatient,getPatients,getPatientById,updatePatient,filterPatients
 };
 
 

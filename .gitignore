@@ -1,8 +1,15 @@
 /.idea
 node_modules
+coverage
 build
 npm-debug.log
 .env
 .DS_Store
+
+
+# Ignore test-related files
 /coverage.data
 /coverage/
+
+
+

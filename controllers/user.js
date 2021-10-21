@@ -1,21 +1,8 @@
-const sequelize = require('../database/db');
-var models = require("../service/init-models").initModels(sequelize);
-const Joi = require('joi');
 const bcrypt = require('bcryptjs');
-const { successMessage, errorMessage } = require("../utils/message-template");
+const { successMessage, errorMessage } = require('../utils/message-template');
+const {validateEditProfile} = require('../utils/validationSchemas/userValidationSchemas');
 
-var User = models.User;
-
-function validateEditProfile(name, contact,newPassword) {
-    const schema = Joi.object({
-        name: Joi.string().trim().max(255).label('Name'),
-        contact: Joi.string().max(12).label('Contact'),
-        newPassword: Joi.string().trim().min(5).label('Password'),
-    });
-    return schema.validate({ name: name, contact: contact, newPassword: newPassword})
-}
-
-
+const {User} = require('../service/models');
 
 const getUserProfile = async (req,res,next) => {
     const userId = req.userID;

@@ -1,38 +1,10 @@
-const sequelize = require('../database/db');
-var models = require("../service/init-models").initModels(sequelize);
 const jwt = require("jsonwebtoken");
-const Joi = require('joi');
 const bcrypt = require('bcryptjs');
 const { successMessage, errorMessage } = require("../utils/message-template");
 const { sendResetPasswordEmail } = require("../utils/mailer");
+const {validateLogin,validateForgotPassword,validateResetPassword} = require('../utils/validationSchemas/authValidationSchemas');
 
-
-var User = models.User;
-var FacilityStaff = models.FacilityStaff;
-var PasswordReset = models.PasswordReset;
-
-function validateLogin(email,password) {
-    const schema = Joi.object({
-        email: Joi.string().email().trim().lowercase().required().label('Email'),
-        password: Joi.required().label('Password')
-    });
-    return schema.validate({ email: email, password: password })
-}
-
-function validateForgotPassword(email){
-    const schema = Joi.object({
-        email: Joi.string().email().trim().lowercase().required().label('Email'),
-    });
-    return schema.validate({ email: email})
-}
-
-function validateResetPassword(password){
-    const schema = Joi.object({
-        password: Joi.string().trim().min(5).required().label('Password')
-    });
-    return schema.validate({ password: password })
-}
-
+const {User,FacilityStaff,PasswordReset,sequelize} = require('../service/models');
 
 const login = async (req, res, next) => {
     const {email, password} = req.body;
@@ -52,6 +24,8 @@ const login = async (req, res, next) => {
                 as: 'facility_staffs'
             }
         });
+
+      
         if (!result.length>0) {
             return errorMessage(res, 'Incorrect email or password', 401);
         }
@@ -82,6 +56,7 @@ const login = async (req, res, next) => {
         }, 'Logged in successfully')
     }
     catch (err) {
+     
         return errorMessage(res, 'Internal Server Error', 500);
     }
 };
@@ -149,10 +124,6 @@ const resetPassword = async (req,res,next) => {
         });
         if (!pwResetRequest.length>0) {
             return errorMessage(res, 'Password reset failed', 400);
-        }
-
-        if (Date.now() >= exp * 1000){
-            return errorMessage(res, 'Link expired', 400);
         }
 
         const hashedPw = await bcrypt.hash(value.password, 12);

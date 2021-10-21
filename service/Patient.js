@@ -42,6 +42,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: 0
+    },
+    Type_vaccine: {
+      type: DataTypes.ENUM('Sputnik V','Sinopharm','Sinovac','Pfizer','AstraZeneca','Moderna'),
+      allowNull: true
+    },
+    Num_vaccine: {
+      type: DataTypes.INTEGER,
+      allowNull: false
     }
   }, {
     sequelize,
