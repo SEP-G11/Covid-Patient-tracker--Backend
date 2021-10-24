@@ -7,7 +7,6 @@ const {validateLogin,validateForgotPassword,validateResetPassword} = require('..
 const {User,FacilityStaff,PasswordReset,sequelize} = require('../service/models');
 
 const login = async (req, res, next) => {
-    
     const {email, password} = req.body;
     const { error, value } = validateLogin(email,password);
     if (error) {
