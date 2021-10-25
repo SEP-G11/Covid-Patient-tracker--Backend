@@ -6,7 +6,7 @@ const {validateAdmitPatient,validateDischargePatient,validateTransferPatient} = 
 const {Patient,Allocation,FacilityBed,sequelize} = require('../service/models');
 
 const admitPatient = async (req, res, next) => {
-
+console.log(req.body.Type_vaccine)
 const {
   name,
   id,
@@ -91,6 +91,7 @@ if (await Allocation.findOne({where: {bed_no: bedId ,is_occupied:"1" }})){
     return errorMessage(res, "Patient  not Admited.Please Check again Details!", 404);
   }
 } catch (err) {
+  console.log(err.message)
   return errorMessage(res, "Internal Server Error!", 500);
 }
 };
@@ -174,18 +175,18 @@ const getPatients = async (req, res, next) => {
     const beds= []
     const patients = []
     for (let i = 0; i < allocations.length; i++) {
-      beds.push(allocations[i].id)
-    } 
+      beds.push(allocations[i].bed_no)
+    }
     for (let j = 0; j < facilityBeds.length; j++) {
-      if (beds.includes(''+facilityBeds[j].BedID)){
+      if (beds.includes(facilityBeds[j].BedID)){
         const Id = facilityBeds[j].BedID
-        const allocation = await Allocation.findOne({where: {id: Id}})
+        const allocation = await Allocation.findOne({where: {bed_no: Id}})
         if (allocation.is_occupied){
           const patient = await Patient.findOne({where: {patient_id: allocation.patient_id}})
           patients.push(patient)
         }
       }
-    } 
+    }
     res.json(patients);
   } catch (err) {
     return errorMessage(res, "Internal Server Error!", 500);
@@ -200,6 +201,19 @@ const getPatientById = async (req, res, next) => {
     }else{
       patient.is_Vaccinated="Not Vaccinated"
     }
+
+    if (patient.Num_vaccine) {
+      if (patient.Num_vaccine.toString() == "1") {
+        patient.Num_vaccine = " - 1st dose"
+      } else if (patient.Num_vaccine.toString() == "2") {
+        patient.Num_vaccine = " - 2nd dose"
+      } else if (patient.Num_vaccine.toString() == "3"){
+        patient.Num_vaccine = " - 3rd dose"
+      }
+      patient.Type_vaccine = " - "+patient.Type_vaccine
+    }else{
+        patient.Num_vaccine = ""
+    }
     res.json(patient)
   } catch (err) {
     return errorMessage(res, "Internal Server Error!", 500);
@@ -208,18 +222,31 @@ const getPatientById = async (req, res, next) => {
 
 
 const updatePatient = async (req, res, next) => {
-
-  console.log("ss")
- if (req.body.is_Vaccinated.toString()=="Vaccinated"){
+ if (req.body.is_Vaccinated=="1"){
    req.body.is_Vaccinated="true"
+     if (req.body.Type_vaccine==null) {
+         return errorMessage(res, "'Vaccine Type' is not allowed to be empty", 422)
+     }
+     if (!req.body.Num_vaccine) {
+         return errorMessage(res, "'Number of Vaccines' is not allowed to be empty", 422)
+     }
  }else{
   req.body.is_Vaccinated="false"
  }
- if (req.body.contact_no.length>0){
-  req.body.contact_no = req.body.contact_no.split("94").pop()
+  if (!req.body.name){
+    return errorMessage(res, "'Name' is not allowed to be empty", 422)
+  }
+  if (!req.body.district){
+    return errorMessage(res, "'District' is not allowed to be empty", 422)
+  }
+  if (!req.body.blood_type){
+    return errorMessage(res, "'Blood Type' is not allowed to be empty", 422)
+  }
+  if (!req.body.gender){
+    return errorMessage(res, "'Gender' is not allowed to be empty", 422)
+  }
   if (req.body.contact_no.length != 10) {
     return errorMessage(res, "Please Check again Contact Number !", 422)
-  }
  }
  try{
   const patient = await Patient.findByPk(req.params.id)
@@ -232,6 +259,8 @@ const updatePatient = async (req, res, next) => {
       patient.district = req.body.district || patient.district
       patient.bday = req.body.bday || patient.bday
       patient.is_Vaccinated = req.body.is_Vaccinated || patient.is_Vaccinated
+     patient.Num_vaccine = req.body.Num_vaccine || patient.Num_vaccine
+     patient.Type_vaccine = req.body.Type_vaccine || patient.Type_vaccine
 
       const updatedPatient = await patient.save()
 
@@ -250,7 +279,9 @@ const updatePatient = async (req, res, next) => {
         district: updatedPatient.district,
         gender: updatedPatient.gender,
         bday: updatedPatient.bday,
-        is_Vaccinated:updatePatient.is_Vaccinated
+        is_Vaccinated:updatePatient.is_Vaccinated,
+        Num_vaccine:updatePatient.Num_vaccine,
+        Type_vaccine:updatePatient.Type_vaccine
       })
 
     } catch (err) {
@@ -266,19 +297,20 @@ const filterPatients = async (req, res, next) => {
     const beds= []
     const patients = []
     for (let i = 0; i < allocations.length; i++) {
-      beds.push(allocations[i].id)
-    } 
+      beds.push(allocations[i].bed_no)
+    }
     for (let j = 0; j < facilityBeds.length; j++) {
-      if (beds.includes(''+facilityBeds[j].BedID)){
+      if (beds.includes(facilityBeds[j].BedID)){
         const Id = facilityBeds[j].BedID
-        const allocation = await Allocation.findOne({where: {id: Id}})
+        const allocation = await Allocation.findOne({where: {bed_no: Id}})
         if (allocation.is_occupied){
-          patients.push(allocation.patient_id)
+          const patient = await Patient.findOne({where: {patient_id: allocation.patient_id}})
+          patients.push(patient.patient_id)
         }
       }
-    } 
+    }
     const filteredPatients = []
-    const filteredBed = await Allocation.findOne({where: {id: req.params.input}})
+    const filteredBed = await Allocation.findOne({where: {bed_no: req.params.input}})
     if (filteredBed){
       req.params.input = filteredBed.patient_id
     }
@@ -296,7 +328,6 @@ const filterPatients = async (req, res, next) => {
     }
     res.json(filteredPatients);
   } catch (err) {
-    console.log(err.message)
     return errorMessage(res, "Internal Server Error!", 500);
   }
 };
