@@ -168,37 +168,42 @@ if (error) {
 };
 
 const getPatients = async (req, res, next) => {
-  try{
-    const facility_Id = req.facilityId
-    const facilityBeds = await FacilityBed.findAll({where: {facilityId: facility_Id}})
-    const allocations = await Allocation.findAll()
-    const beds= []
-    const patients = []
-    for (let i = 0; i < allocations.length; i++) {
-      beds.push(allocations[i].bed_no)
-    }
-    for (let j = 0; j < facilityBeds.length; j++) {
-      if (beds.includes(facilityBeds[j].BedID)){
-        const Id = facilityBeds[j].BedID
-        const allocation = await Allocation.findAll({where: {bed_no: Id}})
-        for (let k = 0; k < allocation.length; k++){
-          if (allocation[k].is_occupied){
-              const patient = await Patient.findOne({where: {patient_id: allocation[k].patient_id}})
-              patients.push(patient)
-          }
+    try {
+        const facility_Id = req.facilityId
+        const facilityBeds = await FacilityBed.findAll({ where: { facilityId: facility_Id } })
+        const allocations = await Allocation.findAll()
+        const beds = []
+        const patients = []
+        for (let i = 0; i < allocations.length; i++) {
+            beds.push(allocations[i].bed_no)
         }
-      }
+        for (let j = 0; j < facilityBeds.length; j++) {
+            if (beds.includes(facilityBeds[j].BedID)) {
+                const Id = facilityBeds[j].BedID
+                const allocation = await Allocation.findOne({ where: { bed_no: Id, is_occupied: 1 } })
+                if (allocation) {
+                    const patient = await Patient.findOne({ where: { patient_id: allocation.patient_id } })
+                    patients.push(patient)
+                }
+            }
+        }
+        //Remove duplicate patients
+        const data = patients;
+        const set = new Set(data.map(item => JSON.stringify(item)));
+        const dedup = [...set].map(item => JSON.parse(item));
+        res.json(dedup);
+
+    } catch (err) {
+        return errorMessage(res, "Internal Server Error!", 500);
     }
-    res.json(patients);
-  } catch (err) {
-    return errorMessage(res, "Internal Server Error!", 500);
-  }
 };
+
+
 
 const getPatientById = async (req, res, next) => {
   try{
     const patient = await Patient.findByPk(req.params.id)
-    if (patient.is_Vaccinated.toString()=="1"){
+    if (patient.is_Vaccinated.toString()=="true"){
       patient.is_Vaccinated="Vaccinated"
     }else{
       patient.is_Vaccinated="Not Vaccinated"
