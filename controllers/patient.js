@@ -180,10 +180,12 @@ const getPatients = async (req, res, next) => {
     for (let j = 0; j < facilityBeds.length; j++) {
       if (beds.includes(facilityBeds[j].BedID)){
         const Id = facilityBeds[j].BedID
-        const allocation = await Allocation.findOne({where: {bed_no: Id}})
-        if (allocation.is_occupied){
-          const patient = await Patient.findOne({where: {patient_id: allocation.patient_id}})
-          patients.push(patient)
+        const allocation = await Allocation.findAll({where: {bed_no: Id}})
+        for (let k = 0; k < allocation.length; k++){
+          if (allocation[k].is_occupied){
+              const patient = await Patient.findOne({where: {patient_id: allocation[k].patient_id}})
+              patients.push(patient)
+          }
         }
       }
     }
@@ -196,7 +198,7 @@ const getPatients = async (req, res, next) => {
 const getPatientById = async (req, res, next) => {
   try{
     const patient = await Patient.findByPk(req.params.id)
-    if (patient.is_Vaccinated.toString()=="true"){
+    if (patient.is_Vaccinated.toString()=="1"){
       patient.is_Vaccinated="Vaccinated"
     }else{
       patient.is_Vaccinated="Not Vaccinated"
