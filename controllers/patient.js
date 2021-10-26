@@ -208,7 +208,7 @@ const getPatientById = async (req, res, next) => {
     }else{
       patient.is_Vaccinated="Not Vaccinated"
     }
-
+console.log(patient.Type_vaccine)
     if (patient.Num_vaccine) {
       if (patient.Num_vaccine.toString() == "1") {
         patient.Num_vaccine = " - 1st dose"
@@ -229,6 +229,11 @@ const getPatientById = async (req, res, next) => {
 
 
 const updatePatient = async (req, res, next) => {
+    if (req.body.is_Vaccinated=="Vaccinated"){
+        req.body.is_Vaccinated="1"
+        req.body.Type_vaccine=req.body.Type_vaccine.split(" - ").pop()
+        req.body.Num_vaccine=req.body.Num_vaccine.split(" - ").pop()
+    }
  if (req.body.is_Vaccinated=="1"){
    req.body.is_Vaccinated="true"
      if (req.body.Type_vaccine==null) {
@@ -272,9 +277,9 @@ const updatePatient = async (req, res, next) => {
       const updatedPatient = await patient.save()
 
       if (updatedPatient.is_Vaccinated.toString()=="true"){
-        updatedPatient.is_Vaccinated="Vaccinated"
+        updatedPatient.is_Vaccinated="1"
       }else{
-        updatedPatient.is_Vaccinated="Not Vaccinated"
+        updatedPatient.is_Vaccinated="0"
       }
 
       res.json({
