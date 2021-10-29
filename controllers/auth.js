@@ -45,8 +45,8 @@ const login = async (req, res, next) => {
         }
 
         const token = jwt.sign(tokenData,
-            'somesupersecret',
-            {expiresIn: '30d'}                 //put in ENV
+            process.env.JWT_SECRET,
+            {expiresIn: '30d'}
         );
         return successMessage(res, {
             id: loadedUser.user_id.toString(),
@@ -86,7 +86,7 @@ const forgotPassword = async (req,res,next) => {
         };
 
         const token = jwt.sign(tokenData,
-            'forgotpwsecret',                 //put in ENV
+            process.env.FORGOT_PASSWORD_SECRET,
             {expiresIn: '20m'}
         );
 
@@ -115,7 +115,7 @@ const resetPassword = async (req,res,next) => {
     }
     let t;
     try{
-        const {email,iat,exp} = jwt.verify(token,'forgotpwsecret');
+        const {email,iat,exp} = jwt.verify(token,process.env.FORGOT_PASSWORD_SECRET);
         const pwResetRequest = await PasswordReset.findAll({where:{
                 email: email,
                 token: token,
