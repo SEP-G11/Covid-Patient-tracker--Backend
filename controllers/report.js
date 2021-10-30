@@ -81,7 +81,7 @@ const getPatientReportById = async (req, res, next) => {
     const report = await MedicalReport.findOne({where: {patient_id: req.params.id}})
 
     const allocation = await Allocation.findOne({where: {patient_id: req.params.id}})
-    const bed = await Bed.findOne({where: {id: allocation.id}})
+    const bed = await Bed.findOne({where: {id: allocation.bed_no}})
 
     try{
     res.json({

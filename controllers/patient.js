@@ -208,7 +208,6 @@ const getPatientById = async (req, res, next) => {
     }else{
       patient.is_Vaccinated="Not Vaccinated"
     }
-console.log(patient.Type_vaccine)
     if (patient.Num_vaccine) {
       if (patient.Num_vaccine.toString() == "1") {
         patient.Num_vaccine = " - 1st dose"
@@ -229,6 +228,7 @@ console.log(patient.Type_vaccine)
 
 
 const updatePatient = async (req, res, next) => {
+    console.log(req.body.is_Vaccinated)
     if (req.body.is_Vaccinated=="Vaccinated"){
         req.body.is_Vaccinated="1"
         req.body.Type_vaccine=req.body.Type_vaccine.split(" - ").pop()
@@ -303,26 +303,34 @@ const updatePatient = async (req, res, next) => {
 
 const filterPatients = async (req, res, next) => {
   try{
-    const facility_Id = req.facilityId
-    const facilityBeds = await FacilityBed.findAll({where: {facilityId: facility_Id}})
-    const allocations = await Allocation.findAll()
-    const beds= []
-    const patients = []
-    for (let i = 0; i < allocations.length; i++) {
-      beds.push(allocations[i].bed_no)
-    }
-    for (let j = 0; j < facilityBeds.length; j++) {
-      if (beds.includes(facilityBeds[j].BedID)){
-        const Id = facilityBeds[j].BedID
-        const allocation = await Allocation.findOne({where: {bed_no: Id}})
-        if (allocation.is_occupied){
-          const patient = await Patient.findOne({where: {patient_id: allocation.patient_id}})
-          patients.push(patient.patient_id)
-        }
+      const facility_Id = req.facilityId
+      const facilityBeds = await FacilityBed.findAll({ where: { facilityId: facility_Id } })
+      const allocations = await Allocation.findAll()
+      const beds = []
+      const patients = []
+      for (let i = 0; i < allocations.length; i++) {
+          beds.push(allocations[i].bed_no)
       }
-    }
-    const filteredPatients = []
-    const filteredBed = await Allocation.findOne({where: {bed_no: req.params.input}})
+      for (let j = 0; j < facilityBeds.length; j++) {
+          if (beds.includes(facilityBeds[j].BedID)) {
+              const Id = facilityBeds[j].BedID
+              const allocation = await Allocation.findOne({ where: { bed_no: Id, is_occupied: 1 } })
+              if (allocation) {
+                  const patient = await Patient.findOne({ where: { patient_id: allocation.patient_id } })
+                  patients.push(patient)
+              }
+          }
+      }
+      //Remove duplicate patients
+      const data = patients;
+      const set = new Set(data.map(item => JSON.stringify(item)));
+      const dedup = [...set].map(item => JSON.parse(item));
+      const idList = []
+      for (let n = 0; n < dedup.length; n++) {
+          idList.push(dedup[n].patient_id)
+      }
+      const filteredPatients = []
+    const filteredBed = await Allocation.findOne({where: {bed_no: req.params.input, is_occupied: 1}})
     if (filteredBed){
       req.params.input = filteredBed.patient_id
     }
@@ -334,7 +342,7 @@ const filterPatients = async (req, res, next) => {
       }
     });
     for (let k = 0; k < allPatients.length; k++) {
-      if (patients.includes(allPatients[k].patient_id)){
+      if (idList.includes(allPatients[k].patient_id)){
         filteredPatients.push(allPatients[k])
       }
     }
