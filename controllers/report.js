@@ -76,28 +76,27 @@ const createReport = async (req, res, next) => {
 };
 
 const getPatientReportById = async (req, res, next) => {
-    const report = await MedicalReport.findOne({ where: { patient_id: req.params.id } })
+    
+    const report = await MedicalReport.findOne({where: {patient_id: req.params.id}})
 
-    const allocation = await Allocation.findOne({ where: { patient_id: req.params.id } })
-    const bed = await Bed.findOne({ where: { id: allocation.bed_no } })
+    const allocation = await Allocation.findOne({where: {patient_id: req.params.id}})
+    const bed = await Bed.findOne({where: {id: allocation.bed_no}})
 
-
-    try {
-        res.json({
-            report_id: report.report_id,
-            patient_id: report.patient_id,
-            symptoms: report.symptoms,
-            admitted_at: report.admitted_at,
-            discharged_at: report.discharged_at,
-            description: report.description,
-            status: report.status,
-            bed_no: bed.bed_no,
-            ward: bed.ward
-        })
-
-    } catch (err) {
-        return errorMessage(res, "Internal Server Error!", 500);
-    }
+    try{
+    res.json({
+        report_id:report.report_id,
+        patient_id:report.patient_id,
+        symptoms:report.symptoms,
+        admitted_at:report.admitted_at,
+        discharged_at:report.discharged_at,
+        description:report.description,
+        status:report.status,
+        bed_no:bed.bed_no,
+        ward:bed.ward
+    })
+} catch (err) {
+    return errorMessage(res, "Internal Server Error!", 500);
+}
 
 }
 
@@ -130,5 +129,5 @@ const updateReport = async (req, res, next) => {
 
 
 module.exports = {
-    createReport, getPatientReportById, updateReport
+    createReport,getPatientReportById,updateReport
 };

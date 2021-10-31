@@ -3,13 +3,16 @@ const jwt = require("jsonwebtoken");
 
 
 describe('protect middleware',() => {
+    beforeEach(async () => {
+        require('dotenv').config();
+    });
     it('should populate req.userID and req.accType for users without a facility with the payload of valid JWT', async ()=>{
         let tokenData = {
             email: "abc@example.com",
             userID: "1234",
             accType: "MOH"
         };
-        const token = jwt.sign(tokenData, "somesupersecret", {expiresIn: '30d'});
+        const token = jwt.sign(tokenData, process.env.JWT_SECRET, {expiresIn: '30d'});
 
         const req = {
             headers:{
@@ -17,11 +20,11 @@ describe('protect middleware',() => {
             }
         };
         const res = {};
-        const next = jest.fn()
+        const next = jest.fn();
         protect(req,res,next);
 
-        expect(req.userID).toEqual("1234")
-        expect(req.accType).toEqual("MOH")
+        expect(req.userID).toEqual("1234");
+        expect(req.accType).toEqual("MOH");
         expect(req.facilityId).toEqual(undefined)
     });
 
@@ -32,7 +35,7 @@ describe('protect middleware',() => {
             accType: "MOH",
             facilityId: 1
         };
-        const token = jwt.sign(tokenData, "somesupersecret", {expiresIn: '30d'});
+        const token = jwt.sign(tokenData, process.env.JWT_SECRET, {expiresIn: '30d'});
 
         const req = {
             headers:{
@@ -40,11 +43,11 @@ describe('protect middleware',() => {
             }
         };
         const res = {};
-        const next = jest.fn()
+        const next = jest.fn();
         protect(req,res,next);
 
-        expect(req.userID).toEqual("1234")
-        expect(req.accType).toEqual("MOH")
+        expect(req.userID).toEqual("1234");
+        expect(req.accType).toEqual("MOH");
         expect(req.facilityId).toEqual(1)
     });
 
@@ -58,7 +61,7 @@ describe('protect middleware',() => {
             status: jest.fn(() => res),
             send: jest.fn(),
         };
-        const next = jest.fn()
+        const next = jest.fn();
         protect(req,res,next);
         let expectedOutput= { object : null, message: "Not authenticated,no token" };
         expect(res.send).toHaveBeenCalledWith(expectedOutput);
