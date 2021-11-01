@@ -1,5 +1,6 @@
 const { createReport} = require('../../../controllers/report');
 const {sequelize,} = require('../../../service/models');
+const {getPatientById, updatePatient} = require("../../../controllers/patient");
 
 let server;
 
@@ -108,8 +109,6 @@ describe('Report Controller', () => {
 
 
     });
-    
-
 
 
 });

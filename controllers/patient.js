@@ -228,11 +228,8 @@ const getPatientById = async (req, res, next) => {
 
 
 const updatePatient = async (req, res, next) => {
-    console.log(req.body.is_Vaccinated)
     if (req.body.is_Vaccinated=="Vaccinated"){
         req.body.is_Vaccinated="1"
-        req.body.Type_vaccine=req.body.Type_vaccine.split(" - ").pop()
-        req.body.Num_vaccine=req.body.Num_vaccine.split(" - ").pop()
     }
  if (req.body.is_Vaccinated=="1"){
    req.body.is_Vaccinated="true"
@@ -242,6 +239,8 @@ const updatePatient = async (req, res, next) => {
      if (!req.body.Num_vaccine) {
          return errorMessage(res, "'Number of Vaccines' is not allowed to be empty", 422)
      }
+     req.body.Type_vaccine=req.body.Type_vaccine.split(" - ").pop()
+     req.body.Num_vaccine=req.body.Num_vaccine.split(" - ").pop()
  }else{
   req.body.is_Vaccinated="false"
  }
