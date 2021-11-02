@@ -1,9 +1,14 @@
 const { successMessage, errorMessage } = require("../utils/message-template");
-
 const { Bed, Patient, MedicalReport, Allocation, sequelize } = require('../service/models');
 const { validateCreateReport } = require('../utils/validationSchemas/reportValidationSchemas');
 
-
+/**
+*Create  medical report 
+* 
+* @param {object} req - http request
+* @param {object} res - http response
+* @return {Response} [{ result :1, massage : "Successfully create "  }]
+*/
 const createReport = async (req, res, next) => {
     const {
         id,
@@ -17,31 +22,24 @@ const createReport = async (req, res, next) => {
         bday,
         description
     } = req.body;
-
-
     const admitted_facility = req.facilityId;
-
     if (bday > new Date().toISOString().slice(0, 10)) {
         return errorMessage(res, "Please Check again Date of Birthday !", 422)
     }
-
     const { error, value } = validateCreateReport(RATresult, date, bday, phonenumber);
 
     if (req.bedId === "no") {
         return errorMessage(res, "No free beds!", 422)
     }
 
-
     if (error) {
         return errorMessage(res, error.details[0].message, 422)
     }
-
 
     try {
         if (await Allocation.findOne({ where: { bed_no: bedId, is_occupied: "1" } })) {
             return errorMessage(res, "Bed has already Occupied", 422)
         }
-
         else if (!(await Patient.findOne({ where: { Patient_id: id } }))) {
             return errorMessage(res, "Patient is not Registered", 422)
         }

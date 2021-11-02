@@ -5,8 +5,14 @@ const { sendSMS } = require("../utils/sms");
 const {Patient,MedicalReport,Test,sequelize} = require('../service/models');
 const {validateEnterResult} = require('../utils/validationSchemas/testsValidationSchemas');
 
+/**
+* Enter test results 
+* 
+* @param {object} req - http request
+* @param {object} res - http response
+* @return {Response} [{ result :1, massage : "Successfully  enter "  }]
+*/
 const enterResult = async (req, res, next) => {
-
     const {
         testId,
         id,
@@ -38,16 +44,13 @@ const enterResult = async (req, res, next) => {
                     id,
                     date,
                     testType,
-                    RATresult                
-
+                    RATresult            
                 },
             }
         );
 
         const patient_data = await Patient.findOne({where: {patient_id: id}})
         const phoneNumber = patient_data.dataValues.contact_no;
-
-
         if (result[0][0]["result"] == 1) {                
             sendSMS(phoneNumber,testId,testType,RATresult,date)
             return successMessage(res, result, "Test result successfully  Entered!", 201);
