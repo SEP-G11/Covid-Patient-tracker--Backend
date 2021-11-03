@@ -6,6 +6,13 @@ const {validateLogin,validateForgotPassword,validateResetPassword} = require('..
 
 const {User,FacilityStaff,PasswordReset,sequelize} = require('../service/models');
 
+/**
+ * User login
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {id,email,accType,token}
+ */
 const login = async (req, res, next) => {
     const {email, password} = req.body;
     const { error, value } = validateLogin(email,password);
@@ -61,6 +68,13 @@ const login = async (req, res, next) => {
     }
 };
 
+/**
+ * User forgot password, requesting a new password
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {}
+ */
 const forgotPassword = async (req,res,next) => {
     const {email} = req.body;
     const { error, value } = validateForgotPassword(email);
@@ -107,6 +121,13 @@ const forgotPassword = async (req,res,next) => {
 
 };
 
+/**
+ * User resetting password
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {}
+ */
 const resetPassword = async (req,res,next) => {
     const {password,token} = req.body;
     const { error, value } = validateResetPassword(password);

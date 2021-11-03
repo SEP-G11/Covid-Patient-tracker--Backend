@@ -4,6 +4,13 @@ const {validateEditProfile} = require('../utils/validationSchemas/userValidation
 
 const {User} = require('../service/models');
 
+/**
+ * Get user profile details
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {user_id,name,email,contact_no,user_type}
+ */
 const getUserProfile = async (req,res,next) => {
     const userId = req.userID;
 
@@ -28,6 +35,13 @@ const getUserProfile = async (req,res,next) => {
 
 };
 
+/**
+ * Update user profile details
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {}
+ */
 const editUserProfile = async (req,res,next) => {
     const userId = req.userID;
     const {name,contact,newPassword} = req.body;
