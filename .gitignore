@@ -10,3 +10,5 @@ npm-debug.log
 /coverage.data
 coverage/*
 sonar.exclusions=src/test
+coverage
+/coverage/
