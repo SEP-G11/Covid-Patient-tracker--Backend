@@ -4,7 +4,13 @@ const router = express.Router();
 const {protect,authorize} = require('../middlewares/authorization');
 
 
+/**
+* @description  Create  medical report  
+* @URL http://localhost:8000/report /createReport
+* @method POST
+*/
 router.post('/createReport/',protect,authorize(['DOC']),createReport);
+
 router.get('/patientReportDetails/:id', protect,authorize(['DOC']), getPatientReportById);
 router.put('/updateReport/:id', protect,authorize(['DOC']), updateReport);
 
