@@ -7,8 +7,11 @@ const router = express.Router();
 const {protect,authorize} = require('../middlewares/authorization');
 
 
-// router.get('/search/:facilityId',bedSearch);
-
+/**
+* @description  Get all facility name
+* @URL http://localhost:8000/facility/getAllFacility
+* @method GET
+*/
 router.get('/getAllFacility/',protect,authorize(['HA' ,'DOC']),getAllFacility);
 
 
