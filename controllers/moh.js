@@ -8,6 +8,13 @@ var fs = require('fs');
 
 const {User,DistrictStatus,MedicalReport,Test,FacilityStaff,Facility,FacilityBed,sequelize} = require('../service/models');
 
+/**
+ * Register a user to the system
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {}
+ */
 const register = async (req, res, next) => {
     const {id,email,name,contact,password,accountType,facilityId} = req.body;
     const { error, value } = validateRegister(id, name, email, contact, password, accountType,facilityId);
@@ -58,6 +65,13 @@ const register = async (req, res, next) => {
     }
 };
 
+/**
+ * Get overall statistics of all districts
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {{cases,active,deaths,recovered,todayCases,todayDeaths,todayRecovered,districtInfo}}
+ */
 const overallDistrictsStats = async (req,res,next) => {
     const districtInfo = JSON.parse(fs.readFileSync('data/districts.json', 'utf8'));
     try{
@@ -75,6 +89,13 @@ const overallDistrictsStats = async (req,res,next) => {
 
 };
 
+/**
+ * Get overall statistics of single district
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {{cases,active,deaths,recovered,todayCases,todayDeaths,todayRecovered,districtInfo}}
+ */
 const overallDistrictStats = async (req,res,next) => {
     const district = req.params.district;
     const districtInfo = JSON.parse(fs.readFileSync('data/districts.json', 'utf8'));
@@ -95,6 +116,13 @@ const overallDistrictStats = async (req,res,next) => {
 
 };
 
+/**
+ * Get overall statistics of the country
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {{cases,active,recovered,deaths,todayCases,todayDeaths,todayRecovered}}
+ */
 const overallCountryStats = async (req,res,next) => {
     try{
         const overallCountryResult = await DistrictStatus.findAll();
@@ -111,6 +139,13 @@ const overallCountryStats = async (req,res,next) => {
 
 };
 
+/**
+ * Get historical no of cases of last n days
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {mm/dd/yy}
+ */
 const historicalCases = async (req,res,next) => {
     const lastDays = parseInt(req.query.lastdays) || 1;
     try{
@@ -133,6 +168,14 @@ const historicalCases = async (req,res,next) => {
     }
 };
 
+
+/**
+ * Get historical no of recovered of last n days
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {mm/dd/yy}
+ */
 const historicalRecovered = async (req,res,next) => {
     const lastDays = parseInt(req.query.lastdays) || 1;
     try{
@@ -155,6 +198,13 @@ const historicalRecovered = async (req,res,next) => {
     }
 };
 
+/**
+ * Get historical no of deaths of last n days
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {mm/dd/yy}
+ */
 const historicalDeaths = async (req,res,next) => {
     const lastDays = parseInt(req.query.lastdays) || 1;
     try{
@@ -177,6 +227,13 @@ const historicalDeaths = async (req,res,next) => {
     }
 };
 
+/**
+ * Get historical no of PCR and RAT tests of last n days
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {mm/dd/yy:{pcr,rat}}
+ */
 const historicalTests = async (req,res,next) => {
     const lastDays = parseInt(req.query.lastdays) || 1;
     try{
@@ -201,6 +258,13 @@ const historicalTests = async (req,res,next) => {
     }
 };
 
+/**
+ * Get facilities list
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} [{facility_id,name,address,contact_no}]
+ */
 const getFacilities = async (req,res,next) => {
     try{
         const facilities = await Facility.findAll({
@@ -218,6 +282,13 @@ const getFacilities = async (req,res,next) => {
     }
 };
 
+/**
+ * Get number of recovered of all facilities/single facility
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} [{facility_id,count,todayCount}]
+ */
 const getFacilitiesRecovered = async (req,res,next) => {
     const facilityId = parseInt(req.query.facility) || null;
     let queryOptions={
@@ -250,6 +321,13 @@ const getFacilitiesRecovered = async (req,res,next) => {
     }
 };
 
+/**
+ * Get number of deaths of all facilities/single facility
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} [{facility_id,count,todayCount}]
+ */
 const getFacilitiesDeaths = async (req,res,next) => {
     const facilityId = parseInt(req.query.facility) || null;
     let queryOptions={
@@ -282,6 +360,13 @@ const getFacilitiesDeaths = async (req,res,next) => {
     }
 };
 
+/**
+ * Get number of active of all facilities/single facility
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} [{facility_id,count,todayCount}]
+ */
 const getFacilitiesActive = async (req,res,next) => {
     const facilityId = parseInt(req.query.facility) || null;
     let queryOptions={
@@ -314,6 +399,13 @@ const getFacilitiesActive = async (req,res,next) => {
     }
 };
 
+/**
+ * Get number beds of all facilities
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {facility_id:{totalCovidBeds,occupiedCovidBeds,totalNormalBeds,occupiedNormalBeds}}
+ */
 const getFacilitiesBeds = async (req,res,next) => {
     try{
         const facilityBeds = await FacilityBed.findAll({
@@ -336,6 +428,13 @@ const getFacilitiesBeds = async (req,res,next) => {
 
 };
 
+/**
+ * Get historical statistics for a facility
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @param {object} next
+ * @return {Response} {mm/dd/yy}
+ */
 const facilityHistorical = async (req,res,next) => {
     const lastDays = parseInt(req.query.lastdays) || 1;
     const caseType = req.query.type || 'cases';
