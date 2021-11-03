@@ -5,11 +5,11 @@ const { validateAdmitPatient, validateDischargePatient, validateTransferPatient 
 const { Patient, Allocation, FacilityBed, sequelize } = require('../service/models');
 
 /**
-* Admit  a new patient 
+* Admit  a new patient 
 * 
 * @param {object} req - http request
 * @param {object} res - http response
-* @return {Response} [{ result :1, massage : "Successfully admit "  }]
+* @return {Response} [{ result :1, massage : "Successfully admit "  }]
 */
 
 const admitPatient = async (req, res, next) => {
@@ -96,11 +96,11 @@ const admitPatient = async (req, res, next) => {
 
 
 /**
-* Discharge  patient 
+* Discharge  patient 
 * 
 * @param {object} req - http request
 * @param {object} res - http response
-* @return {Response} [{ result :1, massage : "Successfully discharge "  }]
+* @return {Response} [{ result :1, massage : "Successfully discharge "  }]
 */
 
 const dischargePatient = async (req, res, next) => {
@@ -137,11 +137,11 @@ const dischargePatient = async (req, res, next) => {
 
 
 /**
-* Transfer  patient 
+* Transfer  patient 
 * 
 * @param {object} req - http request
 * @param {object} res - http response
-* @return {Response} [{ result :1, massage : "Successfully transfer "  }]
+* @return {Response} [{ result :1, massage : "Successfully transfer "  }]
 */
 const transferPatient = async (req, res, next) => {
   const {
@@ -369,4 +369,3 @@ const filterPatients = async (req, res, next) => {
 module.exports = {
   admitPatient, dischargePatient, transferPatient, getPatients, getPatientById, updatePatient, filterPatients
 };
-
