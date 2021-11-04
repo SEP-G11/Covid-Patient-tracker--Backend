@@ -176,6 +176,13 @@ const transferPatient = async (req, res, next) => {
 
 
 
+/**
+ * Get patient list
+ *
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @return {Response} [{ patinet_id ,name ,bday ,address ,district ,blood_type ,age ,contact_no ,gender ,is_Vaccinated ,Type_vaccine ,Num_vaccine }]
+ */
 const getPatients = async (req, res, next) => {
   try {
     const facility_Id = req.facilityId
@@ -201,7 +208,6 @@ const getPatients = async (req, res, next) => {
     const set = new Set(data.map(item => JSON.stringify(item)));
     const dedup = [...set].map(item => JSON.parse(item));
     res.json(dedup);
-
   } catch (err) {
     return errorMessage(res, "Internal Server Error!", 500);
   }
@@ -209,6 +215,13 @@ const getPatients = async (req, res, next) => {
 
 
 
+/**
+ * Get patient details by patient id
+ *
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @return {Response} { patinet_id ,name ,bday ,address ,district ,blood_type ,age ,contact_no ,gender ,is_Vaccinated ,Type_vaccine ,Num_vaccine }
+ */
 const getPatientById = async (req, res, next) => {
   try {
     const patient = await Patient.findByPk(req.params.id)
@@ -236,6 +249,14 @@ const getPatientById = async (req, res, next) => {
 };
 
 
+
+/**
+ * Update patient details
+ *
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @return {Response} { name ,bday ,address ,district ,blood_type ,age ,contact_no ,gender ,is_Vaccinated ,Type_vaccine ,Num_vaccine }
+ */
 const updatePatient = async (req, res, next) => {
   console.log(req.body.is_Vaccinated)
   if (req.body.is_Vaccinated == "Vaccinated") {
@@ -311,6 +332,15 @@ const updatePatient = async (req, res, next) => {
 
 };
 
+
+
+/**
+ * Filter patients
+ *
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @return {Response} [{ name ,bday ,address ,district ,blood_type ,age ,contact_no ,gender ,is_Vaccinated ,Type_vaccine ,Num_vaccine }]
+ */
 const filterPatients = async (req, res, next) => {
   try {
     const facility_Id = req.facilityId
@@ -358,7 +388,6 @@ const filterPatients = async (req, res, next) => {
         filteredPatients.push(allPatients[k])
       }
     }
-
     res.json(filteredPatients);
   } catch (err) {
     return errorMessage(res, "Internal Server Error!", 500);

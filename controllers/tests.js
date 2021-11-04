@@ -63,6 +63,15 @@ const enterResult = async (req, res, next) => {
     }}
 };
 
+
+
+/**
+ * Get patient test details by patient id
+ *
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @return {Response} [{ test_id ,report_id ,date ,test_type ,result }]
+ */
 const getTestDetailsById = async (req, res, next) => {
     try{
         const report = await MedicalReport.findOne({where: {patient_id: req.params.id}})

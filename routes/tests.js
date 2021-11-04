@@ -9,6 +9,12 @@ const {protect,authorize} = require('../middlewares/authorization');
 * @method POST
 */
 router.post('/enter/',protect,authorize(['DOC','HA']),enterResult);
+
+/**
+ * @description Get patient test details by patient id 
+ * @URL http://localhost:8000/test/testDetails/${id}
+ * @method GET
+ */
 router.get('/testDetails/:id', protect,authorize(['DOC']),getTestDetailsById);
 
 
