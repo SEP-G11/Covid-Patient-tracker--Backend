@@ -11,7 +11,18 @@ const {protect,authorize} = require('../middlewares/authorization');
 */
 router.post('/createReport/',protect,authorize(['DOC']),createReport);
 
+/**
+ * @description Get patient report details by patient id 
+ * @URL http://localhost:8000/report/patientReportDetails/${id}
+ * @method GET
+ */
 router.get('/patientReportDetails/:id', protect,authorize(['DOC']), getPatientReportById);
+
+/**
+ * @description Update patient report details 
+ * @URL http://localhost:8000/report/updateReport/${report.patient_id}
+ * @method PUT
+ */
 router.put('/updateReport/:id', protect,authorize(['DOC']), updateReport);
 
 

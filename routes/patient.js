@@ -26,11 +26,33 @@ router.post('/discharge/',protect,authorize(['HA','DOC']), dischargePatient);
 */
 router.post('/transfer/',protect,authorize(['HA','DOC']),transferPatient);
 
-
+/**
+ * @description Get patient list 
+ * @URL http://localhost:8000/patient/getPatients
+ * @method GET
+ */
 router.get('/getPatients',protect,authorize(['HA','DOC']),getPatients);
-router.get('/filterPatients/:input',protect,authorize(['HA','DOC']),filterPatients);
+
+/**
+ * @description Get patient details by patient id 
+ * @URL http://localhost:8000/patient/patientDetails/${id}
+ * @method GET
+ */
 router.get('/patientDetails/:id',protect,authorize(['HA','DOC']),getPatientById);
+
+/**
+ * @description Update patient details 
+ * @URL http://localhost:8000/patient/updatePatient/${patient.patient_id}
+ * @method PUT
+ */
 router.put('/updatePatient/:id', protect,authorize(['HA','DOC']), updatePatient);
+
+/**
+ * @description Filter patients 
+ * @URL http://localhost:8000/patient/filterPatients/${input}
+ * @method GET
+ */
+router.get('/filterPatients/:input',protect,authorize(['HA','DOC']),filterPatients);
 
 
 

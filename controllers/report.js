@@ -73,6 +73,15 @@ const createReport = async (req, res, next) => {
     }
 };
 
+
+
+/**
+ * Get patient report details by patient id
+ *
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @return {Response} { report_id ,patient_id ,symptoms ,admitted_at ,discharged_at ,description ,status ,bed_no ,ward }
+ */
 const getPatientReportById = async (req, res, next) => {
     
     const report = await MedicalReport.findOne({where: {patient_id: req.params.id}})
@@ -98,6 +107,15 @@ const getPatientReportById = async (req, res, next) => {
 
 }
 
+
+
+/**
+ * Update patient report details
+ *
+ * @param {object} req - http request
+ * @param {object} res - http response
+ * @return {Response} { symptoms ,admitted_at ,discharged_at ,description ,status }
+ */
 const updateReport = async (req, res, next) => {
 
     const report = await MedicalReport.findOne({ where: { patient_id: req.params.id } })
