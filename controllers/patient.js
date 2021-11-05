@@ -258,7 +258,6 @@ const getPatientById = async (req, res, next) => {
  * @return {Response} { name ,bday ,address ,district ,blood_type ,age ,contact_no ,gender ,is_Vaccinated ,Type_vaccine ,Num_vaccine }
  */
 const updatePatient = async (req, res, next) => {
-  console.log(req.body.is_Vaccinated)
   if (req.body.is_Vaccinated == "Vaccinated") {
     req.body.is_Vaccinated = "1"
     req.body.Type_vaccine = req.body.Type_vaccine.split(" - ").pop()
@@ -287,7 +286,8 @@ const updatePatient = async (req, res, next) => {
   if (!req.body.gender) {
     return errorMessage(res, "'Gender' is not allowed to be empty", 422)
   }
-  if (req.body.contact_no.length != 10) {
+  req.body.contact_no = "+" + req.body.contact_no.toString()
+  if (req.body.contact_no.length != 12) {
     return errorMessage(res, "Please Check again Contact Number !", 422)
   }
   try {
