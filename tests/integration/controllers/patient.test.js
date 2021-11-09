@@ -290,6 +290,194 @@ describe('Patient Controller', () => {
 
     });
 
+    describe('getPatients', () => {
+        const req = {
+            facilityId: "4"
+        };
+
+        const res = {
+            status: jest.fn(() => res),
+            send: jest.fn(),
+            end: jest.fn()
+        };
+        const next = jest.fn()
+
+        beforeEach(async () => {
+            server = require('../../../index');
+        });
+        afterEach(async () => {
+            await server.close();
+        });
+
+        it("should return 500 if Internal server error", async () => {
+            req.facilityId = { facilityId: undefined, }
+            await getPatients(req, res, next);
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: 'Internal Server Error!' });
+        });
+
+    });
+
+    describe('getPatientById', () => {
+        const req = {
+            params: { id: "674849922X", }
+        };
+
+        const res = {
+            status: jest.fn(() => res),
+            send: jest.fn(),
+            end: jest.fn()
+        };
+        const next = jest.fn()
+
+        beforeEach(async () => {
+            server = require('../../../index');
+        });
+        afterEach(async () => {
+            await server.close();
+        });
+
+        it("should return 500 if Internal server error", async () => {
+            req.params = { id: undefined, }
+            await getPatientById(req, res, next);
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: 'Internal Server Error!' });
+        });
+
+    });
+
+    describe('updatePatient', () => {
+        const req = {
+            params: { id: "674849922X", },
+            body: {
+                patient_id: '674849922X',
+                name: 'Reagen McIlwaine',
+                bday: '2020-10-07',
+                gender: 'Female',
+                blood_type: 'O+',
+                contact_no: '0783523930',
+                address: '09402 Mockingbird Park',
+                district: 'Matara',
+                is_Vaccinated: 'Vaccinated',
+                Num_vaccine: ' - 2nd dose',
+                Type_vaccine: ' - Pfizer',
+            }
+        };
+
+        const res = {
+            status: jest.fn(() => res),
+            send: jest.fn(),
+            end: jest.fn()
+        };
+        const next = jest.fn()
+
+        beforeEach(async () => {
+            server = require('../../../index');
+            await sequelize.query("SET autocommit = OFF");
+            await sequelize.query("BEGIN");
+        });
+        afterEach(async () => {
+            await sequelize.query("ROLLBACK");
+            await server.close();
+        });
+
+        it("should return 422 if Vaccinated and Vaccine Type is not provided", async () => {
+            req.body = {is_Vaccinated: 'Vaccinated',Type_vaccine: null};
+            await updatePatient(req, res, next);
+            expect(res.status).toBeCalledWith(422);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: "'Vaccine Type' is not allowed to be empty" });
+
+        });
+
+        it("should return 422 if Vaccinated and Number of Vaccines is not provided", async () => {
+            req.body = {is_Vaccinated: 'Vaccinated', Type_vaccine: ' - Pfizer', Num_vaccine: null};
+            await updatePatient(req, res, next);
+            expect(res.status).toBeCalledWith(422);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: "'Number of Vaccines' is not allowed to be empty" });
+
+        });
+
+        it("should return 422 if name is not provided", async () => {
+            req.body.name = "";
+            await updatePatient(req, res, next);
+            expect(res.status).toBeCalledWith(422);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: "'Name' is not allowed to be empty" });
+
+        });
+
+        it("should return 422 if district is not provided", async () => {
+            req.body = {name: 'Reagen McIlwaine', district: ''};
+            await updatePatient(req, res, next);
+            expect(res.status).toBeCalledWith(422);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: "'District' is not allowed to be empty" });
+
+        });
+
+        it("should return 422 if blood type is not provided", async () => {
+            req.body = {name: 'Reagen McIlwaine', district: 'Matara', blood_type: ''};
+            await updatePatient(req, res, next);
+            expect(res.status).toBeCalledWith(422);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: "'Blood Type' is not allowed to be empty" });
+
+        });
+
+        it("should return 422 if gender is not provided", async () => {
+            req.body = {name: 'Reagen McIlwaine', district: 'Matara', blood_type: 'O+', gender: ''};
+            await updatePatient(req, res, next);
+            expect(res.status).toBeCalledWith(422);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: "'Gender' is not allowed to be empty" });
+
+        });
+
+        it("should return 422 if contact number is invalid", async () => {
+            req.body = {name: 'Reagen McIlwaine', district: 'Matara', blood_type: 'O+', gender: 'Female',contact_no:'078352393' };
+            await updatePatient(req, res, next);
+            expect(res.status).toBeCalledWith(422);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: "Please Check again Contact Number !" });
+
+        });
+
+        it("should return 500 if Internal server error", async () => {
+            req.body = {name: 'Reagen McIlwaine', district: 'Matara', blood_type: 'O+', gender: 'Female',contact_no:'0783523930' };
+            req.params = { id: undefined, }
+            await updatePatient(req, res, next);
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: 'Internal Server Error!' });
+        });
+
+
+
+    });
+
+    describe('filterPatients', () => {
+        const req = {
+            facilityId: "4"
+        };
+
+        const res = {
+            status: jest.fn(() => res),
+            send: jest.fn(),
+            end: jest.fn()
+        };
+        const next = jest.fn()
+
+        beforeEach(async () => {
+            server = require('../../../index');
+        });
+        afterEach(async () => {
+            await server.close();
+        });
+
+        it("should return 500 if Internal server error", async () => {
+            req.facilityId = { facilityId: undefined, }
+            await filterPatients(req, res, next);
+            expect(res.status).toHaveBeenCalledWith(500);
+            expect(res.send).toHaveBeenCalledWith({ object: null, message: 'Internal Server Error!' });
+        });
+
+    });
+
+
 
 
 });

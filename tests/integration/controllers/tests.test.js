@@ -85,7 +85,37 @@ let server;
 
     });
 
+      describe('getTestDetailsById', () => {
+          const req = {
+              params: { id: "1933571", }
+          };
+
+          const res = {
+              status: jest.fn(() => res),
+              send: jest.fn(),
+              end: jest.fn()
+          };
+          const next = jest.fn()
+
+          beforeEach(async () => {
+              server = require('../../../index');
+          });
+          afterEach(async () => {
+              await server.close();
+          });
+
+          it("should return 500 if Internal server error", async () => {
+              req.params = { id: undefined, }
+              await getTestDetailsById(req, res, next);
+              expect(res.status).toHaveBeenCalledWith(500);
+              expect(res.send).toHaveBeenCalledWith({ object: null, message: 'Internal Server Error!' });
+          });
+
+      });
 
 
 
-});
+
+
+
+  });
