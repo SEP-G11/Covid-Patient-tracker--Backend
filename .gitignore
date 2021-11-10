@@ -12,3 +12,4 @@ coverage/*
 sonar.exclusions=src/test
 coverage
 /coverage/
+/.clinic
