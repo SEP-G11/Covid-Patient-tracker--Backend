@@ -95,7 +95,6 @@ const getPatientReportById = async (req, res, next) => {
         patient_id:report.patient_id,
         symptoms:report.symptoms,
         admitted_at:report.admitted_at,
-        discharged_at:report.discharged_at,
         description:report.description,
         status:report.status,
         bed_no:bed.bed_no,
@@ -122,7 +121,6 @@ const updateReport = async (req, res, next) => {
 
     report.symptoms = req.body.symptoms || report.symptoms
     report.admitted_at = req.body.admitted_at || report.admitted_at
-    report.discharged_at = req.body.discharged_at || report.discharged_at
     report.description = req.body.description || report.description
     report.status = req.body.status || report.status
 
@@ -133,7 +131,6 @@ const updateReport = async (req, res, next) => {
         res.json({
             symptoms: updatedReport.symptoms,
             admitted_at: updatedReport.admitted_at,
-            discharged_at: updatedReport.discharged_at,
             description: updatedReport.description,
             status: updatedReport.status,
         })
