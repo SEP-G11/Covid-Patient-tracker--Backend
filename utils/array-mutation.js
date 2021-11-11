@@ -41,7 +41,7 @@ const districtStatsMutate = (arr, districtInfo) => {
 const facilitybeds = (arr) => {
     return arr.reduce((acc, curr) => {
         const { BedID, WardID, FacilityId, FacilityName, WardType, IsOccupied, Capacity, Contactnumber } = curr;
-        
+
         if (!acc["FacilityName"]) {
             acc["FacilityName"] = FacilityName;
         }
@@ -59,10 +59,11 @@ const facilitybeds = (arr) => {
         }
         if (!acc["CovidBed"]) {
             acc["CovidBed"] = [];
-        }        
+        }
 
         if (!acc["NormalBed"]) {
-            acc["NormalBed"] = [];        }
+            acc["NormalBed"] = [];
+        }
 
 
 
@@ -78,66 +79,75 @@ const facilitybeds = (arr) => {
         }
 
         if (!acc["NormalBedUsed"]) {
-            acc["NormalBedUsed"] =0;
+            acc["NormalBedUsed"] = 0;
         }
 
 
 
-        if (WardType == "Covid" ) {
-            if(acc.CovidBed.find(record => record.BedID === BedID ) ){    
-                if(acc.CovidBed.find(record => record.BedID === BedID && record.IsOccupied === 1  )){
+        if (WardType == "Covid") {
+            if (acc.CovidBed.find(record => record.BedID == BedID)) {
+                if (acc.CovidBed.find(record => record.BedID == BedID && record.IsOccupied == true)) {
 
                 }
-                else{
-                    if(IsOccupied){
-                        acc['CovidBed'].pop({"BedID":BedID,"IsOccupied":0});
-                        acc['CovidBed'].push({"BedID":BedID,"IsOccupied":IsOccupied});
-                        acc["CovidBedUsed"]+=1;
-                        acc["CovidBedFree"]-=1;                        
+                else {
+                    if (IsOccupied && IsOccupied != null) {
+                        var filtered_covid_acc = acc.CovidBed.filter(function (item) {
+                            return item.BedID !== BedID;
+                        });
+                        acc.CovidBed = filtered_covid_acc
+                        acc['CovidBed'].push({ "BedID": BedID, "IsOccupied": IsOccupied });
+                        acc["CovidBedUsed"] += 1;
+                        acc["CovidBedFree"] -= 1;
                     }
-                    else{                        
-                    }                  
+                    else {
+                    }
                 }
             }
-            else{
-                acc['CovidBed'].push({"BedID":BedID,"IsOccupied":IsOccupied});
-                if(IsOccupied){
-                    acc["CovidBedUsed"]+=1;
-                }
-                else{
-                    acc["CovidBedFree"]+=1;
-                }
-            }          
-        }
+            else {
 
-     
 
-        if (WardType == "Normal" ) {
-            if(acc.NormalBed.find(record => record.BedID === BedID ) ){    
-                if(acc.NormalBed.find(record => record.BedID === BedID && record.IsOccupied === 1  )){
-
+                acc['CovidBed'].push({ "BedID": BedID, "IsOccupied": IsOccupied });
+                if (IsOccupied && IsOccupied != null) {
+                    acc["CovidBedUsed"] += 1;
                 }
-                else{
-                    if(IsOccupied){
-                        acc['NormalBed'].pop({"BedID":BedID,"IsOccupied":0});
-                        acc['NormalBed'].push({"BedID":BedID,"IsOccupied":IsOccupied});
-                        acc["NormalBedUsed"]+=1;
-                        acc["NormalBedFree"]-=1;                        
-                    }
-                    else{                        
-                    }                  
+                else {
+                    acc["CovidBedFree"] += 1;
                 }
             }
-            else{
-                acc['NormalBed'].push({"BedID":BedID,"IsOccupied":IsOccupied});
-                if(IsOccupied){
-                    acc["NormalBedUsed"]+=1;
-                }
-                else{
-                    acc["NormalBedFree"]+=1;
-                }
-            }          
         }
+
+
+
+        if (WardType == "Normal") {
+            if (acc.NormalBed.find(record => record.BedID === BedID)) {
+                if (acc.NormalBed.find(record => record.BedID === BedID && record.IsOccupied === true)) {
+
+                }
+                else {
+                    if (IsOccupied && IsOccupied != null) {
+                        var filtered_normal_acc = acc.NormalBed.filter(function (item) {
+                            return item.BedID !== BedID;
+                        });
+                        acc.NormalBed = filtered_normal_acc
+                        acc['NormalBed'].push({ "BedID": BedID, "IsOccupied": IsOccupied });
+                        acc["NormalBedUsed"] += 1;
+                        acc["NormalBedFree"] -= 1;
+                    }
+                    else {
+                    }
+                }
+            }
+            else {
+                acc['NormalBed'].push({ "BedID": BedID, "IsOccupied": IsOccupied });
+                if (IsOccupied && IsOccupied != null) {
+                    acc["NormalBedUsed"] += 1;
+                }
+                else {
+                    acc["NormalBedFree"] += 1;
+                }
+            }
+        }
+      
 
         return acc;
     }, {});
@@ -159,10 +169,10 @@ const countryStatsMutate = (arr) => {
 };
 
 
-const dateMapToValuesMutate = (arr,lastDays) => {
+const dateMapToValuesMutate = (arr, lastDays) => {
     const lastDaysArr = [...new Array(lastDays)].map((i, idx) => moment().subtract(idx, "days").format('M/D/YY'));
-    const accumulator = lastDaysArr.reduce((acc,curr)=> {
-        acc[curr]=0;
+    const accumulator = lastDaysArr.reduce((acc, curr) => {
+        acc[curr] = 0;
         return acc
     }, {});
     return arr.reduce((acc, curr) => {
@@ -176,14 +186,14 @@ const dateMapToValuesMutate = (arr,lastDays) => {
 };
 
 
-const dateMapToTestsMutate = (arr,lastDays) => {
+const dateMapToTestsMutate = (arr, lastDays) => {
     const lastDaysArr = [...new Array(lastDays)].map((i, idx) => moment().subtract(idx, "days").format('M/D/YY'));
-    const accumulator = lastDaysArr.reduce((acc,curr)=> {
-        acc[curr]={pcr: 0, rat: 0};
+    const accumulator = lastDaysArr.reduce((acc, curr) => {
+        acc[curr] = { pcr: 0, rat: 0 };
         return acc
-    },{});
+    }, {});
     return arr.reduce((acc, curr) => {
-        const { test_date, count, test_type} = curr.dataValues;
+        const { test_date, count, test_type } = curr.dataValues;
 
         acc[moment(test_date).format('M/D/YY')][test_type.toLowerCase()] += count;
 
@@ -192,8 +202,8 @@ const dateMapToTestsMutate = (arr,lastDays) => {
 };
 
 const facilityBedsMutate = (arr) => {
-    return  arr.reduce((acc, curr) => {
-        const { facilityId, wardType,isOccupied } = curr.dataValues;
+    return arr.reduce((acc, curr) => {
+        const { facilityId, wardType, isOccupied } = curr.dataValues;
 
         if (!acc[facilityId]) {
             acc[facilityId] = {
@@ -208,10 +218,10 @@ const facilityBedsMutate = (arr) => {
         acc[facilityId][`occupied${wardType}Beds`] += isOccupied;
 
         return acc;
-    },{});
+    }, {});
 };
 
 
-module.exports = {districtStatsMutate,countryStatsMutate,dateMapToValuesMutate,dateMapToTestsMutate,facilityBedsMutate,facilitybeds};
+module.exports = { districtStatsMutate, countryStatsMutate, dateMapToValuesMutate, dateMapToTestsMutate, facilityBedsMutate, facilitybeds };
 
 

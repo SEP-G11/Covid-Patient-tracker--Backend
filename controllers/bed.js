@@ -14,7 +14,8 @@ const bedSearch = async (req, res, next) => {
     try {
         const bedResult = await FacilityBed.findAll({
             where: { facilityId: facilityId }
-        });      
+        });   
+        
         if (bedResult && bedResult.length !== 0) {
             return successMessage(res, facilitybeds(bedResult), 'Beds Data Found', 201);
         }
