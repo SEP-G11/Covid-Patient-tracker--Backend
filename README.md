@@ -21,20 +21,5 @@ npm install
 npm start
 ```
 
-### Api Endpoints
-
-
-* SignIn - POST
-
-```bash
-http://localhost:8000/auth/login/
-```
-
-{
-    "email" : "supun@gmail.com",    
-    "password":"Supun*"
-}
-
-
 
 
